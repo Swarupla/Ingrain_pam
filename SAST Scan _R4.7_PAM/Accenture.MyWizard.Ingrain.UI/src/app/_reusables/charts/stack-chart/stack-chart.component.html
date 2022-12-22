@@ -1,0 +1,23 @@
+<div *ngIf="modelMonitoring">
+    <pagination-controls id="listing_pagination" maxSize="25" directionLinks="true" (pageChange)="changePage($event)">
+    </pagination-controls>
+    <ng-container>
+        <div *ngFor="let predictions of dataCopy | paginate:
+                { id: 'listing_pagination',  itemsPerPage: maxLimit,
+                  currentPage: pageNumber, totalItems: dataCopy.length };let listIndex = index" class="h-100"
+            style="overflow-y: auto;overflow-x: hidden;">
+            <div style="display: none;">
+                {{ listIndex }}
+            </div>
+        </div>
+    </ng-container>
+</div>
+<div class="row ml-5" *ngIf="modelMonitoring">
+    <ng-container *ngFor="let m of ylabels; let i = index">
+        <div style="width: 1em; margin: 0 0.5em; padding-top: 3px;">  <hr class="green-line" [style.background-color]="colors[i]">  </div>
+        <div  style="width: fit-content; margin: 0 0.5em;"> {{m}}</div>
+    </ng-container>
+</div>
+<p style="text-align:center; margin-bottom: 0;"><strong> Predict {{target}}</strong></p>
+<div class="chart-container" style="overflow-x: auto;" #containerLineChart>
+</div>

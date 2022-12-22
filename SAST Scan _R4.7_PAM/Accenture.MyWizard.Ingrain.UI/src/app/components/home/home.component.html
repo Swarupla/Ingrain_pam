@@ -1,0 +1,93 @@
+<!-- <div>
+  <div class="ingrAI-homepage-banner">
+    <div class="ingrAI-height">
+      <div class="disclaimer-popup" *ngIf="showMessage">
+        <p class="disclaimer-text">All the dates are in UTC format. <span (click)="closeDisclaimerPopup()">x</span></p>
+      </div>
+      <h1>It's all about <span>AI</span> that works for you!</h1>
+      <p>Natural Language Processing | Image Processing | Audio &amp; Video Processing | Recommender Engine | Augmented
+        Reality</p>
+    </div>
+    <div class="ingrAI-homepage-process ingrAI-height">
+      <div><img src="assets/images/how_we_do.svg" alt="" /></div>
+      <input type="button" routerLinkActive="router-link-active" class="btn btn-primary"
+        value="let's get started"  (click)= "letsGetStarted()"/>
+      <input type="button"  class="btn btn-primary" value="Know More" (click)= "redirectToMarketPlace()" />
+    </div>
+
+  </div>
+</div> -->
+
+
+
+<div id="main" class="myw-content d-flex flex-column flex-fill">
+  <div class="disclaimer-popup" *ngIf="showMessage">
+    <p class="disclaimer-text">All the dates are in UTC format. <span (click)="closeDisclaimerPopup()">x</span></p>
+  </div>
+  <div id="acknowledgeModal" class="notification-modal" *ngIf="showAcknowledgePopup">
+    <!-- Acknowledge Modal content -->
+    <div [ngClass] = "instanceName ===  'MyConcerto' ? 'notification-acknowledge-modal-content' : 'notification-acknowledge-modal-content-myw'">
+      <div class="notification-modal-header">
+        Acknowledgment(s)
+      </div>
+      <div class="notification-acknowledge-modal-body">
+        <div class="notification-modal-subcontent">
+          <div class="notification-modal-subheader">
+            <strong>Confidentiality Disclaimer</strong>
+          </div>
+          <div>
+            <div class="notification-modal-message" [innerHtml]="messageStr"></div>
+            <!--<div class="d-flex align-items-center">
+              <input class="notification-modal-checkbox" type="checkbox" id="understand" name="understand" [(ngModel)]="confidentialUnderstand">
+              <label for="understand" class="mb-0 ml-1">I Understand</label>
+            </div>-->
+            <div class="form-group">
+              <div class="form-inline">
+                <label class="myw-checkbox ml-3 mb-0"><input type="checkbox" id="understand" name="understand" [(ngModel)]="confidentialUnderstand" /><span>I Understand</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="notification-modal-subcontent" *ngIf="showBrowserCompatiblityPopup">
+          <div class="notification-modal-subheader"><strong>Browser Compatibility (App Related)</strong></div>
+          <div>
+            <p class="notification-modal-message">myWizard solution works best in Google Chrome or Firefox</p>
+            <!--<div class="d-flex align-items-center">
+              <input class="notification-modal-checkbox" type="checkbox" id="understand" name="understand" [(ngModel)]="appUnderstand">
+              <label for="understand" class="mb-0 ml-1">Hide till next release</label>
+            </div>-->
+            <div class="form-group">
+              <div class="form-inline">
+                <label class="myw-checkbox ml-3 mb-0"><input type="checkbox" id="browser" name="browser" [(ngModel)]="appUnderstand" /><span>Hide till next release</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="notification-modal-footer">
+        <button class="btn btn-primary ml-auto" type="button" [disabled]="!confidentialUnderstand" (click)="confirmAcknowledge(appUnderstand)">Confirm</button>
+      </div>
+    </div>
+    <!-- Acknowledge Modal end -->
+  </div>
+  <div class="myw-container ingr-landing-container d-flex flex-column pt-5">
+    <div class="ingr-landing-inner">
+      <h1>Welcome to IngrAIn</h1>
+      <h4 class="text-center">It’s all about <span>AI</span> that works for you!</h4>
+      <div class="ingr-landing-details text-center">
+        <p>Natural Language Processing | Image Processing | Audio & Video Processing |
+          Recommender Engine | Augmented Reality</p>
+        <div class="mt-4 myw-actions">
+          <!-- <a href="javascript:;" class="btn btn-secondary" (click)="redirectToMarketPlace()">Know More</a>
+          <a href="javascript:;" class="btn btn-primary" (click)="letsGetStarted()">Let's Get Started</a> -->
+          <button class="btn btn-secondary" (click)="redirectToMarketPlace()">Know More</button>
+          <button class="btn btn-primary" (click)="letsGetStarted()">Let's Get Started</button>
+        </div>
+      </div>
+    </div>
+    <div class="mt-auto justify-content-center align-items-center myw-landing-flow">
+      <img src="assets/images/flow.svg" class="img-fluid" alt="" />
+    </div>   
+  </div>
+</div>

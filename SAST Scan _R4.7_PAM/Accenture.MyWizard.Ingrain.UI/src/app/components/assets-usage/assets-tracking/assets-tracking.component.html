@@ -1,0 +1,291 @@
+<div id="main" class="ingrAI-content ingrAI-cust-wrap flex-fill">
+  <div class="ingrAI-body-content">
+    <div class="d-flex">
+
+      <div class="form-group d-flex" [formGroup]="dateControl">
+        <mat-form-field class="w-100">
+          <mat-label>Start Date</mat-label>
+          <input matInput formControlName="startDateControl" [matDatepicker]="picker1" placeholder="DD MM YYYY"
+            [max]="startDate">
+          <mat-datepicker-toggle matSuffix [for]="picker1">
+            <img src="assets/images/calendar.svg" alt="Calendar">
+          </mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+          <!-- <mat-error *ngIf="dateControl.get('startDateControl').invalid">Start Date
+            </mat-error> -->
+        </mat-form-field>
+
+        <mat-form-field class="w-100 ml-2">
+          <mat-label>End Date</mat-label>
+          <input matInput formControlName="endDateControl" [matDatepicker]="picker2" placeholder="DD MM YYYY"
+            [min]="dateControl.get('startDateControl').value" [max]="startDate">
+          <mat-datepicker-toggle matSuffix [for]="picker2">
+            <img src="assets/images/calendar.svg" alt="Calendar">
+          </mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+          <!-- <mat-error *ngIf="dateControl.get('endDateControl').invalid">End Date
+            </mat-error> -->
+        </mat-form-field>
+        <div class="ml-2 mt-2">
+          <input type="button" class="btn btn-secondary" value="Submit"
+            [disabled]="dateControl.get('endDateControl').invalid" (click)="getAssetUsageData()">
+
+          <!-- <input type="button" class="btn btn-primary" value="Retrain"> -->
+        </div>
+      </div>
+      <div class="ingrAIn-status d-inline-flex ml-auto">
+
+
+      </div>
+
+    </div>
+    <div class="row ingrAIn-monitoring" *ngIf="data">
+      <div class="col-12 col-lg-6">
+        <div class="ingrAI-box-container">
+          <div class="d-flex align-items-center">
+            <div class="ingrAI-heading">
+
+              <span class="myw-500 fs-18"> IngrAIn Usage by Assets</span>
+            </div>
+            <div class="ml-auto">
+              <label class="myw-switch mb-0">
+                <input #toogle type="checkbox" (change)="changeView()">
+                <span class="label-first">Graphical</span>
+                <span class="switch-toggle"></span>
+                <span class="label-last">Detailed</span>
+              </label>
+            </div>
+          </div>
+          <div class="ingrAIn-visual-monitoring-chart   mt-2"
+            *ngIf="AppsUsingIngrain.children && !showAssetsTable">
+            <div class="myw-back justifyContentEnd" *ngIf="bubbleChartFlip">
+              <a href="javascript:;" class="mr-2 text-decoration-none">
+                <img src="assets/images/back.svg" alt="Back" (click)="bubbleChartFlip = !bubbleChartFlip">
+              </a>
+              <span class="myw-500 fs-14">Back</span>
+            </div>
+
+            <div class="flip-card">
+              <div class="flip-card-inner" [ngClass]="{ 'showBlock': bubbleChartFlip , 'hideBlock': !bubbleChartFlip }">
+                <app-flip-card>
+                  <div class="frontFace">
+                    <app-bubble-chart [data]="AppsUsingIngrain" (bubbleNodeSelected)="sendDataToBarGraph($event)">
+                    </app-bubble-chart>
+                  </div>
+                  <div class="backFace">
+                    <app-curved-vertical-bar-graph [data]="bubbleChartFlipBarChart" [inputWidth]="500"
+                      [inputHeight]="300" [xAxisName]="bubbleChartFlipBarChartxlabel" [yAxisName]="'Total Request at Client Level'">
+                    </app-curved-vertical-bar-graph>
+                  </div>
+                </app-flip-card>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="ingrAIn-visual-monitoring-chart   mt-2" *ngIf="showAssetsTable">
+
+            <div class="container my-4" style="padding: unset;">
+              <div class="table-responsive" style="font-size: 0.875em;height: 459px;overflow-y: auto;">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col" width="2%"></th>
+                      <ng-container *ngFor="let headname of clientDCHeadings; let headIndex = index">
+                      <th scope="col" *ngIf="headIndex == 0" width="17%">{{headname}}</th>
+                      <th scope="col" *ngIf="headIndex == 1 || headIndex == 2" width="30%">{{headname}}</th>
+                      <th scope="col" *ngIf="headIndex > 2" width="7%">{{headname}}</th>
+                    </ng-container>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let assetName of totalAssets; let i = index">
+                      <tr class="accordion-toggle collapsed" [id]="'accordion'+i" data-toggle="collapse"
+                        [attr.data-parent]="'#accordion'+i" [attr.href]="'#collapseOne'+i"
+                        (click)="showClientlevelDetails['collapseOne'+i] = !showClientlevelDetails['collapseOne'+i]">
+                        <td class="expand-button"></td>
+                        <!-- <ng-container *ngFor="let appdetails of assetsUsageTableData[assetName] | keyvalue; let j = index "> -->
+                        <td>{{ assetName }}</td>
+                        <td> {{ getClientCount(assetName) }} </td>
+                        <td> {{ getDCCount(assetName) }} </td>
+                        <td> {{ getTotalTraining(assetName) }} </td>
+                        <td> {{ getTotalPrediction(assetName) }} </td>
+                        <td> {{ getTotalTraining(assetName) + getTotalPrediction(assetName) }} </td>
+                        <!-- </ng-container> -->
+                      </tr>
+                      <ng-container
+                        *ngFor="let clientDetails of assetsUsageTableData[assetName] | keyvalue ; let clientIndex = index ">
+                        <tr class="collapse in p-3 accordion-toggle collapsed" [id]="'collapseOne'+i"
+                          [attr.href]="'#collapseOne'+i+(clientIndex+1)" data-toggle="collapse"
+                          [attr.data-parent]="'#accordion'+i">
+                          <td></td>
+                          <td class="expand-button"></td>
+                          <td>{{ clientDetails.key}}</td>
+                          <td> {{ getObjectKey(clientDetails.value).length}} </td>
+                          <td> {{ getTotalTrainingClientLevel(assetName, clientDetails.key)}} </td>
+                          <td> {{ getTotalPredictionClientLevel(assetName, clientDetails.key) }} </td>
+                          <td> {{ getTotalTrainingClientLevel(assetName, clientDetails.key) +  getTotalPredictionClientLevel(assetName, clientDetails.key)}}</td>
+                          <!-- <td>Cell</td> -->
+
+                        </tr>
+                        <ng-container
+                        *ngFor="let dcdetails of assetsUsageTableData[assetName][clientDetails.key] | keyvalue ; let dcIndex = index ">
+                        <tr *ngIf="showClientlevelDetails['collapseOne'+i] == true" class="collapse in p-3" [id]="'collapseOne'+i+ (clientIndex+1)"
+                        [attr.data-parent]="'#accordion'+i">
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td> {{dcdetails.key}}</td>
+                          <td> {{ getTotalTrainingClientLevel(assetName , '' , dcdetails.key)}}</td>
+                          <td> {{ getTotalPredictionClientLevel(assetName , '' , dcdetails.key)}}</td>
+                          <td> {{ getTotalTrainingClientLevel(assetName , '' , dcdetails.key) + getTotalPredictionClientLevel(assetName , '' , dcdetails.key)}}</td>
+                          <!-- <td></td>
+                          <td>Cell adsadas</td>
+                          <td>Cell</td> -->
+                        </tr>
+                      </ng-container>
+                      </ng-container>
+                    </ng-container>
+                    <!-- <tr class="accordion-toggle collapsed" id="accordion2" data-toggle="collapse"
+                      data-parent="#accordion2" href="#collapseTwo">
+                      <td class="expand-button"></td>
+                      <td>Cell</td>
+                      <td>Cell</td>
+                      <td>Cell</td>
+
+                    </tr>
+                    <tr class="hide-table-padding">
+                      <td></td>
+                      <td colspan="4">
+                        <div id="collapseTwo" class="collapse in p-3">
+                      <td>Cell</td>
+                      <td>Cell</td>
+                      <td>Cell</td>
+              </div>
+              </td>
+              </tr> -->
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
+          </div>
+
+          <ng-container *ngIf="AppsUsingIngrain?.children == null" [ngTemplateOutlet]="noDataFound"></ng-container>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
+        <div class="ingrAI-box-container">
+          <div class="d-flex align-items-center">
+            <div class="ingrAI-heading">
+
+              <span class="myw-500 fs-18">VDS IngrAIn Usage</span>
+            </div>
+          </div>
+          <div class="ingrAIn-visual-monitoring-chart   mt-2" *ngIf="VDSAppUsingIngrainFeature">
+            <!-- <app-bubble-chart></app-bubble-chart> -->
+
+            <div class="myw-back justifyContentEnd" *ngIf="vdsAppUsageChartFlip">
+              <a href="javascript:;" class="mr-2 text-decoration-none">
+                <img src="assets/images/back.svg" alt="Back" (click)="vdsAppUsageChartFlip = !vdsAppUsageChartFlip">
+              </a>
+              <span class="myw-500 fs-14">Back</span>
+            </div>
+
+            <div class="flip-card">
+              <div class="flip-card-inner"
+                [ngClass]="{ 'showBlock': vdsAppUsageChartFlip , 'hideBlock': !vdsAppUsageChartFlip }">
+                <app-flip-card>
+                  <div class="frontFace">
+                    <app-horizontal-chart [horizontalBarchartHeight]="390" [horizontalBarchartWidth]="500"
+                      [data]="VDSAppUsingIngrainFeature" [assetUsage]="true"
+                      (barClicked)="sendDataToBarGraphVDSUsage($event)">
+                    </app-horizontal-chart>
+                  </div>
+                  <div class="backFace">
+                    <app-curved-vertical-bar-graph [data]="vdsAppUsageChartFlipBarChart" [inputWidth]="500"
+                      [inputHeight]="300" [xAxisName]="vdsAppUsageChartFlipBarChartxlabel" [yAxisName]="'Total Request at Client Level'">
+                    </app-curved-vertical-bar-graph>
+                  </div>
+                </app-flip-card>
+              </div>
+            </div>
+
+          </div>
+          <ng-container *ngIf="VDSAppUsingIngrainFeature == null" [ngTemplateOutlet]="noDataFound"></ng-container>
+        </div>
+
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <div class="ingrAI-box-container">
+          <div class="d-flex align-items-center">
+            <div class="ingrAI-heading col-4">
+
+              <span class="myw-500 fs-18">Integrated AI Assets</span>
+            </div>
+            <select #selectValue class="form-control" (change)="selectedOptions(selectValue.value)"
+              [value]='selectOption'>
+              <option *ngFor="let appName of listOfAppsUsingIngrain" [value]="appName">
+                {{appName}}
+              </option>
+            </select>
+          </div>
+          <div class="ingrAIn-visual-monitoring-chart   mt-2" *ngIf="AppUsingIngrainIntegrationFeature">
+
+            <div class="myw-back justifyContentEnd" *ngIf="AIAppintergrationChartFlip">
+              <a href="javascript:;" class="mr-2 text-decoration-none">
+                <img src="assets/images/back.svg" alt="Back"
+                  (click)="AIAppintergrationChartFlip = !AIAppintergrationChartFlip">
+              </a>
+              <span class="myw-500 fs-14">Back</span>
+            </div>
+
+            <div class="flip-card">
+              <div class="flip-card-inner"
+                [ngClass]="{ 'showBlock': AIAppintergrationChartFlip , 'hideBlock': !AIAppintergrationChartFlip }">
+                <app-flip-card>
+                  <div class="frontFace">
+                    <app-d3-donut-chart [donutInnerRadius]=70 [pageInfoForDonutChart]="'AssetUsage'"
+                      [appName]="selectOption" [dataForAssetUsage]="AppUsingIngrainIntegrationFeature"
+                      (arcClicked)="sendDataToBarGraphAIAssets($event)">
+                    </app-d3-donut-chart>
+                  </div>
+                  <div class="backFace">
+                    <app-curved-vertical-bar-graph [data]="AIAppintergrationChartFlipBarChart" [inputWidth]="500"
+                      [inputHeight]="300" [xAxisName]="AIAppintergrationChartFlipBarChartxlabel" [yAxisName]="'Total Request at Client Level'">
+                    </app-curved-vertical-bar-graph>
+                  </div>
+                </app-flip-card>
+              </div>
+            </div>
+
+
+          </div>
+          <ng-container *ngIf="AppUsingIngrainIntegrationFeature == null" [ngTemplateOutlet]="noDataFound">
+          </ng-container>
+        </div>
+      </div>
+
+    </div>
+    <!-- <div class="col-12 d-flex justify-content-end">
+        <input type="button" class="btn btn-secondary my-3" aria-label="Close"
+          (click)="navigateTodeployModel()"
+          value="Close" />
+      </div> -->
+  </div>
+</div>
+
+<ng-template #noDataFound>
+  <!-- <div class="ingrAI-box-container">
+    <div class="d-flex align-items-center"> -->
+  <div class="ingrAI-heading">
+    No usage records found for the selected time period. Please try some other date range
+  </div>
+
+  <!-- </div>
+
+  </div> -->
+</ng-template>

@@ -1,0 +1,8 @@
+<!--  -->
+<ng-container>
+<app-simulation-header [flowInfo]="'input'" [typeOfSimulation]="'generic'"
+ (setGridInputTable)="setGridInputTable($event)"></app-simulation-header> 
+<ng-container *ngIf="gridDataFeatures">
+<app-generic-grid [gridTableRefresh]="gridTableRefresh"></app-generic-grid>
+</ng-container>
+</ng-container>

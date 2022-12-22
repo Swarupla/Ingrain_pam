@@ -1,0 +1,91 @@
+<div class="modal-dialog modal-dialog-centered " style="width: 85%; height: 50%; top: -33px;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="ingrAI-enter-model-title">&nbsp;</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='onClose()'>
+        <span aria-hidden="true">&nbsp;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <!-- <div class="ingrain-main-container myw-scrollbar my-2"> -->
+      <div class="myw-section my-3 position-relative h-100">
+        <div class="table-responsive  myw-scrollbar" style="max-height: 18rem;overflow-y: auto;">
+          <table class="table table-striped table-hover table-vmiddle myw-table">
+            <thead>
+              <tr>
+                <ng-container *ngIf="tableData.length !== 0">
+                  <th class="text-center" scope="col" style="padding-bottom: 0px;">
+                    <div>Select</div>
+                    <input type="checkbox" [(ngModel)]='selectAllChecked' (change)="selectAll()">
+                  </th>
+                </ng-container>
+                <ng-container *ngIf="tableData.length === 0">
+                  <th class="text-center" scope="col">
+                    <div>Select</div>
+                  </th>
+                </ng-container>
+                <th class="text-left" scope="col">Application Name</th>
+                <th class="text-left" scope="col">Model Name</th>
+                <th class="text-left" scope="col">Created By User</th>
+                <th class="text-left" scope="col">Created On</th>
+                <th class="text-left" scope="col">Progress</th>
+                <th class="text-left" scope="col">Status</th>
+              </tr>
+            </thead>
+
+            <ng-container *ngIf="isLoading; then displayLoader else displayTableData"></ng-container>
+            <ng-template #displayLoader></ng-template>
+            <ng-template #displayTableData>
+              <tbody>
+                <ng-container *ngIf="tableData.length !== 0">
+                  <tr *ngFor="let rowData of tableData | paginate: { id: 'listing_pagination2',
+                      itemsPerPage: 10,
+                      currentPage: page
+                     }; let i = index">
+                    <td align="center">
+                      <input type="checkbox" [disabled]="rowData['Message'] == 'Training is not initiated'"
+                        [(ngModel)]='rowData.Checked' *ngIf="rowData['Status'] != 'C'" (change)="selectData()">
+                    </td>
+                    <td align="left">{{rowData['ApplicationName']}}</td>
+                    <td align="left">
+                      {{rowData['ModelName']}}
+                    </td>
+                    <td align="left">{{rowData['CreatedByUser']}}</td>
+                    <td align="left">{{rowData['CreatedOn'] | date: 'dd/MM/yyyy'}}</td>
+                    <td align="left"><span>{{rowData['Progress']}}</span>
+                    </td>
+                    <td align="left">
+                      {{rowData['Status'] | status}}
+                      <div class="data-curation-tooltip"
+                        *ngIf="rowData['Status'] != 'C' && rowData['Status'] != 'I' && rowData['Status'] != 'null' && rowData['Message'] != null">
+                        {{rowData['Message']}}</div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </ng-template>
+          </table>
+        </div>
+
+      </div>
+    </div>
+    <!-- </div> -->
+    <div class="d-flex justify-content-end myw-actions" style="margin-top: -1rem;    margin-right: 2rem;">
+      <div>
+        <button type="button" class="btn btn-primary bt-bg-color float-right train-btn" aria-label="Train Model"
+          (click)='onTrainModel()' [disabled]="disableTrainBtn">Train</button>
+      </div>
+    </div>
+
+
+
+
+
+
+    <div class="d-flex pr-0" *ngIf="tableData.length !== 0">
+      <pagination-controls id="listing_pagination2" maxSize="10" directionLinks="true" (pageChange)="page = $event">
+      </pagination-controls>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div style="margin-left: 4%;margin-top: 2%;">
+    <div>
+        <span class="fs-14 myw-500 mb-2">Upload File</span>
+        <div class="myw-file-drag d-flex flex-column align-items-center" style="min-height: 6.5rem;width: 16rem;">
+            <label>
+                <span><strong>Browse Files</strong></span>
+                <input #fileInput type="file" id="ingrAI-upload" (change)="getFileDetails($event)" />
+            </label>
+           
+        </div>
+        <div style="padding-top: 1rem;">
+            <label>Enter the file path :</label>
+            <input #selectedFileType type="text" maxlength="70" style="margin-left: 3%;" />
+            <small class="form-text text-muted">You have {{70 - selectedFileType.value?.length}} of 70 characters
+                remaining.</small>
+        </div>
+        <div>
+            <div style="padding: 2% 0%;">
+                <input type="button" (click)='submit(selectedFileType.value)'
+                    class="btn
+                    btn-primary" value="Submit" />
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,63 @@
+.info-msg{
+  color:#FF000E;
+  // font-size: 12px;
+  // margin-bottom: 2px;
+}
+
+.myw-checkbox input:indeterminate + span:before {
+  background-color: #fff;
+  border: 1px solid #0089EF;
+}
+
+.myw-scrollbar {
+  overflow-y: scroll;
+}
+
+.cwidth {
+  width: 84%;
+}
+
+.disable-pointer {
+  pointer-events: none;
+  background-color: #8080809e;
+}
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+  background-color:black;
+}
+
+
+::ng-deep .mat-form-field-appearance-legacy.mat-form-field-disabled .mat-form-field-underline {
+  background-color: rgba(0,0,0,.42);
+}
+
+::ng-deep .ingrAI-datasource-container .mat-form-field-appearance-legacy .mat-form-field-label {
+  color: black !important;
+}
+
+::ng-deep .mat-form-field-appearance-legacy.mat-form-field-disabled .mat-form-field-underline {
+  background-position: 0;
+  background-color: rgba(0,0,0,.42);
+  background-image: none;
+}
+  
+.modal-headertemplate {
+  background-color: white;
+  border-bottom: 0rem;
+}
+
+.justify-content-end {
+  justify-content: center !important;
+}
+
+.custom-data-view-body{
+  padding: 1rem 2rem;
+}
+
+.custom-option-title{
+  font-weight: bold;
+  padding: 10px 0px;
+}
+.result-view{
+  padding: 10px 0px;
+}

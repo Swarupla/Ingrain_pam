@@ -1,0 +1,48 @@
+<div>
+  <span id="userDetail" class="c-icons__user -arrow-link js-dropdown" [ngbTooltip]="userDetailList" placement="left">
+  </span>
+
+  <ng-template #userDetailList>
+    <div>
+      <span class="c-icons__bold-text c-icons__user-name">{{fullName}}</span><br>
+      <span>({{userId}})</span>
+    </div>
+  </ng-template>
+
+  <div class="c-icons__dropdown -arrow-link-content" [class.nav-active]="show" [hidden]="!show"
+    style="min-width: 17rem; z-index: 1000">
+    <ng-container *ngIf="env !== 'PAM' && env !== 'FDS'">
+      <p class="c-icons__user-details">
+        <span class="c-icons__bold-text c-icons__user-name">{{fullName}}</span><br>
+        <span>({{userId}})</span>
+        <br>
+        <ng-container *ngIf="!isFDSEU">
+          <span *ngIf="!isShowAccountID">
+            Account ID : &nbsp;<span></span>********<span class="c-icons__eye-icon"><img id="imgOff"
+                (click)="isShowAccountID=!isShowAccountID" src="assets/images/icon-myw-eye.svg"
+                alt="Show Account ID"></span>
+          </span>
+          <span *ngIf="isShowAccountID">
+            Account ID : &nbsp;<span>{{accountID}}</span> <span class="c-icons__eye-icon-off"><img id="imgOn"
+                (click)="isShowAccountID=!isShowAccountID" src="assets/images/icon-myw-eye-off.svg"
+                alt="Hide Account ID"></span>
+          </span>
+          <br>
+        </ng-container>
+        You are logged in as "<span class="c-icons__user-name">{{logedinUserRole}}</span>"
+      </p>
+    </ng-container>
+    <ng-container *ngIf="env === 'PAM' || env === 'FDS'">
+      <p class="c-icons__user-details">
+        <span class="c-icons__bold-text c-icons__user-name">{{fullName}}</span><br>
+        <span>({{userId}})</span>
+        <br>
+        You are logged in as "<span class="c-icons__user-name">{{logedinUserRole}}</span>"
+      </p>
+    </ng-container>
+    <ng-container *ngIf="this.authprovider !==
+      'WindowsAuthProvider'.toLowerCase()">
+      <button type="button" class="c-cta__button" (click)="signOut()">Sign Out</button>
+    </ng-container>
+  </div>
+</div>

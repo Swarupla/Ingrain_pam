@@ -1,0 +1,27 @@
+<div class="modal-dialog-scrollable">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="ingrAI-enter-model-title">{{title}}</h5>
+            <button type="button" class="close" aria-label="Close" (click)='closePopUp()'></button>
+        </div>
+        <div class="modal-body">
+            <div class="d-flex flex-column justify-content-center">
+                <label>
+                    Please select the Date column which will be considered for Training,Retraining and Prediction functionalities.
+                </label>
+                <mat-form-field class="col-5 dropdown">
+                    <mat-select placeholder="Select Date Columns"
+                      name="selectedColumn"
+                      [(ngModel)]="selectedColumn">
+                      <mat-option *ngFor="let column of dateColumnsList; let i=index" [value]="column">
+                        {{column}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+            </div>
+            <div class="d-flex justify-content-end myw-actions" style="margin-top: 1.56rem;">
+                <button type="button" class="btn btn-primary" [disabled]="!selectedColumn" (click)='onEnter()'>Save</button>
+            </div>
+        </div>
+    </div>
+</div>

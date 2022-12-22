@@ -1,0 +1,10 @@
+<div class="row align-items-center myw-process-container">
+    <div class="col-auto myw-loader">
+        <img src="assets/images/ip-process.svg" (load)="image1 = true" alt=""/>
+        <div class="myw-loader-img"><img src="assets/images/loader.svg" alt=""  (load)="image2 = true" /></div>
+    </div>
+    <div class="col" *ngIf="image1 && image2">
+        <p>Records being processed  <span class="loading"><span>.</span><span>.</span><span>.</span></span></p>
+        <p>Please wait, while we set up your environment</p>
+    </div>
+</div>

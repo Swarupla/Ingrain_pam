@@ -1,0 +1,293 @@
+<div class="myw-ingrain-table-details">
+    <div class="myw-600 px-1 pt-2">Inferences</div>
+    <nav class="nav myw-nav">
+        <a   class="nav-item nav-link" [ngClass]="{'active': measureActive == true}"
+            (click)="measureActive = true">Inferences On Measure</a>
+        <a   class="nav-item nav-link" [ngClass]="{'active': measureActive == false}"
+            (click)="measureActive = false">Inferences on Data Volume</a>
+    </nav>
+    <div class="myw-inference-details px-3">
+        <p class="fs-14 mb-2">Once all the configurations are added, please select them and click on Generate Inferences
+        </p>
+        <div class="d-flex flex-wrap mb-3" *ngIf="measureActive == true">
+            <ng-container *ngFor="let element of createdConfigName; let i = index">
+                <div class="d-flex align-items-center myw-inference-conf-details" *ngIf="element.InferenceConfigType == InferenceConfigTypeForMeasureflow"
+                    [ngClass]="{'myw-config': element.InferenceConfigId == selectedConfigId}">
+                    <label class="myw-checkbox">
+                        <input #confchecked type="checkbox" name="conf-radio"
+                            (click)="onSelectedConfig(element.InferenceConfigId, $event)"
+                            >
+                        <span></span>
+                    </label>
+                    <span (click)="showApplied(element.InferenceConfigId)"> {{element.InferenceName }} </span>
+                    <span class="myw-chips"> {{ getChipsvalueForMeasure(element.InferenceConfigId)}}</span>
+                    <div class="dropdown dropright dropflat">
+                        <a class="dropdown-toggle" style="cursor: pointer;" id="" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false" data-display="static"><img src="assets/images/vdot.svg" alt="" /></a>
+                        <div class="dropdown-menu">
+                            <a   class="dropdown-item" type="button"
+                                (click)=" editIEConfig(element.InferenceConfigId, element.InferenceName)">View /
+                                Edit</a>
+                            <!-- <a   class="dropdown-item" type="button">Edit</a> -->
+                            <a   class="dropdown-item" type="button" *ngIf="element.InferenceConfigId != firstConfigId"
+                                (click)=" deleteIEConfig(element.InferenceConfigId)">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+
+        <div class="d-flex flex-wrap mb-3" *ngIf="measureActive == false">
+
+            <div class="d-flex align-items-center myw-inference-conf-details" *ngIf="dataInfoSelectedForConfig">
+                <label class="mt-1">
+                <!-- <label class="myw-checkbox"> As per BA's Comments -->
+                    <!-- <input type="checkbox" name="conf-radio"checked=""> -->
+                    <span>{{dataInfoSelectedForConfig}}
+                    </span></label>
+                <span class="myw-chips"> {{ getChipsvalueForDataInflow()}}</span>
+
+            </div>
+
+        </div>
+
+        <ng-container *ngIf="measureActive == true">
+           
+            <ng-container *ngFor="let measures of outputInflowMeasureToBeShown">
+                <ng-container *ngIf="measures.InferenceConfigId == selectedConfigId">
+                    <a  role="button"  class="myw-600 d-flex justify-content-end mb-3 ingrain-acc-action text-decoration-none"
+                    *ngIf="measureaccordian.expandAll" (click)="expandMAll()">Expand All</a>
+                  <a  role="button"  class="myw-600 d-flex justify-content-end mb-3 ingrain-acc-action text-decoration-none"
+                    *ngIf="!measureaccordian.expandAll" (click)="collapseMAll()">Collapse All</a>
+                    <div class="myw-accordion-wrap mb-1" *ngFor="let v of measures.MeasureAnalysisInferences; let i = index">
+                      
+                        <div class="myw-accordion" >
+                            <div class="myw-accordion-header">
+                                <div class="myw-accordion-title myw-600">
+                                    <label class="myw-checkbox">
+                                        <input type="checkbox" name="conf-radio"
+                                        [checked]="checkedCondition(measures.InferenceConfigId, v.DisplayName, 'MeasureAnalysis')"
+                                        (change)="selectedForPublish(measures.InferenceConfigId, v.DisplayName, 'MeasureAnalysis', $event)">
+                                        <span>{{v.DisplayName}}</span>
+                                    </label>
+                                </div>
+                                <a   class="myw-action" data-toggle="popover"
+                                    triggers="mouseenter:mouseleave" [popover]="measureIconInfo[v.DisplayName+'_Accordian']"
+                                    data-trigger="hover"><img src="assets/images/info.svg" alt=""></a>
+                                <a class="myw-accordion-toggle" role="button"  [ngClass]="{'collapsed': measureaccordian['acc'+i] }"
+                                     aria-expanded="false" [attr.aria-controls]="'acc'+i"
+                                    (click)=" measureaccordian['acc'+i] = ! measureaccordian['acc'+i]"></a>
+                            </div>
+                            <div class="myw-accordion-content" [id]="'acc'+i" [ngClass]="{ 'collapse ': measureaccordian['acc'+i]}">
+                                <div class="p-3">
+                                    <div class="myw-accordion-bdy" style="max-height: 15em;overflow-y: auto;">
+                                        <!-- <ng-container *ngIf="v.Value">
+                                            <ul >
+                                                <li *ngFor="let u of v.Value">{{ u.narratives }}</li>
+                                            </ul>
+                                        </ng-container> -->
+
+                                        <ng-container *ngFor="let u of v.Value">
+                                            <ng-container *ngIf="u.hasOwnProperty('Value') && u.Value">
+                                                <p class="myw-acc-d- myw-600"> {{ u.DisplayName }} </p>
+                                                <ul >
+                                                    <li *ngFor="let w of u.Value">{{ w.narratives }}</li>
+                                                </ul>
+                                            </ng-container>
+    
+                                            <ng-container *ngIf="u.hasOwnProperty('narratives')">
+                                                <ul>
+                                                    <li>{{ u.narratives }}</li>
+                                                </ul>
+                                            </ng-container>
+                                        </ng-container>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="measureActive == false">
+            <ng-container *ngFor="let dataInflow of outputInflowDataToBeShown">
+                <a   class="myw-600 d-flex justify-content-end mb-3 ingrain-acc-action text-decoration-none"
+                *ngIf="dataInflowaccordian.expandAll" (click)="expandDAll()">Expand All</a>
+              <a   class="myw-600 d-flex justify-content-end mb-3 ingrain-acc-action text-decoration-none"
+                *ngIf="!dataInflowaccordian.expandAll" (click)="collapseDAll()">Collapse All</a>
+                <div class="myw-accordion-wrap mb-1" *ngFor="let v of dataInflow?.VolumetricInferences; let i = index">
+                    <div class="myw-accordion">
+                        <div class="myw-accordion-header">
+                            <div class="myw-accordion-title myw-600">
+                                <label class="myw-checkbox">
+                                    <input type="checkbox" name="conf-radio"
+                                        [checked]="checkedCondition(dataInflow.InferenceConfigId, v.DisplayName, 'VolumetricAnalysis')" 
+                                        (change)="selectedForPublish(dataInflow.InferenceConfigId, v.DisplayName, 'VolumetricAnalysis', $event)">
+                                    <span>{{v.DisplayName}}</span>
+                                </label>
+                            </div>
+                            <a   class="myw-action" data-toggle="popover" [title]="v.DisplayName"
+                                triggers="mouseenter:mouseleave" [popover]="dateTypeIconInfo[v.DisplayName+'_Accordian']"
+                                data-trigger="hover"><img src="assets/images/info.svg" alt=""></a>
+                            <a class="myw-accordion-toggle" role="button"
+                            [ngClass]="{'collapsed': dataInflowaccordian['accOutput'+i] }"
+                            (click)=" dataInflowaccordian['accOutput'+i] = !dataInflowaccordian['accOutput'+i]"
+                                data-toggle="collapse" aria-expanded="false" [attr.aria-controls]="'accOutput'+i"></a>
+                        </div>
+                        <div class="myw-accordion-content collapse" [id]="'accOutput'+i" [ngClass]="{ 'collapse ': dataInflowaccordian['accOutput'+i] }">
+                            <div class="p-3">
+                                <div class="myw-accordion-bdy" style="max-height: 15em;overflow-y: auto;">
+                                    <ng-container *ngFor="let u of v.Value">
+                                        <ng-container *ngIf="u.hasOwnProperty('Value') && u.Value">
+                                            <p class="myw-acc-d- myw-600"> {{ u.DisplayName }} </p>
+                                            <ul >
+                                                <li *ngFor="let w of u.Value">{{ w.narratives }}</li>
+                                            </ul>
+                                        </ng-container>
+
+                                        <ng-container *ngIf="u.hasOwnProperty('narratives')">
+                                            <ul>
+                                                <li>{{ u.narratives }}</li>
+                                            </ul>
+                                        </ng-container>
+                                    </ng-container>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </ng-container>
+        </ng-container>
+        <div class="d-flex justify-content-end myw-actions mt-4">
+            <a   class="btn btn-secondary"
+                [ngClass]="{ 'disabled' : createdConfigName.length  == 6 }" (click)="configurationView()">Add
+                Configuration</a>
+            <a   class="btn btn-secondary" *ngIf="measureActive == true"
+                [ngClass]="{ 'disabled' : configIdGenerateInferences.length  == 0 }"
+                (click)="initiateGenerateInference()">Generate Inferences</a>
+            <a   class="btn btn-primary" (click)="publishInferenceStart()"
+            [ngClass]="{ 'disabled': publishInferencePayload.length == 0 }"
+                *ngIf="measureActive == true">Publish Inferences</a>
+        </div>
+    </div>
+
+
+
+    <!-- Redirect Modal -->
+    <div *ngIf="redirectionModal" class="modal show" id="redirectModal" style="padding-right: 17px; display: block;" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="redirectModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="redirectModalTitle">Redirecting to VDS</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    (click)="redirectionModal = false">
+                        <span aria-hidden="true">&nbsp;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center pt-3">
+                        <p class="fs-14 myw-600">You will be re-directed to VDS to view Published Inferences. If you
+                            wish to generate or publish more inferences, please stay on this page</p>
+                        <div class="myw-actions">
+                            <a  class="btn btn-sm btn-secondary" data-dismiss="modal" (click)="redirectionModal = false">Cancel</a>
+                             <!-- <a  class="btn btn-sm btn-primary" data-dismiss="modal" (click)="redirectionModal = false">Proceed</a> -->
+                           <ng-container *ngIf="!isModelCreatedUsingEntity &&  (environment== 'FDS' ||  environment== 'PAM')"> 
+                            <button  class="btn btn-sm btn-primary" data-dismiss="modal" (click)="navigateToVDS()">Proceed</button>
+                            </ng-container>
+                            <ng-container *ngIf="!isModelCreatedUsingEntity &&  (environment !== 'FDS' &&  environment !== 'PAM')"> 
+                                <button  class="btn btn-sm btn-primary" data-dismiss="modal" disabled>Proceed</button>
+                                </ng-container>
+                            <ng-container *ngIf="isModelCreatedUsingEntity"> 
+                                <button  class="btn btn-sm btn-primary" data-dismiss="modal"  [disabled]='isModelCreatedUsingEntity'>Proceed</button>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Redirect Modal -->
+    <!-- Save Modal -->
+
+    <div *ngIf="publishModalShow" class="modal show" id="saveModal" style="padding-right: 17px; display: block;"
+        id="saveModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="saveModalTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="publishinference"> Publish Inferences</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="publishModalShow = false">
+                        <span aria-hidden="true">&nbsp;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label class="form-label">Model Name</label>
+                            <input type="text" class="form-control" placeholder="" maxlength="70" [value]="modelName" disabled
+                            (change)="null">
+                            <!-- {{modelName}} -->
+                        </div>
+                        <!-- <div class="form-group">
+                            <label class="form-label">Model Description</label>
+                            <textarea class="form-control control-border" rows="4"></textarea>
+                        </div> -->
+                        <div class="form-group form-inline">
+                            <label class="form-label">Application Name:</label>
+                            <select #appId class="form-control" (change)="onApplicationName(appId)">
+                                <!-- <option value="">Select app to publish</option> -->
+                                <option *ngFor="let obj of applicationList" [value]="obj.ApplicationID"> {{
+                                    obj.ApplicationName}}</option>
+                            </select>
+
+                        </div>
+                        <ng-container *ngIf="applicationIdSelected">
+                            <ng-container *ngFor="let measures of outputInflowMeasureToBeShown">
+                                <label class="myw-checkbox">
+                                    <input type="checkbox" name="conf-radio">
+                                    <span>{{measures.InferenceName}}</span>
+                                </label>
+                                <div class="myw-accordion-wrap mb-1 ml-4" *ngFor="let v of measures.MeasureAnalysisInferences; let i = index">
+                                        <label class="myw-checkbox">
+                                            <input type="checkbox" name="conf-radio"
+                                                [checked]="checkedCondition(measures.InferenceConfigId, v.DisplayName, 'MeasureAnalysis')"
+                                                (change)="selectedForPublish(measures.InferenceConfigId, v.DisplayName, 'MeasureAnalysis', $event)">
+                                            <span>{{v.DisplayName}}</span>
+                                        </label>                                                    
+                                </div>
+                                <ng-container *ngFor="let dataInflow of outputInflowDataToBeShown">
+
+                                <ng-container *ngIf="dataInflow.InferenceConfigId == measures.InferenceConfigId">
+                                <div class="myw-accordion-wrap mb-1 ml-4" *ngFor="let v of dataInflow?.VolumetricInferences; let i = index">                                
+                                        <label class="myw-checkbox">
+                                            <input type="checkbox" name="conf-radio"
+                                                [checked]="checkedCondition(dataInflow.InferenceConfigId, v.DisplayName, 'VolumetricAnalysis')"
+                                                (change)="selectedForPublish(dataInflow.InferenceConfigId, v.DisplayName, 'VolumetricAnalysis', $event)">
+                                            <span>{{v.DisplayName}}</span>
+                                        </label>                                                        
+                                </div>
+                                </ng-container>    
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+
+
+                        <div class="d-flex justify-content-end myw-actions">
+                            <a  class="btn btn-sm btn-secondary" data-dismiss="modal"
+                                (click)="publishModalShow = false">Cancel</a>
+                            <button  class="btn btn-sm btn-primary" (click)="publishInferenceSubmit()" [disabled]="isProcessDisabled">Proceed</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Save Modal -->
+</div>

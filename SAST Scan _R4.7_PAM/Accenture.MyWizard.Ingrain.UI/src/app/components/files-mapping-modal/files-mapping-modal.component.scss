@@ -1,0 +1,19 @@
+.ingrAI-multiple-mapping { height:20rem!important; overflow-y:auto; }
+.modal-title  {  text-transform:uppercase; font-size:1rem;}
+.modal-header .close { padding:0.5rem; opacity:1;  }
+
+.ingrAI-table { font-size:0.75rem; }
+.ingrAI-table thead th { border-top:0; border-bottom:1px solid #C7CEDE;  color: #353D47; padding:.75rem .75rem 1rem .5rem; text-transform:uppercase;}
+.ingrAI-table td { border-top:0; border-bottom:1px solid #BDC9DA; color:#353D47; vertical-align:middle; padding:.5rem; }
+.ingrAI-table tr:nth-child(even) {background: #F5F5F5;}
+.ingrAI-table tr:nth-child(odd) {background: #ffffff;}
+.ingrAI-table a { color:#2B7795; }
+.form-group { margin-bottom:0;}
+.ingrAI-table  .form-control {  font-size:0.75rem; }
+
+select.form-control:not([size]):not([multiple]){ height:calc(2.0625rem + 2px); }
+.info-msg{
+    color:#FF000E;
+    font-size: 12px;
+    margin-bottom: 2px;
+  }

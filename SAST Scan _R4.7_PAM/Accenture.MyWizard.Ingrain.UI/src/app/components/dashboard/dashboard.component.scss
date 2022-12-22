@@ -1,0 +1,28 @@
+.active{
+    background-color: grey;
+    color: white;
+}
+
+button{ 
+    cursor: pointer;
+    text: white;
+}
+
+.navs{
+    display: flex;
+    margin: 0.5em 0;
+    .secondary-tabs{ 
+        display: flex;
+        width: 75%;
+        a{
+            display: inline-block;
+            padding: 0.75em;
+            color: #15f2fd;
+        }
+    }
+    .secondary-buttons{
+        display: flex;
+        justify-content: flex-end;
+        width: 25%;
+    }
+}

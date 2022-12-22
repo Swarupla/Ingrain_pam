@@ -1,0 +1,32 @@
+.c-icons__dropdown {	    
+    // left: 188px!important;
+    // right: -212px!important;
+    // top: 66px!important;
+    left: -123px !important;
+    right: 79px !important;
+    top: 78px !important;
+
+}
+
+.c-icons__dropdown:before {	
+    //left: 2px!important;
+    left: 303px!important;
+}
+
+
+.disablecolor{
+    background-color: gray!important;
+   }
+
+.ingrAI-icon-svg {
+    color: red;
+}
+
+.adisabled {
+    cursor: not-allowed;
+    opacity: .65;
+  }
+.aenable {
+    cursor: pointer;
+}
+ .adisabled:active { text-decoration: none; }

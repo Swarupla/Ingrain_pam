@@ -1,0 +1,16 @@
+<fieldset [disabled]="readOnly">
+
+  <!-- UI Revamp Starts -->
+  <div *ngIf="filterAttributes?.length !== 0">
+    <app-nested-multi-select-drop-down *ngIf="!isLoading" [parentColumnData]='filterAttributes'
+      [childColumnData]='filterOptions' [columnData]='filters' (outputParentData)='SetFilterAttributes($event)'
+      (outputChildData)='onChange("Filters", $event)' (removeData)="removeDataAttribute($event)">
+    </app-nested-multi-select-drop-down>
+  </div>
+  <div class='ingr-filter-table d-flex align-items-center justify-content-center' *ngIf="filterAttributes?.length == 0">
+    There are no filters
+  </div>
+  <div *ngIf="filterAttributes?.length !== 0" class="d-flex justify-content-end align-items-end">
+  </div>
+  <!-- UI Revamp Ends -->
+</fieldset>

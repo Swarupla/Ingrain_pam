@@ -1,0 +1,27 @@
+﻿<app-root></app-root>
+@if (ViewBag.UserEmailId != null)
+{
+    <script type="text/javascript">
+        var userEmailId= "@Html.Raw(ViewBag.userEmailId)";
+        sessionStorage.setItem('UserID', userEmailId);
+
+        var authSession= "@Html.Raw(ViewBag.AuthSession)";
+        sessionStorage.setItem('AuthSession', authSession);
+
+        var AuthToken= "@Html.Raw(ViewBag.AuthToken)";
+        sessionStorage.setItem('AuthToken', AuthToken);
+
+        @*var queryString = "@Html.Raw(ViewBag.queryString)";
+        if (sessionStorage.getItem('QueryParams') != 'False') {
+                sessionStorage.setItem('QueryParams', queryString);
+            }*@
+
+         //localStorage.setItem('UserEmailId',userEmailId);
+    </script>
+}
+else
+{
+    <script type="text/javascript">
+        console.log("empty");
+    </script>
+}

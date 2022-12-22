@@ -1,0 +1,186 @@
+<div class="row">
+  <div class="col-11 mr-auto ml-auto attributeselection">
+    <div class="form-group">
+      <label class="form-label">Text Column</label>
+      <!-- <select class="form-control">
+                  <option>Select</option>
+              </select> -->
+      <!-- <select #txtColumnName class="form-control" id="" [value]="textColumnChosen"
+        (change)="setTextColumn(txtColumnName.value)">
+        <option disabled hidden value="" class="placeholderText">Select Text Columns
+        </option>
+        <option *ngFor="let txtColumnName of txtColumn" [value]='txtColumnName'>{{txtColumnName}}</option>
+      </select> -->
+      <div class="ingrain-slider d-flex align-items-center myw-columns" style="flex-wrap: wrap;">
+          <ng-container *ngFor="let txtColumnName of txtColumn, let i = index">
+          <label class="">
+            <span [ngClass]="{ 'textColumnSelectedForEdit': txtColumnName == textColumnChosen ,
+                               'textColumnSaved': populateSavedColumns.hasOwnProperty(txtColumnName)}">
+                               <p  class="mb-0" (click)="selectedTextColumn(txtColumnName)"> {{txtColumnName}} </p>
+                <div class="dropdown vds-uc-dropdown dropleft dropflat"
+                *ngIf="populateSavedColumns.hasOwnProperty(txtColumnName)">
+                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false"><img
+                            src="assets/images/view-more.svg" style="width: 1rem; height: 1rem;"/></a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:;" style="text-align: center;" (click)="editSavedColumns(txtColumnName)">Edit</a>
+                        <a class="dropdown-item" href="javascript:;" style="text-align: center;" (click)="deleteColumnDetails(txtColumnName)">Reset</a>
+                    </div>
+                </div>
+            </span>
+            
+          </label>
+           
+          </ng-container>
+  
+          </div> 
+    </div>
+  </div>
+  <div class="col-5 mr-auto ml-auto customStopWords" >
+    <!-- <div class="form-group"> -->
+      <div class="form-group">
+        <label class="form-label">Add custom words to remove</label>
+        
+        <div class="ingrain-slider d-flex align-items-center" style="flex-wrap: wrap;">
+        <div class="ingrAIn-feature-filter-item" *ngFor="let words of customStopWords, let i = index">
+                <span>{{words}}  </span>
+                <span class="item-close" (click)="removeWords(i)">x</span>
+        </div>
+        <input #customWords type="text" class="form-control col-11" id="usr" maxlength="70" [(ngModel)]="stopWords"
+          placeholder="Type">
+          <label class="form-label">You have {{ 70 - customWords.value?.length}} of 70 characters remaining.</label>
+        <a  class="mt-3 ml-auto" (click)="addWords()" href="javascript:;" >Add</a>  
+        </div> 
+         
+         
+              
+      </div>
+    <!-- </div> -->
+  </div>
+  <div class="col-5 mr-auto ml-auto MostFrequent">
+    <div class="form-group" [formGroup]="textPreprocessedData">
+      <label class="form-label">Remove Most Frequent words</label>
+      <div class="ingrain-slider d-flex align-items-center">
+        <span class="slider-val">0%</span>
+        <input type="range" #MostFrequent class="myw-range" formControlName="removeMostFrequentWords"
+          (change)="changedValueForMostFrequentWords(MostFrequent.value)" min="0" max="15" step="1">
+        <span class="myw-range-output" [ngStyle]="getStyles(MostFrequent.value,0, 15)">{{MostFrequent.value}}%</span>
+        <span class="slider-val">15%</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-5 mr-auto ml-auto LeastFrequent">
+    <div class="form-group" [formGroup]="textPreprocessedData">
+      <label class="form-label">Remove Least Frequent words</label>
+      <div class="ingrain-slider d-flex align-items-center">
+        <span class="slider-val">0%</span>
+        <input type="range" #LeastFrequent class="myw-range" formControlName="removeLeastFrequentWords"
+          (change)="changedValueForLeastFrequentWords(LeastFrequent.value)" min="0" max="15" step="1">
+        <span class="myw-range-output" [ngStyle]="getStyles(LeastFrequent.value,0, 15)">{{LeastFrequent.value}}%</span>
+        <span class="slider-val">15%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-5 mr-auto ml-auto Text-Normizaltion">
+      <div class="form-group" [formGroup]="textPreprocessedData">
+        <label class="form-label">Text Normalization</label>
+        <!-- <select class="form-control">
+          <option>Select</option>
+        </select> -->
+        <div class="ingrain-slider d-flex align-items-center form-control">
+        <app-multi-select-drop-down class="ingrAI-list-item" (outputData)='onChangeNormalization($event)'
+        [defaultValues]='editNormalizationValues' [columnData]='textNormalizationDropDownValues'
+       >
+      </app-multi-select-drop-down>
+      </div>
+      </div>
+  </div>
+
+  
+  <div class="col-5 mr-auto ml-auto N-gram">
+      <div class="form-group">
+        <label class="form-label myw-required">N-gram Selector</label>
+        <div class="ingrain-slider d-flex align-items-center">
+         <span class="slider-val">{{' 1 '}}</span>
+         <ng5-slider [(value)]="ngramOne" [(highValue)]="ngramTwo" [options]="options"></ng5-slider>
+        <span class="slider-val">{{' 5 '}}</span>
+        </div>
+      </div>
+    </div>
+  <div class="col-5 mr-auto ml-auto Feature_Generator">
+    <div class="form-group"  [formGroup]="textPreprocessedData">
+      <label class="form-label myw-required">Feature Generation</label>
+      <!-- <select class="form-control">
+                  <option>Glove</option>
+              </select> -->
+      <select #featureGenerations class="form-control" formControlName="featureGeneration" id=""
+        (change)="onFeatureGenerationChange(featureGenerations.value)">
+        <option disabled hidden value="" class="placeholderText">Select
+        </option>
+        <option *ngFor="let featureGenerations of featureGeneration" [value]="featureGenerations">
+          {{featureGenerations}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-5 mr-auto ml-5 NumberOfCluster">
+    <div class="form-group" [formGroup]="textPreprocessedData">
+      <label class="form-label">Number Of Cluster</label>
+      <div class="mb-2">
+          <!-- <input #switchCluster (click)="onClusterSwitchChanged(switchCluster)" formControlName="clustering"
+                      type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffclusterswitch"
+                      [checked]="clusterToggle == true">
+                    <label class="onoffswitch-label" for="myonoffclusterswitch">
+                      <span class="onoffswitch-inner"></span>
+                      <span class="onoffswitch-switch"></span>
+                    </label> -->
+        <label class="myw-switch" for="myonoffclusterswitch">
+          <input type="checkbox" #switchCluster (click)="onClusterSwitchChanged(switchCluster)" formControlName="clustering"
+          type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffclusterswitch" [(ngModel)]="clusterToggle"
+          [checked]="clusterToggle">
+          <span class="label-first">OFF</span>
+          <span class="switch-toggle"></span>
+          <span class="label-last">ON</span>
+        </label>
+      </div>
+      <div class="ingrain-slider d-flex align-items-center">
+        <span class="slider-val">1</span>
+        <input type="range" class="myw-range" #numberOfCluster formControlName="cluster"
+          (change)="changedValueForNumberOfCluster(numberOfCluster.value)" min="1" max="15" step="1"
+          [attr.disabled]="!(clusterToggle) ? clusterToggle : null ">
+          <span class="myw-range-output"
+          [ngStyle]="getStyleCluster(numberOfCluster.value,1, 15)">{{numberOfCluster.value}}</span>
+          <span class="slider-val">15</span>
+   
+        <a href="javascript:;">
+          <img src="assets/images/summary.svg"  title="View Silhouette score graph"
+          [ngClass]="( silhouette_graph && silhouette_graph.length > 0 )  ? 'cursor-pointer' : 'cursor-none'" />
+          <div class="ingrAI-open-help chart-x" *ngIf='showSilhouette'>
+            <div #showpopover class="charttext">
+            <app-word-cloud-image [wordCloudImage]="silhouette_graph"></app-word-cloud-image>
+          </div>
+        </div>
+      </a>
+      </div>
+    </div>
+  </div>
+  <div class="col-5 mr-auto ml-5 Aggregation" *ngIf="isAggregationVisible">
+    <div class="form-group" [formGroup]="textPreprocessedData">
+      <label class="form-label">Aggregation</label>
+      <!-- <select class="form-control">
+                  <option>Glove</option>
+              </select> -->
+      <select #aggregation class="form-control" id="" (change)="setAggregation(aggregation.value)"
+        formControlName="aggregation">
+        <option disabled hidden value="" class="placeholderText">Select Aggregation
+        </option>
+        <option *ngFor="let aggregation of aggregationList" [value]='aggregation'>{{aggregation}}</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="myw-actions d-flex justify-content-end mt-3">
+  <button class="btn btn-secondary" (click)='saveColumnTextAttributes(textColumnChosen, "ONE")'>Save</button>
+  <button class="btn btn-secondary" (click)="saveAllColumns()">Save to all Columns</button>
+</div>

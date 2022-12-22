@@ -1,0 +1,9 @@
+
+.ingrAIn-feature-filter-item { display: inline-flex;background: #fff;justify-content: space-between;border: 1px solid #000000;padding: 0.3rem 0.3rem;margin-right: 0.5rem;margin-bottom: 0.3rem;}
+.ingrAIn-feature-filter-item:first-child { margin-left:0; }
+.ingrAIn-feature-filter-item span.item-close { cursor: pointer; color: #000000; background: #e9e9e9;font-weight: 600; padding: 0rem 0.3rem; }
+::ng-deep {
+.mat-select-value {max-width: unset !important;}
+.mat-accent .mat-pseudo-checkbox-checked, .mat-accent .mat-pseudo-checkbox-indeterminate, .mat-pseudo-checkbox-checked, .mat-pseudo-checkbox-indeterminate { background:  #3f51b5 !important;}
+// .mat-select { border-bottom: 1px solid #000000 !important; }
+}

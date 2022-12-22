@@ -1,0 +1,211 @@
+<div class="myw-content">
+  <!-- navbar -->
+  <div class="d-flex align-items-center">
+  <div class="myw-navbar" [ngClass]="pinUnpinIconsBar ? 'collapsed' : ''">
+    <div class="myw-container d-flex flex-wrap">
+      <div class="d-flex flex-nowrap align-items-center myw-navbar-wrap">
+        <div class="myw-navbar-inner d-flex align-items-center">
+          <a style="cursor: pointer;" class="text-reset text-decoration-none mr-2" title="Back" aria-label="Back"
+          routerLink="/choosefocusarea">
+            <img src="assets/images/back.svg" alt="Back" class="myw-icon"></a>          
+            <h6 class="m-0">My Datasets</h6>       
+        </div>
+      </div>
+      <div class="d-flex flex-nowrap justify-content-end myw-navbar-actions"
+      [ngClass]="isNavBarLabelsToggle == true ? 'myw-navbar-active': ''">
+   
+          <!-- <div class="myw-navbar-action myw-navbar-search">
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="searchText"
+            (input)="searchDataset($event.target.value)"
+            placeholder="Search...">
+            <img src="assets/images/close.svg" alt="Close" />
+          </div> -->
+
+          <div class="myw-navbar-action myw-navbar-search" *ngIf="toggle" (click)="toggle = !toggle">
+            <input  type="text" class="form-control form-control-sm" [(ngModel)]="searchText"
+                (input)="searchDataset($event.target.value)" maxlength="70" placeholder="Search..." />
+            <img src="assets/images/close.svg" alt="Close" (click)="toggle = !toggle; closeSearchBox()"  style=" width: 0.8em;"/>
+         </div>
+          <div *ngIf="!toggle" style="display:inline-flex; margin-right: 1em;">
+            <input type="text" class="form-control form-control-sm" maxlength="70" [(ngModel)]="searchText"
+                (input)="searchDataset($event.target.value)" placeholder="Search..."  style="width: 11.5rem;" />
+            <img src="assets/images/close.svg" alt="Close" (click)="toggle = !toggle; closeSearchBox()" style=" width: 0.8em;"/>
+          </div>
+
+          <div *ngIf="env !== 'FDS' && env !== 'PAM' && instanceType !== 'PAM'" class="dropdown dropright dropflat d-flex ">
+            <a class="myw-navbar-action" role="button" matTooltip="Info" data-toggle="dropdown" data-display="static"
+              aria-haspopup="true" aria-expanded="false" id="infoPopup" data-toggle-tooltip="tooltip"
+              data-placement="bottom" data-trigger="hover"><img src="assets/images/info.svg" alt="Info"/><span>Info</span></a>
+            <div class="dropdown-menu dropdown-xl info-dropdown" aria-labelledby="infoPopup">
+              <div class="d-flex align-items-center justify-content-between px-3 py-2">
+                <h6 class="dropdown-title">Information</h6>
+                <a style="cursor: pointer;" class="myw-dropdown-close" title="Close"><span
+                    class="sr-only">Close</span></a>
+              </div>
+              <div *ngIf="infoMessage" class="dropdown-body px-3 pb-3 myw-scrollbar"
+                style="max-height: 6rem;font-size: 0.875em;" [innerHTML]="infoMessage">
+                <!-- <p>{{infoMessage}}</p> -->
+              </div>
+            </div>
+          </div>
+
+          <a href="#" (click)="toggleNavBarLabels()" class="myw-navbar-toggle" matTooltip="Toggle Labels"
+          data-toggle="tooltip" data-placement="left" data-trigger="hover"><img src="assets/images/caret.svg"
+            alt="" /><span class="sr-only">Toggle Labels</span></a>
+      </div>
+    </div>
+    <a style="cursor: pointer;" class="myw-navbar-pin" title="Toggle Navbar" data-toggle="tooltip" data-placement="left"
+      data-trigger="hover" (click)="iconsPinUnpin()">      <img src="assets/images/pin.svg" alt="" />
+      <span class="sr-only">Toggle Navbar</span>
+     
+    </a>
+  </div></div>
+
+  <div class="row no-gutters flex-fill">
+    <div class="col-auto" >
+        <!-- Sidebar -->
+<div class="myw-sidebar d-flex flex-column" [ngClass]="issidebartoggle == true ? 'collapsed': ''">
+<a style="cursor: pointer;" class="myw-sidebar-toggle" (click)="sidebartoggle()" title="Toggle Sidebar" aria-label="Toggle Sidebar">
+<img src="assets/images/menu.svg" alt=""> 
+<span class="invisible">Toggle Sidebar</span></a>
+<div class="myw-sidebar-navlist" *ngFor="let Category of categorytypes; let i = index">
+ <ng-container>
+  <a href="#" class="myw-sidebar-nav active" title="{{Category.name}}"
+    (click)='onClickCategory(Category.value, i)'
+    [ngClass]="{'active': Category.value === tilecategory}">
+    <img src="{{Category.imgPath}}"
+    alt="{{Category.name}}">
+   <span>{{Category.name}}</span>
+  </a>
+ </ng-container>   
+</div>
+</div>
+        <!-- /Sidebar -->
+    </div>
+    <div class="col">
+        <div class="myw-maincontent" style="position: absolute;">
+            <div class="d-flex myw-container">
+                <div>
+                    <div class="fs-16 myw-500 flex-0"><span>{{tilecategory}}</span></div>
+                    <p class="fs-12 mb-0">Explore the user created datasets or create your new dataset with the data available in spreadsheet format to start with your AI model creation.</p>
+                </div>
+                <!-- <a href="javascript:;" class="btn btn-primary ml-auto" (click)="openModalPopUp()">Create</a> -->
+
+               <button class="btn btn-primary ml-auto mt-2" value="Create" (click)="openModalPopUp()">Create</button>
+              
+            </div>
+            <div class="table-responsive my-2" style="height: 25em;overflow-y: auto;">
+                <table class="table table-striped table-hover table-vmiddle myw-table">
+                    <thead>
+                        <tr>
+                          <th scope="col"  width="10%">Dataset Name</th>
+                          <th scope="col" width="10%">Published Date</th>
+                          <ng-container *ngIf = "tilecategory === 'File'">
+                          <th scope="col"  width="25%">Data Source</th>
+                          </ng-container>
+                          <ng-container *ngIf = "tilecategory === 'API'">
+                          <th scope="col"  width="25%">API URL</th>
+                          </ng-container>
+                          <th scope="col"  width="7%">No. Of Records</th>   
+                          <!-- <th scope="col">Progress</th>  -->
+                          <th scope="col"  width="10%">Status</th>
+                          <th scope="col"  width="10%">View Data</th>
+                          <th scope="col"  width="10%">Category</th>
+                          <ng-container *ngIf = "tilecategory === 'File'">
+                            <th scope="col"  width="8%">Download</th>
+                            </ng-container>
+                            <ng-container *ngIf = "tilecategory === 'API'">
+                            <th scope="col" width="5%" style="padding: 0;">Authentication</th>
+                            </ng-container>                           
+                          <th scope="col"  width="5%">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dataset of tabledatasets | paginate: { id: 'listing_pagination2',
+                        itemsPerPage: 10,
+                        currentPage: page
+                       }; let i = index">
+                          <td>{{dataset.DataSetName}}</td>
+                          <td>
+                            {{dataset.CreatedOn}}
+                          </td>
+                          <td> 
+                           {{dataset.SourceDetails}}
+                          </td>
+                          <td>
+                            {{dataset.RecordCount}}
+                          </td>
+                          <!-- <td>
+                            {{dataset.Progress}}
+                          </td> -->
+                          <td>
+                              
+                            <ng-container *ngIf = "dataset.Status === 'Error'"><span title={{dataset.Message}}>{{dataset.Status}}</span></ng-container>
+                            <ng-container *ngIf = "dataset.Status !== 'Error'"><span>{{dataset.Status}}</span></ng-container>
+                            <!-- <ng-container *ngIf= "dataset.Status === 'C'">
+                              Completed
+                            </ng-container>
+                            <ng-container *ngIf= "dataset.Status === 'E'">
+                              Error
+                            </ng-container>
+                            <ng-container *ngIf= "dataset.Status === 'I' || dataset.Status === 'P'">
+                              In Progress + "'('' + {{dataset.Progress}} + ")"
+                            </ng-container> -->                          
+                          </td>
+                          <td align="center">
+                              <a (click)="viewDataset(dataset.DataSetUId)"
+                              class="myw-navbar-action" role="button" matTooltip="View Sample Data" data-toggle="modal"
+                              data-target="#sampledataModal" data-toggle-tooltip="tooltip" data-placement="bottom"
+                              data-trigger="hover">
+                              <!-- <img src={{viewDataImage}} alt="View Sample Data" /> -->
+                              <div class="viewDataImage"></div>
+                              <span>View Dataset
+                                </span></a>
+                          </td>
+                          <td>
+                            <ng-container *ngIf = "dataset.IsPrivate == true">
+                              Private
+                            </ng-container>
+                            <ng-container *ngIf = "dataset.IsPrivate == false">
+                              Public
+                            </ng-container>
+                          </td>                     
+                          <td align="center">                                                        
+                            <ng-container *ngIf = "tilecategory === 'File'">                     
+                              <a (click)="downloadData(dataset.DataSetUId,dataset.SourceDetails)" class="myw-navbar-action" role="button"
+                              alt="Export the password protected file, click on info icon to know the password hint"
+                              matTooltip="Export the password protected file, click on info icon to know the password hint" data-toggle="modal" data-target="#sampleModal" data-toggle-tooltip="tooltip"
+                              data-placement="bottom" data-trigger="hover">
+                              <!-- <img src='https://devtest-mywizard-si.accenture.com/ingrain/assets/images/Icon%20feather-download.svg' alt="Download Data" /> -->
+                               <div class="downloadImage"></div> 
+                              <span>Download Data</span></a>
+                            </ng-container>
+                            <ng-container *ngIf = "tilecategory === 'API'">                     
+                              {{dataset.AuthType}}
+                            </ng-container>
+                          </td>
+                          <td align="center">                                             
+                              <!-- <a style="cursor: pointer;" matTooltip="Delete" *ngIf = "userId === dataset.CreatedBy" 
+                              (click)="deleteDataset(dataset.DataSetUId, dataset.DataSetName)"> -->
+                              <a style="cursor: pointer;" matTooltip="Delete" (click)="deleteDataset(dataset.DataSetUId, dataset.DataSetName)">                               
+                              <!-- <img src='assets/images/delete.svg' /> -->
+                              <div class="delete"></div>
+                              </a>                        
+                          </td>
+                        </tr>
+                       
+                    </tbody> 
+                </table>   
+            </div>
+            <div class="d-flex pr-0" style="flex-direction: row-reverse;" *ngIf="tabledatasets !== undefined">
+              <pagination-controls id="listing_pagination2" maxSize="10" directionLinks="true" (pageChange)="page = $event">
+              </pagination-controls>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+  <!-- /navbar -->
+
+

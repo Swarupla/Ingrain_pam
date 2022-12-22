@@ -1,0 +1,163 @@
+<div id="div{{divId}}" *ngIf="showOptions" [ngClass]="padTop" class="col-sm-12 col-md-12 col-lg-12">
+  <div [ngClass]="(divId==0)?'display-div':'hide-div'" class="ingrAI-box-container">
+    <div class="row">
+      
+      <div class="col-md-12 col-lg-5 ingrAI-log-regression">
+        <div class="col-12">
+          <div class="ingrAI-heading"> {{selectedModelName}}</div>
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-7 ingrAI-log-regression no-pad">
+        <div class="col-12 d-flex justify-content-end">
+          <input *ngIf="divId == 0" id="btnAddTestScenatio" [disabled]="disableTestScenButton" type="button"
+            (click)="addTestCaseScnerio(divId,testCaseScenarioCount)" class="btn btn-secondary ingrAI-addnew-tile"
+            value="Add Test Scenario" />
+          
+            <!-- <div class="col-12 d-flex justify-content-end"> -->
+              <input  *ngIf="divId != 0"  type="button" class="btn btn-secondary my-3" aria-label="Close" (click)='onClose(1)'
+                value="Remove this test" />
+            <!-- </div> -->
+          <!-- <button *ngIf="divId > 0" type="button" class="close" aria-label="Close" (click)='onClose(divId)'>
+            <svg class="ingrAI-icon-svg ingrAI-icon-svg-md">
+              <use xlink:href="#ingrAI-icon-close"></use>
+            </svg>
+          </button> -->
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 col-lg-5 ingrAI-log-regression">
+        <div class="row mt-2">
+          <div class="col-7">
+            <div class="myingrAI-logistics-box">
+              <div class="container-fluid">
+                <div class="form-row align-items-center" style="height:100px">
+                  <div class="col-6">
+                    <div class="myingrAI-logistics-text" style="word-break: break-all;">{{selectedModelName}}</div>
+                    <div class="myingrAI-logistics-text">Run Time: {{selectedModelRunTime}}s</div>
+                  </div>
+                  <div class="col-6">
+                    <div class="myingrAI-logistics-chart">
+                      <app-d3-donut-chart [donutInnerRadius]=40 [pageInfoForDonutChart]="'CompareTest'"
+                        [pythonProgressVal]="selectedModelAccuracy">
+                      </app-d3-donut-chart>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-5">
+            <form>
+              <div class="form-group mb-4">
+
+              </div>
+              <div class="form-group">
+                <div class="form-group">
+                  <select class="form-control w-80" style="height: 30px;    font-size: 0.75rem;"
+                    (change)="onTestScenarioChange($event.target.value,divId)">
+                    <option *ngFor="let options of testCaseScenarioOptions" [value]="options.scenarioName">
+                      {{options.scenarioName}}</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-7 ingrAI-log-regression no-pad">
+        <div class="col-12">
+
+        </div>
+
+        <div class="ingrAI-heading bold pad-15" style="padding-top: 20px;">
+          <!-- Change Outcome -->
+        </div>
+      </div>
+    </div>
+    <div class="row"> 
+      <table class=" ">
+        <tbody>
+          <tr class="no-Border">
+            <td class="no-Border">
+              <div class="row">
+                <div class="col-md-12 col-lg-5 ingrAI-log-regression hidden-scrollbar">
+                  <div class="table-responsive ingrAI-test-table hidden-scrollbar">
+                    <div class="scrollbar height">
+                      <table style="margin-left: 15px;" class="table ingrAI-table ingrAI-data-table">
+                        <thead>
+                          <tr>
+                            <th scope="col" width="37%">Frequency Type</th>
+                            <th scope="col" width="43%">Values</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{{freequecnyTypeonSelection}}</td>
+                            <td>
+                              {{stepsValueonSelection}}
+                              <div class="form-group">
+                                <div id="selectOptions" class="row padding-left">
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12 row col-lg-5">
+                  <table class=" ">
+                    <tbody>
+                      <tr class="no-Border">
+                        <td class="no-Border">
+                          <div class="row pad-15">
+                            <div>
+                                <div class="ingrAI-heading txtCenter row">
+                                    <div class="ingrAI-heading fontweight" style="width:50%;padding-left: 7%;">
+                                        Test Data - Forecast
+                                      </div>
+                                      <div class="ingrAI-heading" style="width:23%">
+                                        </div>
+                                      <div class="ingrAI-heading txtCenter" style="width:27%">
+                                          <div  class="row">
+                                              <div style="padding-top:5px">
+                                                <hr class="green-line">
+                                              </div>
+                                              <div class="font-txt">
+                                                 Forecast
+                                              </div>
+                                            </div>
+                                      </div>
+                                 </div>
+                              <div class="table-responsive ingr-filter-table dvcharts-topmargin">
+                                <app-line-chart [pageInfo]=divMainId [isSingleLine]="true"
+                                  [frequencyType]="freequecnyTypeonSelection" [lineChartData]="selectedModelLineChart"
+                                  [lineChartHeight]=350 [lineChartWidth]=500>
+                                </app-line-chart>
+                              </div>
+                              <div class="ingrAI-heading txtCenter row">
+                       
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+
+
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

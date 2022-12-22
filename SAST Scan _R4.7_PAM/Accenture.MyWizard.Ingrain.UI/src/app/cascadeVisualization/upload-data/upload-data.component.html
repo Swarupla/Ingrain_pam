@@ -1,0 +1,72 @@
+<ng-container *ngIf="isUploadView">
+  <div class="myw-navbar" style="top: -1px;" [ngClass]="isnavBarToggle == true ? 'collapsed': ''">
+    <div class="myw-container d-flex flex-wrap">
+      <div class="d-flex flex-nowrap align-items-center myw-navbar-wrap">
+        <div class="myw-navbar-inner d-flex align-items-center">
+        </div>
+      </div>
+      <div class="d-flex flex-nowrap justify-content-end myw-navbar-actions">
+  
+  
+        <div class="dropdown dropright dropflat d-flex ">
+          <a class="myw-navbar-action" role="button" matTooltip="Info" data-toggle="dropdown" data-display="static"
+            aria-haspopup="true" aria-expanded="false" id="infoPopup" data-toggle-tooltip="tooltip"
+            data-placement="bottom" data-trigger="hover"><img src="assets/images/info.svg" alt="Info"/><span>Info</span></a>
+          <div class="dropdown-menu dropdown-xl info-dropdown" aria-labelledby="infoPopup">
+            <div class="d-flex align-items-center justify-content-between px-3 py-2">
+              <h6 class="dropdown-title">Information</h6>
+              <a style="cursor: pointer;" class="myw-dropdown-close" title="Close"><span
+                  class="sr-only">Close</span></a>
+            </div>
+            <div *ngIf="infoMessage" class="dropdown-body px-3 pb-3 myw-scrollbar"
+              style="max-height: 6rem;font-size: 0.875em;" [innerHTML]="infoMessage">
+              <!-- <p>{{infoMessage}}</p> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="#" (click)="toggleNavBar()" class="myw-navbar-pin" title="Toggle Navbar" data-toggle="tooltip"
+      data-placement="left" data-trigger="hover"><img src="assets/images/pin.svg" alt="" /><span class="sr-only">Toggle
+        Navbar</span></a>
+  </div>
+  <div class="vds-upload-file-container vds-file-uploader">
+    <div class="d-flex align-items-center mb-3">
+      <div class="form-inline">
+        <label class="myw-checkbox mb-0 vds-upload-title"><input type="radio" id="cds_radio1" name="modal-rd"
+            (click)="uploadView('file')" checked><span>Upload File</span></label>
+        <!-- <label class="myw-checkbox mb-0 vds-upload-title"><input type="radio" id="cds_radio2" name="modal-rd"
+            (click)="uploadView('entity')"><span>Connect to data fabric</span></label> -->
+        <!-- <label class="myw-checkbox mb-0"><input type="radio" id="cds_radio3" name="modal-rd" (click)="individualDataToUpload()"><span>Individual (Entity/Metric/File)</span></label> -->
+      </div>
+      <div class="ml-auto vds-download-link"><a href="javascript:;" (click)="downloadData()"
+          class="text-decoration-none"><img class="vds-icon" title="Export the password protected file, click on info icon to know the password hint" src="assets/MonteCarlo/images/download-template.png"
+            /> Download Template</a>
+      </div>
+    </div>
+    <div class="vds-sim-upload-container mb-3" (dragover)='allowDrop($event)' (drop)='onDrop($event)'>
+      <img src="assets/MonteCarlo/images/upload.png" alt="Upload" title="Upload">
+      <div class="text-center mt-3">Drop your files here <br> or
+        <div class="vds-choose-file d-inline-flex" id="fileUpload1">
+          <label for="vds-choose-file">Browse</label>
+          <input id="vds-choose-file" type="file" (change)="getFileDetails($event)">
+        </div>
+      </div>
+    </div>
+    <!-- <div *ngIf="view == 'entity'" class="vds-sim-upload-container mb-3">
+      <div class="text-center mt-3">Do you want to go ahead with Entity upload? Kindly click on upload button.</div>
+    </div> -->
+  </div>
+  <div class="vds-download" *ngIf="files && files.length && view=='file'">
+    <div class="d-flex align-items-center">
+      <img src="assets/MonteCarlo/images/uploaded-file.png" alt="File">
+      <div class="vds-download-info d-flex flex-column">
+        <span>Completed</span>
+        <span>{{ files[0].name }} </span>
+      </div>
+      <a href="javascript:;" title="Tick" class="vds-download-icon ml-auto">
+        <img src="assets/MonteCarlo/images/tick.svg" alt="Tick"></a>
+    </div>
+  </div>
+  <input type="button" class="btn btn-primary" style="float: right;margin-right: 1em;" [disabled]="view=='file' && uploadFilesCount==0" value="Upload" (click)="uploadFile()">
+</ng-container>

@@ -1,0 +1,38 @@
+.webservice-closeicon {
+    display: inline-block; width: 1.25rem; height: 1.25rem; text-decoration: none;
+    background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9.945 9.943'%3E%3Cg transform='translate(-0.026 -0.029)'%3E%3Cpath fill='%23000000' d='M6.151,4.971,9.7,1.419A.832.832,0,1,0,8.526.242L4.974,3.794,1.422.242A.832.832,0,1,0,.245,1.419L3.8,4.971.245,8.523A.832.832,0,0,0,1.422,9.7L4.974,6.148,8.526,9.7A.832.832,0,0,0,9.7,8.523Z' transform='translate(0.026 0.029)'/%3E%3C/g%3E%3C/svg%3E") no-repeat center transparent; 
+    background-size: .75rem; position: relative; right: -.25rem;
+  }
+  
+  .webservice-width
+  { overflow-x: hidden; overflow-y: auto; max-height: 43vh; min-height: 5rem; position: relative; }
+  
+  .myw-navbar-search .form-control  img{ right: 2rem; cursor: pointer;; }
+  
+  .webservice-position {
+    min-width: 2.5rem;
+    color: inherit;
+    text-decoration: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .optioncontainer { display: block; position: relative; padding-left: 2rem; cursor: pointer; -webkit-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none; color:#353D47; min-height: 1.25rem; }
+  .optioncontainer input { position: absolute; opacity: 0; cursor: pointer; }
+  .op-radiobtn {  position: absolute; height: 1.25rem; width: 1.25rem; background-color:white; border:1px solid #BDC9DA; border-radius: 50%; left: 50%; top: 0.325rem; transform: translateX(-50%);}
+  .optioncontainer .op-radiobtn:after { top: 5px; left: 5px; width: 8px; height: 8px; }
+  .op-radiobtn:after { content: ""; position: absolute; display: none; }
+  .optioncontainer input ~ .op-radiobtn { background-color: #21ba41; border: 1px solid #21ba41; }
+  .optioncontainer input ~ .op-radiobtn:after { display: block; left: 7px; top: 3px; width: 5px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; -webkit-transform: rotate(45deg); -ms-transform: rotate(45deg); transform: rotate(45deg); }
+  .optioncontainer .disabled-op-radiobtn {  position: absolute; height: 1.25rem; width: 1.25rem; background-color:white; border:1px solid #BDC9DA; border-radius: 50%; 		left: 50%; top: 0.325rem; transform: translateX(-50%);}
+  
+  .fm-status{ width: 10px;height: 10px;border-radius: 5px;margin-top: 4px;margin-left: 4px;}
+  .fm-status.success{ background-color: green;}
+  .fm-status.error{ background-color: red;}
+  .fm-status.inprogress{ background-color: #f2f22d;}
+  
+  .modeldetails-tbl{
+    height: 40rem;
+  }

@@ -1,0 +1,13 @@
+<div #barGroupChartContainer class="myw-scrollbar" style="overflow: auto; width: 65em;"></div>
+
+<ng-container *ngIf="data">
+    <div style="display: inline-flex;">
+    <div *ngFor="let name of data[0].values" class="mr-2">
+        <span class="spandot" [ngStyle]="{'background-color': checkColor(name.frequencyValues)}" style=" margin-top: 5px;"></span>
+        <span style="vertical-align: sub;word-break: break-all;">
+            {{name.frequencyValues}}
+        </span>
+
+    </div>
+</div>
+</ng-container>

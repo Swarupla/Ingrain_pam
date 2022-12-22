@@ -1,0 +1,126 @@
+.active {
+  background-color: grey;
+  color: white;
+}
+a {
+  text-decoration: none;
+  background-color: rgb(236, 225, 225);
+  text-align: center;
+  margin-left: 2px;
+  color: black;
+  padding: 20px;
+  font-size: 2rem;
+}
+
+.active {
+  background-color: grey;
+  color: white;
+}
+
+.red {
+  border: 1px solid red;
+}
+
+.blue {
+  border: 1px solid blue;
+}
+
+/* Absolute Center Spinner */
+.loading-indicator {
+  position: fixed;
+  z-index: 1060;
+  height: 2em;
+  width: 2em;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* Transparent Overlay */
+.loading-indicator:before {
+  content: "";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+::ng-deep .mat-progress-spinner circle,
+.mat-spinner circle {
+  stroke: #3498db !important;
+}
+
+::ng-deep .mat-dialog-container {
+  display: contents !important;
+  padding: 0px !important;   
+  box-sizing:  border-box !important;
+  outline: 0 !important;
+  min-height: inherit !important;
+  max-height: inherit !important;
+}
+
+::ng-deep .cdk-overlay-pane {
+  position: absolute !important;
+  display: flex !important;
+  display: block !important;
+  max-width: 100% !important;
+  /* max-height: 100%; */
+}
+
+.myw-wrapper {
+  min-height: 93vh;
+}
+
+.phx-text-align-right {
+  text-align: right;
+}
+
+
+.phx-session-popup {
+ // margin-top: 9rem !important;
+  margin: 10rem 18rem !important;
+}
+
+.phx-session-header{
+  padding: .8rem 1rem;
+  border-style: solid!important;
+  border-color: #008;
+  background-color: #008;
+  color: #fff;
+  border-radius: 1rem 1rem 0 0;
+}
+
+.phx-session-footer {
+border-top: 1px solid #dee2e6;
+padding :1rem;
+// background-color: #f7f7f7;
+border-radius: 0 0 1rem 1rem;
+}
+.phx-popup-width {
+  width:650px;
+}
+.phx-padding-bottom-1 {
+  padding-bottom: 1rem;
+}
+.phx-margin-bottom {
+  margin-bottom: 0px;
+}
+
+.phx-text-decoration {
+  text-decoration: none !important;
+}
+.phx-float {
+  float: none !important;
+}
+.btn-secondary:focus, .btn-secondary.focus {
+  box-shadow: none !important;
+}
+
+.phx-padding-8 {
+  padding: 8px;
+}

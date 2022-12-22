@@ -1,0 +1,20 @@
+<div class="vds-wrapper container-fluid vds-container"  style="min-height: auto;">
+  <div class="vds-wrap vds-container" style="padding: 0;margin-top: 1em;">
+
+      <!-- /Top bar -->
+      <div class="myw-back" style=" position: absolute;" >
+        <!-- <a href="javascript:;" class="mr-2 text-decoration-none" *ngIf="!(router.url.includes('/generic/upload') || router.url.includes('/generic/Output'))">
+            <img src="assets/MonteCarlo/images/back.svg" alt="Back">
+        </a> -->
+        <span class="myw-700 fs-18" *ngIf="!router.url.includes('/generic/upload')">{{this.apiCore.paramData.vdsUsecaseName}}</span>
+    </div>
+      <div id="main" class="vds-content d-flex flex-column flex-fill">
+          <div class="vds-inner" *ngIf="requestCompletedCheck">
+              <!-- <h2 class="fs-20 mb-2 text-primary" *ngIf="router.url !== '/generic/upload'"></h2> -->
+             
+
+              <router-outlet></router-outlet>
+          </div>
+      </div>
+  </div>
+</div>

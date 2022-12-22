@@ -1,0 +1,127 @@
+<!-- header starts -->
+<!-- <link rel="stylesheet" [href]='sanitizer.bypassSecurityTrustResourceUrl(cssUrl)'> -->
+
+<ng-container *ngIf="router.url.includes('/landingPage')">
+  <div class="c-container" style="min-height: 1.4rem;">
+    <div *ngIf="IsDownTimeNotificationAlert" id="DeploymentNotification" class="deploymentNotificationAlert">
+      <marquee scrollamount="2">{{DownTimeNotificationMessage}}</marquee>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="isStyleAvailable">
+  <header class="c-header">
+    <ng-container *ngIf='isMyConcertoIntance == false'>
+      <div class="c-header__left">
+        <div class="c-header__logo"><img src="assets/images/accenture-logo.png" alt="Accenture">
+        </div>
+        <div class="c-header__brand-logo" (click)="navigateBackToDashboard()" style="cursor:pointer;"
+          data-toggle="tooltip" title="Back to Dashboard">
+          <img src="{{myWizardLogoUrl}}" style="margin-bottom: 0px;" alt="myWizard">
+        </div>
+      </div>
+    </ng-container>
+
+
+    <ng-container *ngIf='isMyConcertoIntance == true'>
+      <div class="c-header__left">
+        <div class="c-header__logo"><img alt="Accenture" src="{{accentureLogoURL}}"></div>
+        <a>
+          <div class="c-header__brand-logo" (click)="navigateBackToDashboard()">
+            <img alt="myWizard" title="Back to Dashboard" src="{{myWizardLogoUrl}}">
+          </div>
+        </a>
+        <div class="c-header__mywizard-logo"><img alt="myWizard" src="assets/images/pbmywiz.svg"></div>
+      </div>
+    </ng-container>
+    <div class="c-header__right" style="align-items: unset;">
+      <ul class="c-icons" id="c-iconslist"> 
+        <ng-container *ngIf="!router.url.includes('/video')">
+          <ng-container *ngIf="(environment === 'FDS' || environment === 'PAM') && (requestType === 'AM' || requestType === 'IO')">
+            <li class="disabledScopeSelector">
+              <ng-container *ngIf="deliveryConstructData">              
+                <app-myclient-list [userId]="userId" [token]="token" [deliveryConstructData]=deliveryConstructData
+                  (autorizedError)="authirizeError($event)" (getClientDetails)="getClientDetails($event)"
+                  (passaccessRoleUID)="accessRoleUID($event)" (setDecimalPoint)="setDecimalPoint()" [ingrainAPIToken]="ingrainAPIToken">
+                </app-myclient-list>
+              </ng-container>
+            </li>
+          </ng-container>
+          <ng-container *ngIf="(environment !== 'FDS' && environment !== 'PAM') && (requestType !== 'AM' || requestType !== 'IO')">
+            <ng-container *ngIf="fromSourceSession !== 'FDS'">
+              <li>
+                <ng-container *ngIf="deliveryConstructData">
+                  <app-myclient-list [userId]="userId" [token]="token" [deliveryConstructData]=deliveryConstructData
+                    (autorizedError)="authirizeError($event)" (getClientDetails)="getClientDetails($event)"
+                    (passaccessRoleUID)="accessRoleUID($event)" (setDecimalPoint)="setDecimalPoint()" [ingrainAPIToken]="ingrainAPIToken">
+                  </app-myclient-list>
+                </ng-container>
+              </li>
+            </ng-container>
+            <ng-container *ngIf="fromSourceSession === 'FDS' || fromSourceSession === 'PAM'">
+              <li class="disabledScopeSelector">
+                <ng-container *ngIf="deliveryConstructData">
+                  <app-myclient-list [userId]="userId" [token]="token" [deliveryConstructData]=deliveryConstructData
+                    (autorizedError)="authirizeError($event)" (getClientDetails)="getClientDetails($event)"
+                    (passaccessRoleUID)="accessRoleUID($event)" (setDecimalPoint)="setDecimalPoint()" [ingrainAPIToken]="ingrainAPIToken">
+                  </app-myclient-list>
+                </ng-container>
+              </li>
+            </ng-container>
+
+          </ng-container>
+        </ng-container>
+
+        <li *ngIf="!router.url.includes('/video')">          
+          <app-user-help></app-user-help>
+        </li>
+        <li *ngIf="this.env !== 'WindowsAuthProvider'.toLowerCase() || !router.url.includes('/video')">
+          <ng-container
+            *ngIf="(router.url.includes('/RiskReleasePredictor') || router.url.includes('/generic')  || router.url.includes('/cascadeVisualization') || router.url.includes('/visualizationGraph'))">
+            <!-- <div class="c-icons__uva -disabled" style="cursor: none;"></div> -->
+            <div class="c-icons__uva" (click)="navigateToVAForVDS()"></div>
+          </ng-container>
+          <ng-container
+            *ngIf="!(router.url.includes('/RiskReleasePredictor') || router.url.includes('/generic') || router.url.includes('/cascadeVisualization') || router.url.includes('/visualizationGraph'))">
+            <ng-container *ngIf="deliveryConstructUId_VA && clientUID_VA && accessRoleUIDVA">
+              <va-icon [clientUId]="clientUID_VA" [deliveryConstructUId]="deliveryConstructUId_VA"
+                [accessRoleUId]="accessRoleUIDVA"></va-icon>
+            </ng-container>
+          </ng-container>
+
+        </li>
+        <li *ngIf="this.env === 'WindowsAuthProvider'.toLowerCase() && !router.url.includes('/video')">
+          <div class="c-icons__uva -disabled" style="cursor: none;"></div>
+        </li>
+        <li *ngIf="!router.url.includes('/video')">
+          <div class="c-icons__settings -disabled" style="cursor: none;"></div>
+        </li>
+        <li>
+          <ng-container>
+            <app-user-profile [userId]="userId" [accountID]="accountID" [fullName]="fullName" (logout)="logout()"></app-user-profile>
+          </ng-container>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="c-topbar" id="c-navbar" style="position: sticky;  top: 0em;  z-index: 999;">
+    <div class="c-topbar__inner" *ngIf="!(router.url.includes('/assetsUsage'))">
+      <div style="width:100%;">
+        <a class="c-topbar__title" routerLink="/choosefocusarea"
+          [ngClass]="{'c-topbar__title_custom cursor-none' : (router.url === '/choosefocusarea' || router.url.includes('landingPage') == true || router.url.includes('video'))}"
+          style="width: 4%; padding:0rem 0rem;">ingrAIn</a>
+
+      </div>
+    </div>
+
+    <div class="c-topbar__inner" *ngIf="router.url.includes('/assetsUsage')">
+      <div style="width:100%;">
+        <a class="c-topbar__title" routerLink="/choosefocusarea"
+          [ngClass]="{'c-topbar__title_custom cursor-none' : (router.url.includes('/assetsUsage'))}"
+          style="width: 4%; padding:0rem 0rem;">IngrAIn Asset Usage Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+</ng-container>
+<!-- header ends -->

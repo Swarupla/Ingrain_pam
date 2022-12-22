@@ -1,0 +1,36 @@
+<div class="modal-dialog-scrollable">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="ingrAI-enter-model-title">{{title}}</h5>
+            <button type="button" class="close" aria-label="Close" (click)='closePopUp()'></button>
+        </div>
+        <div class="modal-body">
+            <div class="d-flex flex-column justify-content-center">
+
+                <div class="form-inline">
+                    <label class="myw-checkbox mb-0"><input type="radio" id="option-1" name="customData_option"
+                            (click)="enableQueryView()" checked><span>
+                            Add Query</span></label>
+                    <label class="myw-checkbox mb-0"><input type="radio" id="option-2" name="customData_option"
+                            (click)="enableApiView()"><span>
+                            API</span></label>
+                </div>
+            </div>
+
+            <div class="response-body">
+                <br />
+                <ng-container *ngIf="isQueryViewEnabled" [ngTemplateOutlet]="queryViewTemplate"></ng-container>
+                <ng-container *ngIf="isApiViewEnabled" [ngTemplateOutlet]="apiViewTemplate"></ng-container>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<ng-template #queryViewTemplate>
+    <app-custom-query-save [modalNameRequired]="false" (onSaveQuery)="saveQuery($event)" [serviceLevel]="serviceLevel"></app-custom-query-save>
+</ng-template>
+<ng-template #apiViewTemplate>
+    <app-custom-data-api [ApiConfig]="ApiConfig" (APIData)="saveAPI($event)"></app-custom-data-api>
+</ng-template>

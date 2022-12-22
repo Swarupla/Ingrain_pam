@@ -1,0 +1,319 @@
+.ingrAI-connect-to-data-source-model {
+    max-width: 95%;
+  }
+  
+  .ingrAI-connect-to-data-source-model .modal-body {
+    min-height: 400px;
+  }
+  
+  .ingrAI-enter-model .modal-body {
+    min-height: 100px;
+  }
+  
+  .ingrAI-connect-to-data-source-model .modal-content {
+    border-radius: .2rem;
+  }
+  
+  .ingrAI-connect-to-data-source-model .ingrAI-table a {
+    color: #353D47;
+  }
+  
+  .ingrAI-search-container {
+    width: 17rem;
+  }
+  
+  .ingrAI-filter-col-title {
+    font-size: 1rem;
+    text-transform: uppercase;
+  }
+  
+  .modal-dialog .ingrAI-search-container .btn-primary svg {
+    fill: #ffffff !important;
+  }
+  
+  
+  /* Custom Radio Button */
+  .checkcontainer {
+    display: block;
+    position: relative;
+    padding-left: 2rem;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: #353D47;
+  }
+  
+  .checkcontainer input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .radiobtn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1.25rem;
+    width: 1.25rem;
+    background-color: transparent;
+    border-radius: 50%;
+    border: 1px solid #BDC9DA;
+  }
+  
+  .checkcontainer input:checked ~ .radiobtn:after {
+    display: block;
+  }
+  
+  .checkcontainer .radiobtn:after {
+    top: 5px;
+    left: 5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10ADD3;
+  }
+  
+  .radiobtn:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  .checkcontainer input:checked ~ .radiobtn {
+    background-color: transparent;
+  }
+  
+  .checkmark {
+    position: absolute;
+    top: 4px;
+    left: 0;
+    height: 1rem;
+    width: 1rem;
+    background-color: transparent;
+    border: 1px solid #BDC9DA;
+  }
+  
+  .checkcontainer input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  .checkcontainer .checkmark:after {
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 10px;
+    border: solid #10ADD3;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+  
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  .ingrAI-collapse svg {
+    fill: #10ADD3;
+  }
+  
+  .ingrAI-time-container .form-control {
+    width: calc( 100% - 2rem );
+    margin-right: 0.3rem;
+  }
+  
+  .ingrAI-time-container svg {
+    fill: #10ADD3;
+  }
+  
+  .ingrAI-datasource-container {
+    overflow-y: auto;
+  }
+  
+  .ingrAI-datasource-container .checkmark {
+    top: 0 !important;
+  }
+  
+  .ingrAI-upload-icon-container {
+    border: 1px solid #10ADD3;
+    width: 4.125rem;
+    height: 4.125rem;
+    border-radius: 50%;
+    -webkit-radius: 50%;
+    margin: 0 auto;
+  }
+  
+  .ingrAI-uploadfiles-container svg {
+    fill: #15a7c9;
+  }
+  
+  .ingrAI-table-parent .ingrAI-minus {
+    display: none;
+  }
+  
+  .ingrAI-table-child {
+    background: transparent !important;
+  }
+  
+  .ingrAI-table-parent.open ~ .ingrAI-table-child {
+    display: table-row;
+  }
+  
+  .ingrAI-table tbody:nth-child(odd) tr {
+    background: #F5F5F5;
+  }
+  
+  .ingrAI-model-file-uploader {
+    border: 1px dashed #707070;
+    height: 170px;
+    text-align: center; 
+  }
+  
+  .ingrAI-model-file-uploader label {
+    cursor: pointer;
+  }
+  
+  .ingrAI-model-file-uploader svg {
+    fill: #10ADD3;
+  }
+  
+  .ingrAI-model-file-uploader a, .ingrAI-model-file-uploader a:hover {
+    color: #353D47;
+    text-decoration: none;
+  }
+  
+  .ingrAI-drag-text {
+    font-size: 1.2rem;
+  }
+  
+  .ingrAI-fileprogress-model .modal-content {
+    background: transparent;
+    border: 0;
+  }
+  
+  .ingrAI-fileprogress-model .modal-dialog {
+    max-width: 75%;
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.125rem;
+    color: #fff;
+  }
+  
+  .ingerAIn-file-progress-modal .progress {
+    border-radius: 0.125rem;
+    height: 0.5rem;
+  }
+  
+  .ingrAI-model-file-uploader.ingrAI-model-file-uploader-new {
+    height: 300px;
+  }
+  
+  .ingrAI-drag-text-large {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  
+  .ingrAI-uploadfiles-container {
+    height: 13rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+  .ingrAI-uploadfiles-container .progress {
+    height: 0.375rem;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    background-color: #B1B1B1;
+    margin-bottom: 0.7rem;
+  }
+  
+  .ingrAI-uploadfiles-container .progress-bar {
+    background: #10ADD3;
+  }
+  
+  .ingrAI-uploadfiles-container .upload-file-name {
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+    word-break: break-word;
+  }
+  
+  .choose-file input {
+    position: absolute;
+    left: 40%;
+   // top: 15%;
+    top: 40%;
+    right: 30%;
+    bottom: 57%;
+    opacity: 0;
+    max-width: 20%;
+    z-index: 0;
+    cursor: pointer;
+    height: 20%;
+  }
+  
+  .modal-header svg {
+    color: #FF000E;
+  }
+  
+  .modal{
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: auto;
+  }
+  
+  .cdk-overlay-container {
+    position: fixed;
+    z-index: 10000;
+  }
+  ::ng-deep .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+    border-color: #10ADD3;
+  }
+  ::ng-deep  .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-inner-circle {
+      background-color: #10ADD3;
+  }
+  ::ng-deep  .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple {
+      background-color: #7ed6ea;
+  }
+  
+  /* Info */
+  .ingrAI-info .media-img { width: 3rem; height: 3rem; margin-right: 0.75rem; overflow: hidden; }
+  .ingrAI-info .media-img img { max-width: 100%; height: auto; }
+  .ingrAI-info ol{ padding-left:1rem; }
+  .ingrAI-info ol li { font-size: 0.85rem;margin-bottom:0.5rem;}
+  
+  /* Select Form Data Source */
+  .ingrAI-model-upload-form{border:1px dashed #707070;padding:1.5rem 1rem;width:100%;}
+  .ingrAI-model-upload-form .modal-title{text-transform:capitalize;font-size:1.25rem;font-weight:700;}
+  .ingrAI-model-upload-form .ingrAI-time-input{border-bottom:1px solid #BDC9DA;margin-bottom:1.25rem;width:100%;}
+  .ingrAI-model-upload-form .ingrAI-time-input svg{fill:#10ADD3;}
+  .ingrAI-model-upload-form  .form-control{border:none;border-bottom:1px solid #BDC9DA;padding-left:0;text-transform:uppercase;font-size:0.75rem;}
+  .ingrAI-model-upload-form .form-modal-title{font-size:1rem; font-weight:600;margin-bottom:0.5rem;}
+  .ingrAI-model-file-uploader.ingrAI-file-upload{height: auto !important;width:100%;}
+  .ingrAI-model-file-uploader .filetype{font-size:0.85rem; font-weight:500;}
+  // .ingrAI-model-main-cont .ingrAI-uploadfiles-container{display:none;}
+  
+  #datasourcedata.ingrAI-table td{
+    border-bottom:0;
+  }
+  .info-msg{
+    color:#FF000E;
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+  .disable-pointer {
+    pointer-events: none;
+    background-color: #8080809e;
+  }
+
+  .bt-bg-color{	
+    background-color: #10ADD3 !important;
+  }
+
+  .cwidth {
+    width: 84%;
+  }

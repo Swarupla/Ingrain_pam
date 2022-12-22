@@ -1,0 +1,189 @@
+<!-- <ng-container *ngIf="moduleName=='DataTransformation'">
+
+  <div class='multiselect-dropdown d-flex justify-content-between align-items-center' 
+  [ngStyle]="(minWidthValue) ? {'min-width': '100%'} : {'min-width.px': '195'} ">
+  
+
+    <span (click)='toggleDisplay()' class="d-flex align-items-center multiselect-dropdown-placeholder"
+      *ngIf="this.selectedValues.size==0">{{placeHolder}}</span>
+
+    <div *ngIf="this.selectedValues.size!==0"
+      class="multiselect-dropdown-selectedvalues d-flex justify-content-start align-items-center">
+      <div *ngFor="let selectedValue of selectedValues" class="ingrAI-target-item d-flex">
+        <span class="ingrAI-target-item-name">{{selectedValue}}</span>
+        <span class="ingrAI-target-item-remove d-flex align-items-center justify-content-center">
+          <svg class="ingrAI-icon-svg" (click)="remove(selectedValue)">
+            <use xlink:href="#ingrAI-icon-close"></use>
+          </svg>
+        </span>
+      </div>
+    </div>
+
+    <span class="d-flex justify-content-center align-items-center  multiselect-dropdown-icon" *ngIf="!displayOptions"
+      (click)='toggleDisplay()'><span class="caret"></span></span>
+    <span class="d-flex justify-content-center align-items-center  multiselect-dropdown-icon" *ngIf="displayOptions"
+      (click)='toggleDisplay()'><span class="caret"></span></span>
+
+
+    <input class='multiselect-dropdown-search-box' placeholder="Search" *ngIf="displayOptions" [(ngModel)]='searchText'
+      type="text">
+
+      <ng-container *ngIf="parentName==='binning'">
+        <div class='multiselect-dropdown-options' *ngIf="displayOptions">
+          <label>
+        <input #checkboxall [disabled]='disableDropdown' [checked]="ischkall==true" [value]='selectall' (change)='onselectallClick(checkboxall)'
+        type="checkbox" name="chlselectall">Select All</label>
+        </div>
+      </ng-container>
+
+    <div class='multiselect-dropdown-options' *ngIf="displayOptions">
+
+      <label *ngFor="let column of columnData | search:searchText; let i = index" class="checkcontainer">
+        <span>{{column}}</span>
+        <ng-container *ngIf='!this.ischkall'>
+        <input #checkbox [disabled]='disableDropdown' [value]='column' [checked]='isChecked[column]'
+          [name]="'multiselectcheckbox'+i" (click)='onClick(checkbox)' type="checkbox">
+          </ng-container>
+          <ng-container *ngIf="this.ischkall==true">
+            <input #checkbox [disabled]='disableDropdown' [value]='column' [checked] = "isselectall[column]"
+              [name]="'multiselectcheckbox'+i" (click)='onClick(checkbox)' type="checkbox">
+            </ng-container>
+        <span class="checkmark"></span>
+      </label>
+
+      <input #select *ngIf='displayCustomValue' placeHolder='Custom Value' (input)=onClick(select.value) type="text">
+    </div>
+
+
+  </div>
+
+</ng-container>
+
+
+<div class='multiselect-dropdown d-flex justify-content-between align-items-center' *ngIf="moduleName=='DeployeModel'"
+  style="font-size: 0.875rem; cursor: pointer;">
+
+  <div class='d-flex justify-content-between align-items-center' style="border: none;padding-left: 6px;font-size: 0.75rem;width: 15vw;position: relative;flex-flow: row wrap;">
+    <span class="d-flex align-items-center multiselect-dropdown-placeholder" (click)='toggleDisplay()' style="font-size: 0.875rem; color: gray;">Select Model Version
+      <span class="d-flex justify-content-center align-items-center  multiselect-dropdown-icon" *ngIf="!displayOptions"><span class="caret"></span></span>
+      <span class="d-flex justify-content-center align-items-center  multiselect-dropdown-icon" *ngIf="displayOptions"><span class="caret"></span></span>
+    </span>
+    
+    <div class='multiselect-dropdown-options' *ngIf="displayOptions" style="margin-right: 2px; font-size: 13px; border-top: 2px solid gray; margin-left: -11px;">
+
+      <label *ngFor="let column of columnData | search:searchText; let i = index" class="checkcontainer">
+        <span style="font-weight: normal;word-break: break-all;">{{column}}</span>
+        <input #checkbox [disabled]='disableDropdown' [value]='column' [checked]='isChecked[column]'
+          [name]="'multiselectcheckbox'+i" (click)='onClick(checkbox)' type="checkbox">
+        <span class="checkmark"></span>
+      </label>
+
+      <input #select *ngIf='displayCustomValue' placeHolder='Custom Value' (input)=onClick(select.value) type="text">
+    </div>
+  </div>
+</div> -->
+
+
+<!-- <mat-form-field > -->
+<ng-container *ngIf="moduleName=='DeployeModel'">
+  <mat-select [formControl]="dropdownOptions" panelClass="publish-timedd" multiple (selectionChange)="selectionChanged($event)"
+    [placeholder]="'Select'" [disabled]="disableDropdown">
+    <mat-select-trigger *ngIf="dropdownOptions && dropdownOptions?.value && dropdownOptions.value?.length > 0">
+      <div class="" *ngIf="dropdownOptions && dropdownOptions?.value && dropdownOptions.value?.length > 0 ">
+        <div class="ingrAIn-feature-filter-item"
+          *ngFor="let selected of dropdownOptions.value  | slice: 0 : defaultDisplayCount ; let i = index">
+          <label class="mb-0" [popover]='selected' triggers="mouseenter:mouseleave"
+            style="max-width: 4em;overflow: hidden;text-overflow: ellipsis;">
+            <span style="max-width: 4em;overflow: hidden;text-overflow: ellipsis;">{{selected}} </span>
+          </label>
+          <span class="item-close" (click)="unselectOption(selected,i, $event)">x</span>
+
+        </div>
+        <div class="ingrAIn-feature-filter-item"
+          *ngFor="let selected of dropdownOptions.value  | slice: defaultDisplayCount : 4 ; let lastOperation = last; let i = index">
+          <span>({{dropdownOptions.value?.length - defaultDisplayCount}}+ ) </span>
+          <!-- <span class="item-close" (click)="unselectOption(selected,i, $event)">x</span> -->
+        </div>
+      </div>
+    </mat-select-trigger>
+    <div class="d-flex align-items-center justify-content-end myw-pagination mb-0 mt-0" *ngIf="columnData.length > 200">
+      <!-- <pagination-controls id="listing_pagination2" maxSize="10" directionLinks="true" (pageChange)="page = $event">
+      </pagination-controls> -->
+
+      <nav>
+        <ul class="pagination">
+          <li style="margin-top: 1em;">
+            <pagination-controls id="listing_pagination2" maxSize="8" directionLinks="true"
+              (pageChange)="page = $event">
+            </pagination-controls>
+          </li>
+        </ul>
+      </nav>
+      <!-- <label class="sr-only">>></label> -->
+      <div class="position-relative">
+        <label class="sr-only">List</label>
+        <select #limit>
+          <option value="200">200/page</option>
+          <!-- <option value="20">20/Page</option>
+              <option value="30">30/Page</option> -->
+        </select>
+      </div>
+    </div>
+   
+    <mat-option [id]="optionName" *ngFor="let optionName of columnData | paginate: { id: 'listing_pagination2',
+    itemsPerPage: 200,  currentPage: page }; let i = index" [value]="optionName">{{optionName}} - {{accuracyLabel[i]}}%</mat-option>
+  </mat-select>
+  <!-- </mat-form-field> -->
+</ng-container>
+
+<ng-container *ngIf="moduleName!='DeployeModel'">
+  <mat-select [formControl]="dropdownOptions" multiple (selectionChange)="selectionChanged($event)"
+    [placeholder]="'Select'" [disabled]="disableDropdown">
+    <mat-select-trigger *ngIf="dropdownOptions && dropdownOptions?.value && dropdownOptions.value?.length > 0">
+      <div class="" *ngIf="dropdownOptions && dropdownOptions?.value && dropdownOptions.value?.length > 0 ">
+        <div class="ingrAIn-feature-filter-item"
+          *ngFor="let selected of dropdownOptions.value  | slice: 0 : defaultDisplayCount; let i = index">
+          <label class="mb-0" [popover]='selected' triggers="mouseenter:mouseleave"
+            style="max-width: 4em;overflow: hidden;text-overflow: ellipsis;">
+            <span style="max-width: 4em;overflow: hidden;text-overflow: ellipsis;">{{selected}} </span>
+          </label>
+          <span class="item-close" (click)="unselectOption(selected,i, $event)">x</span>
+
+        </div>
+        <div class="ingrAIn-feature-filter-item"
+          *ngFor="let selected of dropdownOptions.value  | slice: defaultDisplayCount : defaultDisplayCount + 1 ; let lastOperation = last; let i = index">
+          <span>({{dropdownOptions.value?.length - defaultDisplayCount}}+ ) </span>
+          <!-- <span class="item-close" (click)="unselectOption(selected,i, $event)">x</span> -->
+        </div>
+      </div>
+    </mat-select-trigger>
+    <div class="d-flex align-items-center justify-content-end myw-pagination mb-0 mt-0" *ngIf="columnData.length > 200">
+      <!-- <pagination-controls id="listing_pagination2" maxSize="10" directionLinks="true" (pageChange)="page = $event">
+      </pagination-controls> -->
+
+      <nav>
+        <ul class="pagination">
+          <li style="margin-top: 1em;">
+            <pagination-controls id="listing_pagination2" maxSize="8" directionLinks="true"
+              (pageChange)="page = $event">
+            </pagination-controls>
+          </li>
+        </ul>
+      </nav>
+      <!-- <label class="sr-only">>></label> -->
+      <div class="position-relative">
+        <label class="sr-only">List</label>
+        <select #limit>
+          <option value="200">200/page</option>
+          <!-- <option value="20">20/Page</option>
+              <option value="30">30/Page</option> -->
+        </select>
+      </div>
+    </div>
+    <!-- <ng-container *ngIf="moduleName!='DeployeModel'"> -->
+    <mat-option #selectAllRef (click)="selectAll(selectAllRef)" value="Select All">Select All</mat-option>
+    <!-- </ng-container> -->
+    <mat-option [id]="optionName" *ngFor="let optionName of columnData | paginate: { id: 'listing_pagination2',
+    itemsPerPage: 200,  currentPage: page }; let i = index" [value]="optionName">{{optionName}}</mat-option>
+  </mat-select>
+</ng-container>

@@ -1,0 +1,1113 @@
+<div class="myw-section">
+  <div class="row align-items-center my-3">
+    <div class="col">
+      <div class="ingrain-reg-col ingrain-bdr text-center">
+        <div class="form-group mt-3">
+          <label class="myw-switch ingr-switch">
+            <!-- <input type="checkbox" [disabled]="hyperDisableForTimeSeries" (change)="teachAndTestToggle($event)">
+                <span class="label-first">What If Analysis</span>
+                <span class="switch-toggle"></span>
+                <span class="label-last">Hyper tuning</span> -->
+
+            <ng-container *ngIf="this.modelType==='TimeSeries'">
+              <input type="checkbox" disabled (change)="teachAndTestToggle($event)">
+              <span class="label-first" style="color: #000;">What If Analysis</span>
+              <span class="switch-toggle"></span>
+              <span class="label-last">Hyper tuning</span>
+            </ng-container>
+
+            <ng-container *ngIf="this.modelType!='TimeSeries'">
+              <input type="checkbox" (change)="teachAndTestToggle($event)">
+              <span class="label-first">What If Analysis</span>
+              <span class="switch-toggle"></span>
+              <span class="label-last">Hyper tuning</span>
+            </ng-container>
+
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ingrain-reg-col ingrain-bdr">
+        <div class="form-group mb-0">
+          <label class="form-label">{{selectedModelName}}</label>
+          <select class="form-control" (change)="onTestScenarionChange($event.target.value,'')">
+            <option value="">Saved Test Scenarios</option>
+            <option *ngFor="let options of testCaseScenarioOptions" [value]="options.WFId+'/'+options.scenario">
+              {{options.ScenarioName}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ingrain-reg-col d-flex justify-content-end myw-actions">
+
+        <!--Buttons for Unsaved Scenario-->
+        <ng-container *ngIf="isSelectionChange">
+          <ng-container *ngIf="modelType != 'TimeSeries'">
+            <!-- <ng-container *ngIf="(modelType === 'regression' || modelType === 'Regression')"> -->
+              <ng-container *ngIf = 'pASelected'>
+              <button class="btn btn-secondary text-nowrap" [disabled] = "true" title="Download">Download Template</button>
+              <button [disabled]="true" class="btn btn-secondary text-nowrap">Update Test Data</button>
+              <button class="btn btn-secondary" value="Run Bulk Test" hidden="true">Run Bulk Test</button>
+          </ng-container>
+          <ng-container *ngIf = '!pASelected'>            
+            <button class="btn btn-secondary text-nowrap" (click)='downloadData()' title="Download">Download Template</button>
+            <label for="ingrAI-upload-test" class="d-inline-flex mb-0 btn btn-secondary text-nowrap">
+              <span>Update Test Data</span>
+              <input type="file" #fileInput style="display:none;" id="ingrAI-upload-test"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv"
+                (change)="getFileDetails($event)">
+            </label>
+            <button class="btn btn-secondary" value="Run Bulk Test" *ngIf="showRunBulkTestbutton"
+            (click)="runBulkTest()">Run Bulk Test</button>
+          </ng-container>
+          <!-- </ng-container> -->
+          <!-- <ng-container *ngIf="(modelType !== 'regression' && modelType !== 'Regression')">
+            <button class="btn btn-secondary text-nowrap" (click)='downloadData()'>Download Template</button>
+            <label for="ingrAI-upload-test" class="d-inline-flex mb-0 btn btn-secondary text-nowrap">
+              <span>Update Test Data</span>
+              <input type="file" #fileInput style="display:none;" id="ingrAI-upload-test"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv"
+                (change)="getFileDetails($event)">
+            </label>
+            <button class="btn btn-secondary" value="Run Bulk Test" *ngIf="showRunBulkTestbutton"
+            (click)="runBulkTest()">Run Bulk Test</button>
+          </ng-container> -->
+           
+            <!-- <button [disabled]="disableReset" class="btn btn-secondary" (click)="resetWhatIfAnalysis(confirmModal)"
+              value="Reset">Reset</button> -->
+          </ng-container>
+          <!--Buttons for Timeseries-->
+          <ng-container *ngIf="modelType == 'TimeSeries'">
+            <button [disabled]="disableForTimeSeries" class="btn btn-secondary text-nowrap"
+              (click)='downloadData()' title="Download">Download Template</button>
+            <button [disabled]="disableForTimeSeries" class="btn btn-secondary text-nowrap">Update Test Data</button>
+            <input [disabled]="disableForTimeSeries" type="file" style="display: none;" #fileInput
+              id="ingrAI-upload-test" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv"
+              (change)="getFileDetails($event)">
+            <!-- <button [disabled]="disableForTimeSeries" class="btn btn-secondary"
+              (click)="resetWhatIfAnalysis(confirmModal)" value="Reset">Reset</button> -->
+          </ng-container>
+        </ng-container>
+
+        <!--Buttons for Saved Scenario-->
+        <ng-container *ngIf="!isSelectionChange">
+          <button [disabled]="disableForTestCase" class="btn btn-secondary text-nowrap"
+            (click)='downloadData()' title="Download">Download Template</button>
+          <button [disabled]="disableForTestCase" class="btn btn-secondary text-nowrap">Update Test Data</button>
+          <!-- <button [disabled]="disableForTestCase" class="btn btn-secondary" (click)="resetWhatIfAnalysis(confirmModal)"
+            value="Reset">Reset</button> -->
+        </ng-container>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row mt-4 mb-2" *ngIf="modelType != 'TimeSeries'">
+  <div class="col">
+    <div class="ingrain-toggle-switch d-flex justify-content-end align-items-center">
+      <div class="fs-12 toggle-first" [ngClass]="pASelected==false?'font-weight-bold':''">Provide feature values to
+        arrive at the predicted outcome</div>
+      <ng-container *ngIf="isNLPFlag === 'false'">
+      <label class="myw-toggle-switch ingrain-switch myw-inline mx-3">
+        <input type="checkbox" #PrescriptiveToogle id="chkSelect" (change)="togglePA($event)"
+          [disabled]="modelType == 'TimeSeries' || disablePAToggle == true">
+        <span class="label-first fs-12">Predictive</span>
+        <span class="label-last fs-12">Prescriptive</span>
+      </label>
+    </ng-container>
+
+    <ng-container *ngIf="isNLPFlag === 'true'">
+      <label class="myw-toggle-switch ingrain-switch myw-inline mx-3">
+        <input type="checkbox" #PrescriptiveToogle id="chkSelect"
+          [disabled]="modelType == 'TimeSeries' || disablePAToggle == true">
+        <span class="label-first fs-12">Predictive</span>
+      </label>
+    </ng-container>
+
+      <div class="fs-12 toggle-last" [ngClass]="pASelected==true?'font-weight-bold':''">Provide desired outcome to
+        determine<br /> appropriate feature values</div>
+    </div>
+  </div>
+  <div class="col-auto myw-actions">
+    <ng-container *ngIf="isSelectionChange">
+      <button [disabled]="disableSavetest" class="btn btn-secondary" (click)="openScenarioPopup()">Save Test</button>
+    <!-- <ng-container *ngIf="(modelType === 'regression' || modelType === 'Regression')"> -->
+      <button *ngIf = 'pASelected' [disabled] = "true" class="btn btn-primary">Run Test</button>
+      <button *ngIf = '!pASelected' [disabled]="showRunTestbutton || (disbalePrescriptiveAnalysisTextColumns && pASelected)"  (click)="runTest()"  class="btn btn-primary">Run Test</button>
+    <!-- </ng-container> -->
+    <!-- <ng-container *ngIf="(modelType !== 'regression' && modelType !== 'Regression')">
+      <button [disabled]="showRunTestbutton || (disbalePrescriptiveAnalysisTextColumns && pASelected)" class="btn btn-primary" (click)="runTest()">Run Test</button>
+    </ng-container> -->
+    </ng-container>
+    <ng-container *ngIf="!isSelectionChange">
+      <button [disabled]="disableForTestCase" class="btn btn-secondary" (click)="openScenarioPopup()">Save Test</button>
+      <button [disabled]="disableForTestCase" class="btn btn-primary" (click)="runTest()">Run Test</button>
+    </ng-container>
+  </div>
+</div>
+<div class="row mt-4 mb-2 align-items-center" *ngIf="modelType == 'TimeSeries'">
+  <div class="col text-center myw-500">
+    What-if-analysis can be carried out by specifying the steps for which the forecast is required
+  </div>
+  <div class="col-auto myw-actions">
+    <ng-container *ngIf="isSelectionChange">
+      <button class="btn btn-secondary" [disabled]="disableSavetestTimeSeries" (click)="openScenarioPopup()">Save
+        Test</button>
+      <button class="btn btn-primary" [disabled]="showRunTestbuttonTimeSeries" (click)="runTest()">Run Test</button>
+    </ng-container>
+    <ng-container *ngIf="!isSelectionChange">
+      <button [disabled]="disableForTestCase" class="btn btn-secondary" (click)="openScenarioPopup()">Save Test</button>
+      <button [disabled]="disableForTestCase" class="btn btn-primary" (click)="runTest()">Run Test</button>
+    </ng-container>
+  </div>
+</div>
+<div *ngIf="predictionDataCount > 1 || testDataListCount > 1" class="row" style="flex-direction: row-reverse;">
+  <div class="d-flex pr-0">
+    <pagination-controls id="listing_pagination" maxSize="5" directionLinks="true" (pageChange)="page = $event">
+    </pagination-controls>
+  </div>
+</div>
+<!--Predictive Scenario-->
+<div *ngIf="!pASelected && modelType != 'TimeSeries'" class="form-row ingrain-predictive">
+  <!--Unsaved Scenrio-->
+  <ng-container *ngIf="isSelectionChange">
+    <!--Non-Timeseries Scenrio-->
+    <ng-container *ngIf="modelType != 'TimeSeries'">
+      <div class="col-12 col-lg-7">
+        <div class="card ingrain-card highlight">
+          <div class="card-header flex-column">
+            <div class="d-flex align-items-center mb-2">
+              <div class="card-title flex-grow-1">Features and Values</div>
+              <a href="javascript:;" (click)="resetWhatIfAnalysis(confirmModal)"><img src="assets/images/feature.svg"
+                  alt="" /></a>
+            </div>
+            <ng-container *ngIf="pASelected === false">
+              <p class="fs-12 mb-0">Set the values and click on “Run Test” to get the prediction.</p>
+              <p class="fs-12 mb-0">Click on “Save Test” to save the scenarios</p>
+            </ng-container>
+          </div>
+          <div class="card-body">
+            <div class="row ingrain-feature-val">
+              <ng-container *ngFor="let featureList of multipleFeaturesList;let listIndex = index">
+                <ng-container *ngFor="let teachtestdata of featureList | keyvalue:orderByRowNum;let indx = index">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <!-- <input #inputCheck type="checkbox" [checked]="true" (click)="onCheckChanged(listIndex,teachtestdata.key,inputCheck)"/>
+                          <span class="checkmark"></span> -->
+                      <!-- commented below line to resolve defect 709211 - resolved version is below -->
+                      <!-- <span style="word-break: break-all;">{{teachtestdata.key}}</span>
+                          <span *ngIf="featureType[teachtestdata.key] == 'text'" style="color: red;margin-left: 2px;">*</span> -->
+                      <!-- <label class="form-label" *ngIf="featureType[teachtestdata.key] != 'text'" -->
+                      <label class="form-label"
+                        style="word-break: break-all;">{{teachtestdata.key}}
+                        <span *ngIf="featureType[teachtestdata.key] == 'text'"
+                          style="color: red;margin-left: 2px;">*</span>
+                      </label>
+                      <ng-container *ngIf="featureType[teachtestdata.key] == 'float'">
+                        <div class="d-flex align-items-center">
+                          <div class="ingrain-range-value">{{minNumberArr[teachtestdata.key]}}</div>
+                          <div class="mx-3 ingrain-range w-100">
+                            <!-- <input #sliderInput type="number"
+                                      [(ngModel)]="postFeatureList[listIndex][teachtestdata.key].Value"
+                                      min="{{minNumberArr[teachtestdata.key]}}" max="{{maxNumberArr[teachtestdata.key]}}"
+                                      style="width: 80px;border: 0;border-bottom: 1px solid #004080;color: #004080;"
+                                      (change)="sliderInputChange(minNumberArr[teachtestdata.key],maxNumberArr[teachtestdata.key],sliderInput.value,listIndex,teachtestdata.key)" /> -->
+                            <!-- Bug 700912 Ingrain_StageTest_R2.1: - Discount bar is not moving and values are not changing for superestore data regression model
+                                    Fix : added step="0.1"
+
+                                    Bug	700869 Ingrain_StageTest_R2.1 - Sprint 2 - Teach & Test - Alignment are not proper and values are seen twice in Feature and values in Teach and test screen
+                                    Fix : changes let position based on values getStyles(inputRange.value,minNumberArr[teachtestdata.key],maxNumberArr[teachtestdata.key]) -->
+                            <input type="range" #inputRange [id]="input + 'indx'"
+                              [(ngModel)]="postFeatureList[listIndex][teachtestdata.key].Value" class="myw-range-slider"
+                              (change)="onInputChange(listIndex,teachtestdata.key,inputRange.value, inputRange)"
+                              [value]="postFeatureList[listIndex][teachtestdata.key].Value" step="0.1"
+                              min="{{minNumberArr[teachtestdata.key]}}" max="{{maxNumberArr[teachtestdata.key]}}"
+                              [ngStyle]="rangeCss(inputRange.value,minNumberArr[teachtestdata.key],maxNumberArr[teachtestdata.key])">
+                            <span
+                              class="myw-range-output">{{getRangeOutput(postFeatureList[listIndex][teachtestdata.key].Value)}}</span>
+                          </div>
+                          <div class="ingrain-range-value">{{maxNumberArr[teachtestdata.key]}}</div>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngIf="featureType[teachtestdata.key] == 'text'">
+                        <div class="w-100">
+                          <input #textInput type="textbox" class="form-control"
+                            [value]="postFeatureList[listIndex][teachtestdata.key].Value"
+                            maxlength="70"
+                            [(ngModel)]="postFeatureList[listIndex][teachtestdata.key].Value"
+                            (change)="onTextChange(listIndex,teachtestdata.key,textInput.value, textInput)" />
+                            <label class="form-label">You have {{ 70 - textInput.value?.length}} of 70 characters remaining.</label>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngIf="featureType[teachtestdata.key] == 'string'">
+                        <select #select class="form-control" [id]="select + 'indx'"
+                          (change)="onSelectChange(listIndex,teachtestdata.key,select.value,indx,select)">
+                          <ng-container *ngFor="let options of stringOptions[teachtestdata.key]">
+                            <option [value]="options" [selected]="select.value == options">
+                              {{options}}
+                            </option>
+                          </ng-container>
+                        </select>
+                      </ng-container>
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-5">
+      
+        <ng-container *ngFor="let predictions of predictionDataList | paginate:
+          { id: 'listing_pagination',  itemsPerPage: 1,
+            currentPage: page, totalItems: predictionDataCount };
+            let listIndex = index">
+        
+          <div class="card ingrain-card card-auto">
+            <div class="card-header">
+              <div class="card-title">Predictive Outcome              
+                  &nbsp;&nbsp;<a *ngIf = "predictionDataList.length > 1"
+                   (click)="downloadPredictive()" class="myw-navbar-action" role="button"
+                  matTooltip="Export the password protected file, click on info icon to know the password hint" data-toggle="modal" data-target="#sampleModal" data-toggle-tooltip="tooltip"
+                  data-placement="bottom" data-trigger="hover"><img src="assets/images/Iconfeather-download.svg"
+                    alt="Export the password protected file, click on info icon to know the password hint" /><span>Download Data</span></a>
+              </div>
+             
+             
+            </div>
+            <div class="card-body d-flex flex-column">
+              <div class="form-group" *ngIf="pASelected === true">
+                <p class="fs-12 mb-0">Set the values and click on “Run Test” to get the prediction.</p>
+                <p class="fs-12 mb-0">Click on “Save Test” to save the scenarios</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label predective-outcome-lbl">{{predictions.targetColumn}}</label>
+                <!--Classification/MultiClass Model-->
+                <ng-container *ngIf="(modelType === 'Classification' || modelType === 'Multi_Class')">
+                  <select #select class="form-control">
+                    <option value="">Select</option>
+                    <option *ngFor="let option of predictionOutcomeValues" [value]="option">{{option}}</option>
+                  </select>
+                </ng-container>
+                <!--Regression Model-->
+                <ng-container *ngIf="predictions.ProblemType == 'regression'">
+                  <!-- <input type="number" [(ngModel)]="predictionOutcome" value="{{predictions.Prediction}}" disabled
+                    class="form-control" /> -->
+                  <input type="number" [(ngModel)]="predictions.Prediction" value="predictions.Prediction" disabled
+                    class="form-control" />
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="card ingrain-card card-hf">
+            <div class="card-body d-flex flex-column">
+              <ng-container *ngIf="modelType == 'Classification' || modelType == 'classification'">
+                <div class="card-header">
+                  <div class="card-title">Predictive Outcome</div>
+                </div>
+                <div style="height: 220px">
+                  <app-horizontal-chart [horizontalBarchartHeight]="PredictionOutcomeChart.height"
+                    [horizontalBarchartWidth]="PredictionOutcomeChart.width" [data]="predictions['OutcomePrediction']">
+                  </app-horizontal-chart>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="showFeatureWeight(predictions) && showWordCloud == true">
+                <div class="card-header">
+                  <div class="card-title">Feature weights</div>
+                  <app-info-tooltip class="ml-auto">
+                    <div class="htmlDesignedTooltip">
+                      Influencing attributes in the trained model arranged in decreasing order of their weights. Weights
+                      give a measure of
+                      how much influence the particular attribute has on the output
+                    </div>
+                  </app-info-tooltip>
+                </div>
+
+                <ng-container *ngIf = "predictions.FeatureWeights !== null">
+                <div style="max-height: 300px;" class="myw-scrollbar">
+                  <app-bar-chart [barchartHeight]=featureChartsHWClassification.height
+                    [barchartWidth]=featureChartsHWClassification.width [data]="predictions.FeatureWeights"
+                    [modeltype]="modelType">
+                  </app-bar-chart>
+                </div>
+              </ng-container>
+
+              </ng-container>
+              <ng-container *ngIf="showFeatureWeight(predictions) && showWordCloud == false">
+                <div class="card-header">
+                  <div class="card-title">Feature weights</div>
+                  <app-info-tooltip [className]="'toggleRight'">
+                    <div class="htmlDesignedTooltip">
+                      Influencing attributes in the trained model arranged in decreasing order of their weights. Weights
+                      give a measure of
+                      how much influence the particular attribute has on the output
+                    </div>
+                  </app-info-tooltip>
+                </div>
+
+               
+                <div *ngIf = "predictions.FeatureWeights !== null">
+                  <app-bar-chart [barchartHeight]=featureChartsHWClassification.height
+                    [barchartWidth]=featureChartsHWClassification.width [data]="predictions.FeatureWeights"
+                    [modeltype]="modelType">
+                  </app-bar-chart>
+                </div>
+             
+              </ng-container>
+              <!-- 704369 Ingrain_StageTest_R2.1 - Sprint 2 - When we do bulk upload, for all the records word cloud is getting generated in one single page
+            Fix - Removed *ngFor="let predictions of testDataList" -->
+              <ng-container *ngIf="predictions.hasOwnProperty('WordCloud') && ( predictions.WordCloud['image'] != ''
+              || predictions.WordCloud['message'] != '')">
+                <div class="card-header mt-2">
+                  <div class="card-title">Word Cloud</div>
+                </div>
+                <div style="height: fit-content;">
+                  <ng-container *ngIf="predictions.WordCloud['image'] != ''">
+                    <app-word-cloud-image [wordCloudImage]="predictions.WordCloud['image']">
+                    </app-word-cloud-image>
+                  </ng-container>
+                  <ng-container *ngIf="predictions.WordCloud['message'] != ''">
+                    <span style="color: red">{{predictions.WordCloud['message'] }}</span>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <!--Timeseries Scenrio-->
+
+  </ng-container>
+  <!--Saved Scenrio-->
+  <ng-container *ngIf="!isSelectionChange">
+    <!--Non-Timeseries Scenrio-->
+    <ng-container *ngIf="modelType != 'TimeSeries'">
+      <div class="col-12 col-lg-4">
+        <div class="card ingrain-card highlight">
+          <div class="card-header flex-column">
+            <div class="d-flex align-items-center mb-2">
+              <div class="card-title flex-grow-1">Features and Values</div>
+              <!-- <a href="javascript:;"><img src="images/feature.svg" alt="" /></a> -->
+            </div>
+            <ng-container *ngIf="pASelected === false">
+              <p class="fs-12 mb-0">Set the values and click on “Run Test” to get the prediction.</p>
+              <p class="fs-12 mb-0">Click on “Save Test” to save the scenarios</p>
+            </ng-container>
+          </div>
+          <div class="card-body d-flex flex-column ingrain-features myw-scrollbar">
+            <ng-container *ngFor="let predictions of testDataList | paginate:
+              { id: 'listing_pagination',  itemsPerPage: 1,
+              currentPage: page, totalItems: testDataListCount };let listIndex = index" class="h-100"
+              style="overflow-y: auto;overflow-x: hidden;">
+              <div class="form-group-pre features-d-flex"
+                *ngFor="let teachtestdata of predictions.Data | keyvalue;let indx = index">
+                <label class="form-label" style="word-break: break-all;">{{teachtestdata.key}}</label>
+                <!-- Bug raised by North American team 
+                  Desc :- Nothing happens when hyperlinks are clicked in the FEATURES AND VALUES section of What if analysis
+                  Fix  :- removed html tag <u></u> -->
+                <label class="form-label">{{teachtestdata.value}}</label>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-5">
+        <div class="card ingrain-card">
+          <div class="card-body d-flex flex-column">
+            <ng-container *ngFor="let predictions of testDataList | paginate:
+                  { id: 'listing_pagination',  itemsPerPage: 1,
+                  currentPage: page, totalItems: testDataListCount };let listIndex = index" class="h-100"
+              style="overflow-y: auto;overflow-x: hidden;">
+              <ng-container *ngIf="modelType == 'Classification' || modelType == 'classification'">
+                <div class="card-header">
+                  <div class="card-title">Predictive Outcome</div>
+                </div>
+                <ng-container *ngIf = "predictions['OutcomePrediction'] !== null || predictions['OutcomePrediction'] !== ''">
+                <div style="height: 220px">
+                  <app-horizontal-chart [horizontalBarchartHeight]="PredictionOutcomeChart.height"
+                    [horizontalBarchartWidth]="PredictionOutcomeChart.width" [data]="predictions['OutcomePrediction']">
+                  </app-horizontal-chart>
+                </div>
+              </ng-container>
+              </ng-container>
+              <ng-container *ngIf="showFeatureWeight(predictions) && showWordCloud == true">
+                <div class="card-header">
+                  <div class="card-title">Feature weights</div>
+                  <app-info-tooltip class="ml-auto" [className]="'featureselection-tip'">
+                    <div class="htmlDesignedTooltip">
+                      Influencing attributes in the trained model arranged in decreasing order of their weights. Weights
+                      give a measure of
+                      how much influence the particular attribute has on the output
+                    </div>
+                  </app-info-tooltip>
+                </div>
+                <ng-container *ngIf = "predictions.FeatureWeights !== null">
+                <div style="max-height: 300px;" class="myw-scrollbar">
+                  <app-bar-chart [barchartHeight]=featureChartsHWClassification.height
+                    [barchartWidth]=featureChartsHWClassification.width [data]="predictions.FeatureWeights">
+                  </app-bar-chart>
+                </div>
+              </ng-container>
+              </ng-container>
+              <ng-container *ngIf="showFeatureWeight(predictions) && showWordCloud == false">
+                <div class="card-title">Feature weights
+                  <app-info-tooltip class="ml-auto" [className]="'featureselection-tip'">
+                    <div class="htmlDesignedTooltip">
+                      Influencing attributes in the trained model arranged in decreasing order of their weights. Weights
+                      give a measure of
+                      how much influence the particular attribute has on the output
+                    </div>
+                  </app-info-tooltip>
+                </div>
+                <ng-container *ngIf = "predictions.FeatureWeights !== null">
+                <div style="max-height: 300px;" class="myw-scrollbar">
+                  <app-bar-chart [barchartHeight]=featureChartsHWClassification.height
+                    [barchartWidth]=featureChartsHWClassification.width [data]="predictions.FeatureWeights">
+                  </app-bar-chart>
+                </div>
+              </ng-container>
+              </ng-container>
+              <!-- 704369 Ingrain_StageTest_R2.1 - Sprint 2 - When we do bulk upload, for all the records word cloud is getting generated in one single page
+                    Fix - Removed *ngFor="let predictions of testDataList" -->
+              <ng-container *ngIf="predictions.hasOwnProperty('WordCloud') && ( predictions.WordCloud['image'] != ''
+                      || predictions.WordCloud['message'] != '')">
+                <!-- <div class="card-title">Word Cloud</div> -->
+                <div class="card-header mt-2">
+                  <div class="card-title">Word Cloud</div>
+                </div>
+                <div style="height: fit-content;">
+                  <ng-container *ngIf="predictions.WordCloud['image'] != ''">
+                    <app-word-cloud-image [wordCloudImage]="predictions.WordCloud['image']">
+                    </app-word-cloud-image>
+                  </ng-container>
+                  <ng-container *ngIf="predictions.WordCloud['message'] != ''">
+                    <span style="color: red">{{predictions.WordCloud['message'] }}</span>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </ng-container>
+            <!-- <p class="mt-auto fs-12 mb-0">Priority contributes the most in predicting the values for TATRESOLUTION for the given set of inputs. Lorem Ipsum Dolem em.</p> -->
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-3">
+        <div class="card ingrain-card">
+          <div class="card-header">
+         
+          </div>
+          <div class="card-body d-flex flex-column">
+            <ng-container *ngFor="let predictions of testDataList | paginate:
+                { id: 'listing_pagination',  itemsPerPage: 1,
+                currentPage: page, totalItems: testDataListCount };let listIndex = index" class="h-100"
+              style="overflow-y: auto;overflow-x: hidden;">
+              <div class="card-title-download">Predictive Outcome
+                &nbsp;&nbsp;<a *ngIf = "testDataList.length > 1"
+                     (click)="downloadPredictiveOnSave()" class="myw-navbar-action" role="button"
+                    matTooltip="Export the password protected file, click on info icon to know the password hint" data-toggle="modal" data-target="#sampleModal" data-toggle-tooltip="tooltip"
+                    data-placement="bottom" data-trigger="hover"><img src="assets/images/Iconfeather-download.svg"
+                      alt="Export the password protected file, click on info icon to know the password hint" /><span>Download Data</span></a>
+              </div>
+              <div class="form-group" *ngIf="pASelected === true">
+                <p class="fs-12 mb-0">Set the values and click on “Run Test” to get the prediction.</p>
+                <p class="fs-12 mb-0">Click on “Save Test” to save the scenarios</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label predective-outcome-lbl">{{predictions.targetColumn}}</label>
+                <div class="input-group">
+                  <div class="form-control">{{predictions.Prediction}}</div>
+                  <!-- <div class="input-group-append">
+                              <button type="button" class="btn disabled"><img src="assets/images/edit.svg" alt="Edit"></button>
+                          </div> -->
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>
+<!--Predictive Scenario-->
+
+<!--Prescriptive Scenario-->
+<div *ngIf="pASelected" class="form-row ingrain-prescriptive">
+  <!--Unsaved Scenrio without clicking Prescriptive-->
+  <ng-container *ngIf="isSelectionChange">
+    <ng-container *ngIf="!prescriptiveAnalysis">
+      <div class="col-12 col-lg-4">
+        <div class="card ingrain-card">
+          <div class="card-header flex-column">
+            <div class="d-flex align-items-center mb-2">
+              <div class="card-title flex-grow-1">Features and Values</div>
+              <!-- <a href="javascript:;"><img src="assets/images/feature.svg" alt="" /></a> -->
+            </div>
+            <ng-container *ngIf="pASelected === false">
+              <p class="fs-12 mb-0">Set the values and click on “Run Test” to get the prediction.</p>
+              <p class="fs-12 mb-0">Click on “Save Test” to save the scenarios</p>
+            </ng-container>
+          </div>
+          <div class="card-body d-flex flex-column ingrain-features myw-scrollbar">
+            <ng-container *ngFor="let featureList of multipleFeaturesList;let listIndex = index">
+              <ng-container *ngFor="let teachtestdata of featureList | keyvalue:orderByRowNum;let indx = index">
+                <div class="form-group-pre features-d-flex">
+                  <label class="form-label" style="word-break: break-all;">{{teachtestdata.key}}</label>
+                  <label class="form-label">{{postFeatureList[listIndex][teachtestdata.key].Value}}</label>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-5">
+        <div class="card ingrain-card">
+          <div class="card-body d-flex flex-column">
+            <ng-container *ngFor="let predictions of predictionDataList | paginate:
+                { id: 'listing_pagination',  itemsPerPage: 1,
+                currentPage: page, totalItems: testDataListCount };let listIndex = index" class="h-100"
+              style="overflow-y: auto;overflow-x: hidden;">
+              <ng-container *ngIf="modelType == 'Classification' || modelType == 'classification'">
+                <div class="card-header">
+                  <div class="card-title">Predictive Outcome</div>
+                </div>
+                <div style="height: 220px">
+                  <app-horizontal-chart [horizontalBarchartHeight]="PredictionOutcomeChart.height"
+                    [horizontalBarchartWidth]="PredictionOutcomeChart.width" [data]="predictions['OutcomePrediction']">
+                  </app-horizontal-chart>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="showFeatureWeight(predictions) && showWordCloud == true">
+                <div class="card-header">
+                  <div class="card-title">Feature weights</div>
+                  <app-info-tooltip class="ml-auto" [className]="'toggleRight'">
+                    <div class="htmlDesignedTooltip">
+                      Influencing attributes in the trained model arranged in decreasing order of their weights. Weights
+                      give a measure of
+                      how much influence the particular attribute has on the output
+                    </div>
+                  </app-info-tooltip>
+                </div>
+                <ng-container *ngIf = "predictions.FeatureWeights !== null">
+                <div style="max-height: 300px;" class="myw-scrollbar">
+                  <app-bar-chart [barchartHeight]=featureChartsHWClassification.height
+                    [barchartWidth]=featureChartsHWClassification.width [data]="predictions.FeatureWeights">
+                  </app-bar-chart>
+                </div>
+              </ng-container>
+              </ng-container>
+              <ng-container *ngIf="showFeatureWeight(predictions) && showWordCloud == false">
+                <div class="card-title">Feature weights
+                  <app-info-tooltip class="ml-auto" [className]="'featureselection-tip'">
+                    <div class="htmlDesignedTooltip">
+                      Influencing attributes in the trained model arranged in decreasing order of their weights. Weights
+                      give a measure of
+                      how much influence the particular attribute has on the output
+                    </div>
+                  </app-info-tooltip>
+                </div>
+                <ng-container *ngIf = "predictions.FeatureWeights !== null">
+                <div style="max-height: 300px;" class="myw-scrollbar">
+                  <app-bar-chart [barchartHeight]=featureChartsHWClassification.height
+                    [barchartWidth]=featureChartsHWClassification.width [data]="predictions.FeatureWeights">
+                  </app-bar-chart>
+                </div>
+              </ng-container>
+              </ng-container>
+              <!-- 704369 Ingrain_StageTest_R2.1 - Sprint 2 - When we do bulk upload, for all the records word cloud is getting generated in one single page
+                  Fix - Removed *ngFor="let predictions of testDataList" -->
+              <ng-container *ngIf="predictions.hasOwnProperty('WordCloud') && ( predictions.WordCloud['image'] != ''
+                    || predictions.WordCloud['message'] != '')">
+                <div class="card-header mt-2">
+                  <div class="card-title">Word Cloud</div>
+                </div>
+                <div style="height: fit-content;">
+                  <ng-container *ngIf="predictions.WordCloud['image'] != ''">
+                    <app-word-cloud-image [wordCloudImage]="predictions.WordCloud['image']">
+                    </app-word-cloud-image>
+                  </ng-container>
+                  <ng-container *ngIf="predictions.WordCloud['message'] != ''">
+                    <span style="color: red">{{predictions.WordCloud['message'] }}</span>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </ng-container>
+            <!-- <p class="mt-auto fs-12 mb-0">Priority contributes the most in predicting the values for TATRESOLUTION for the given set of inputs. Lorem Ipsum Dolem em.</p> -->
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-3">
+        <div class="card ingrain-card highlight">
+          <div class="card-header">
+            <div class="card-title">Predictive Outcome</div>
+          </div>
+          <div class="card-body d-flex flex-column">
+            <ng-container *ngFor="let predictions of predictionDataList | paginate:
+                { id: 'listing_pagination',  itemsPerPage: 1,
+                currentPage: page, totalItems: testDataListCount };let listIndex = index" class="h-100"
+              style="overflow-y: auto;overflow-x: hidden;">
+              <ng-container *ngIf="(modelType === 'Classification' || modelType === 'Multi_Class')">
+                <ng-container *ngIf="!prescriptiveAnalysis">
+                  <div class="form-group" *ngIf="pASelected === true">
+                    <p class="fs-12 mb-0">Set the values and click on “Run Test” to get the prediction.</p>
+                    <p class="fs-12 mb-0">Click on “Save Test” to save the scenarios</p>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label predective-outcome-lbl">{{predictions.targetColumn}}</label>
+                    <select #select class="form-control"
+                      [disabled]="disablePrescriptiveButton || disbalePrescriptiveAnalysisTextColumns"
+                      (change)="onChangeOfSelect(select.value)">
+                      <option value="">Select</option>
+                      <option *ngFor="let option of predictionOutcomeValues" [value]="option">{{option}}</option>
+                    </select>
+                  </div>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="predictions.ProblemType == 'regression'">
+                <ng-container *ngIf="!prescriptiveAnalysis">
+                  <div class="form-group">
+                    <label class="form-label predective-outcome-lbl">{{predictions.targetColumn}}</label>
+
+                    <ng-container *ngIf="PAInput">
+                      <div class="" style="display: inline-flex;">
+                        <!-- <input type="number" [ngModel]="predictionOutcome" disabled
+                          value="{{predictions.Prediction}}" /> -->
+                          <input type="number" [(ngModel)]="predictions.Prediction" value="predictions.Prediction" disabled
+                          />
+                        <button type="button" class="btn btn btn-secondary"
+                          [disabled]="disablePrescriptiveButton || disbalePrescriptiveAnalysisTextColumns" style="min-width: 3em;
+                          border: none;">
+                          <!-- <img (click)="PAInput=false" src="assets/images/edit.svg" alt="Edit"> -->
+                          <img (click)="PAInput=false" src="assets/images/edit.svg" alt="Edit">
+                        </button>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="!PAInput">
+                      <div class="" style="display: inline-flex;">
+                        <!-- <input type="number" [(ngModel)]="predictionOutcome" value="{{predictions.Prediction}}"
+                          (change)="pAInputChange(predictionOutcome)" class="form-control" /> -->
+                          <input type="number" step="0.01" #inputvalue [(ngModel)]="predictions.Prediction" value="predictions.Prediction"
+                          (change)="pAInputChange(inputvalue.value)" class="form-control" />
+                        <button type="button" class="btn btn btn-secondary" (click)="prescriptiveAnalytics(inputvalue.value)"
+                          (click)="PAInput=true">Save</button>
+                      </div>
+                    </ng-container>
+                  </div>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <!--Unsaved Scenrio after clicking Prescriptive-->
+    <ng-container *ngIf="prescriptiveAnalysis">
+      <div class="col-12 col-lg-4">
+        <div class="card ingrain-card">
+          <div class="card-header flex-column">
+            <div class="d-flex align-items-center mb-2">
+              <div class="card-title flex-grow-1">Features and Values</div>
+              <!-- <a href="javascript:;"><img src="assets/images/feature.svg" alt="" /></a> -->
+            </div>
+            <ng-container *ngIf="pASelected === false">
+              <p class="fs-12 mb-0">Set the values and click on “Run Test” to get the prediction.</p>
+              <p class="fs-12 mb-0">Click on “Save Test” to save the scenarios</p>
+            </ng-container>
+          </div>
+          <div class="card-body d-flex flex-column ingrain-features myw-scrollbar">
+            <ng-container *ngFor="let teachtestdata of presAnalysisData[0].Data | keyvalue;let indx = index">
+              <div class="form-group-pre features-d-flex">
+                <label class="form-label" style="word-break: break-all;">{{teachtestdata.key}}</label>
+                <label class="form-label">{{teachtestdata.value}}</label>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngFor="let predictions of predictionDataList | paginate:
+        { id: 'listing_pagination',  itemsPerPage: 1,
+        currentPage: page, totalItems: testDataListCount };let listIndex = index" class="h-100"
+        style="overflow-y: auto;overflow-x: hidden;">
+        <div class="col-12 col-lg-5">
+          <div class="card ingrain-card">
+            <div class="card-body d-flex flex-column">
+              <ng-container *ngFor="let predictions of predictionDataList | paginate:
+                  { id: 'listing_pagination',  itemsPerPage: 1,
+                  currentPage: page, totalItems: testDataListCount };let listIndex = index" class="h-100"
+                style="overflow-y: auto;overflow-x: hidden;">
+                <ng-container *ngIf="modelType == 'Classification' || modelType == 'classification'">
+                  <div class="card-header">
+                    <div class="card-title">Predictive Outcome</div>
+                  </div>
+                  <div style="height: 220px">
+                    <app-horizontal-chart [horizontalBarchartHeight]="PredictionOutcomeChart.height"
+                      [horizontalBarchartWidth]="PredictionOutcomeChart.width"
+                      [data]="predictions['OutcomePrediction']">
+                    </app-horizontal-chart>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="showFeatureWeight(predictions) && showWordCloud == true">
+                  <div class="card-header">
+                    <div class="card-title">Feature weights</div>
+                    <app-info-tooltip class="ml-auto" [className]="'featureselection-tip'">
+                      <div class="htmlDesignedTooltip">
+                        Influencing attributes in the trained model arranged in decreasing order of their weights.
+                        Weights give a measure of
+                        how much influence the particular attribute has on the output
+                      </div>
+                    </app-info-tooltip>
+                  </div>
+                  <ng-container *ngIf = "predictions.FeatureWeights !== null">
+                  <div style="max-height: 300px;" class="myw-scrollbar">
+                    <app-bar-chart [barchartHeight]=featureChartsHWClassification.height
+                      [barchartWidth]=featureChartsHWClassification.width [data]="predictions.FeatureWeights">
+                    </app-bar-chart>
+                  </div>
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="showFeatureWeight(predictions) && showWordCloud == false">
+                  <div class="card-title">Feature weights
+                    <app-info-tooltip class="ml-auto" [className]="'featureselection-tip'">
+                      <div class="htmlDesignedTooltip">
+                        Influencing attributes in the trained model arranged in decreasing order of their weights.
+                        Weights give a measure of
+                        how much influence the particular attribute has on the output
+                      </div>
+                    </app-info-tooltip>
+                  </div>
+                  <div style="max-height: 300px;" class="myw-scrollbar">
+                    <app-bar-chart [barchartHeight]=featureChartsHWClassification.height
+                      [barchartWidth]=featureChartsHWClassification.width [data]="predictions.FeatureWeights">
+                    </app-bar-chart>
+                  </div>
+                </ng-container>
+                <!-- 704369 Ingrain_StageTest_R2.1 - Sprint 2 - When we do bulk upload, for all the records word cloud is getting generated in one single page
+                    Fix - Removed *ngFor="let predictions of testDataList" -->
+                <ng-container *ngIf="predictions.hasOwnProperty('WordCloud') && ( predictions.WordCloud['image'] != ''
+                      || predictions.WordCloud['message'] != '')">
+                  <div class="card-header mt-2">
+                    <div class="card-title">Word Cloud</div>
+                  </div>
+                  <div style="height: fit-content;">
+                    <ng-container *ngIf="predictions.WordCloud['image'] != ''">
+                      <app-word-cloud-image [wordCloudImage]="predictions.WordCloud['image']">
+                      </app-word-cloud-image>
+                    </ng-container>
+                    <ng-container *ngIf="predictions.WordCloud['message'] != ''">
+                      <span style="color: red">{{predictions.WordCloud['message'] }}</span>
+                    </ng-container>
+                  </div>
+                </ng-container>
+              </ng-container>
+              <!-- <p class="mt-auto fs-12 mb-0">Priority contributes the most in predicting the values for TATRESOLUTION for the given set of inputs. Lorem Ipsum Dolem em.</p> -->
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-3">
+          <div class="card ingrain-card highlight">
+            <div class="card-header">
+              <div class="card-title">Predictive Outcome</div>
+            </div>
+            <div class="card-body d-flex flex-column">
+              <ng-container *ngIf="(modelType === 'Classification' || modelType === 'Multi_Class')">
+                <ng-container *ngIf="prescriptiveAnalysis">
+                  <div class="form-group" *ngIf="pASelected === true">
+                    <p class="fs-12 mb-0">Set the values and click on “Run Test” to get the prediction.</p>
+                    <p class="fs-12 mb-0">Click on “Save Test” to save the scenarios</p>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label predective-outcome-lbl">{{predictions.targetColumn}}</label>
+                    <div class="form-group">
+                      <select #select class="form-control"                      
+                      (change)="onChangeOfSelect(select.value)">
+                      <option value="undefined" selected>{{prescriptive_desired_value}}</option>
+                      <option *ngFor="let option of prescriptivevalues" [value]="option">                
+                        {{option}}
+                      </option>
+                      </select>
+                      <!-- old code {{prescriptive_desired_value}} -->
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="predictions.ProblemType == 'regression'">
+                <ng-container *ngIf="prescriptiveAnalysis">
+                  <div class="form-group">
+                    <label class="form-label predective-outcome-lbl">{{predictions.targetColumn}}</label>
+                    <!-- <div class="form-group">
+                      {{prescriptive_desired_value}}
+                      {{prescriptive_desired_value}}
+                    </div> -->
+                    <ng-container *ngIf="PAInput">
+                      <div class="" style="display: inline-flex;">
+                        <!-- <input type="number" [ngModel]="predictionOutcome" disabled
+                          value="{{predictions.Prediction}}" /> -->
+                          <input type="number" [(ngModel)]="predictions.Prediction" value="predictions.Prediction" disabled
+                          />
+                        <button type="button" class="btn btn btn-secondary"
+                          [disabled]="disbalePrescriptiveAnalysisTextColumns" style="min-width: 3em;
+                          border: none;">
+                          <!-- <img (click)="PAInput=false" src="assets/images/edit.svg" alt="Edit"> -->
+                          <img (click)="PAInput=false" src="assets/images/edit.svg" alt="Edit">
+                        </button>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="!PAInput">
+                      <div class="" style="display: inline-flex;">
+                        <!-- <input type="number" [(ngModel)]="predictionOutcome" value="{{predictions.Prediction}}"
+                          (change)="pAInputChange(predictionOutcome)" class="form-control" /> -->
+                          <input type="number" step="0.01" #inputvalue [(ngModel)]="predictions.Prediction" value="predictions.Prediction"
+                          (change)="pAInputChange(inputvalue.value)" class="form-control" />
+                        <button type="button" class="btn btn btn-secondary" (click)="prescriptiveAnalytics(inputvalue.value)"
+                          (click)="PAInput=true">Save</button>
+                      </div>
+                    </ng-container>
+                  </div>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+  <!--Saved Scenrio-->
+  <ng-container *ngIf="!isSelectionChange">
+    <ng-container *ngFor="let predictions of testDataList | paginate:{ id: 'listing_pagination',  itemsPerPage: 1,
+          currentPage: page, totalItems: testDataListCount };let listIndex = index">
+      <div class="col-12 col-lg-4">
+        <div class="card ingrain-card">
+          <div class="card-header flex-column">
+            <div class="d-flex align-items-center mb-2">
+              <div class="card-title flex-grow-1">Features and Values</div>
+              <!-- <a href="javascript:;"><img src="assets/images/feature.svg" alt="" /></a> -->
+            </div>
+            <ng-container *ngIf="pASelected === false">
+              <p class="fs-12 mb-0">Set the values and click on “Run Test” to get the prediction.</p>
+              <p class="fs-12 mb-0">Click on “Save Test” to save the scenarios</p>
+            </ng-container>
+          </div>
+          <div class="card-body d-flex flex-column ingrain-features myw-scrollbar">
+            <ng-container *ngFor="let featureList of multipleFeaturesList;let listIndex = index">
+              <ng-container *ngFor="let teachtestdata of featureList | keyvalue:orderByRowNum;let indx = index">
+                <div class="form-group-pre features-d-flex">
+                  <label class="form-label" style="word-break: break-all;">{{teachtestdata.key}}</label>
+                  <label class="form-label">{{teachtestdata.value}}</label>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-5">
+        <div class="card ingrain-card">
+          <div class="card-body d-flex flex-column">
+            <ng-container *ngIf="modelType == 'Classification' || modelType == 'classification'">
+              <div class="card-header">
+                <div class="card-title">Predictive Outcome</div>
+              </div>
+              <ng-container *ngIf = "predictions['OutcomePrediction'] !== null || predictions['OutcomePrediction'] !== ''">
+              <div style="height: 220px">
+                <app-horizontal-chart [horizontalBarchartHeight]="PredictionOutcomeChart.height"
+                  [horizontalBarchartWidth]="PredictionOutcomeChart.width" [data]="predictions['OutcomePrediction']">
+                </app-horizontal-chart>
+              </div>
+            </ng-container>
+            </ng-container>
+            <ng-container *ngIf="showFeatureWeight(predictions) && showWordCloud == true">
+              <div class="card-header">
+                <div class="card-title">Feature weights</div>
+                <app-info-tooltip class="ml-auto" [className]="'featureselection-tip'">
+                  <div class="htmlDesignedTooltip">
+                    Influencing attributes in the trained model arranged in decreasing order of their weights. Weights
+                    give a measure of
+                    how much influence the particular attribute has on the output
+                  </div>
+                </app-info-tooltip>
+              </div>
+              <ng-container *ngIf = "predictions.FeatureWeights !== null">
+              <div style="max-height: 300px;" class="myw-scrollbar">
+                <app-bar-chart [barchartHeight]=featureChartsHWClassification.height
+                  [barchartWidth]=featureChartsHWClassification.width [data]="predictions.FeatureWeights">
+                </app-bar-chart>
+              </div>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="showFeatureWeight(predictions) && showWordCloud == false">
+              <div class="card-title">Feature weights
+                <app-info-tooltip class="ml-auto" [className]="'featureselection-tip'">
+                  <div class="htmlDesignedTooltip">
+                    Influencing attributes in the trained model arranged in decreasing order of their weights. Weights
+                    give a measure of
+                    how much influence the particular attribute has on the output
+                  </div>
+                </app-info-tooltip>
+              </div>
+              <ng-container *ngIf = "predictions.FeatureWeights !== null">
+              <div style="max-height: 300px;" class="myw-scrollbar">
+                <app-bar-chart [barchartHeight]=featureChartsHWClassification.height
+                  [barchartWidth]=featureChartsHWClassification.width [data]="predictions.FeatureWeights">
+                </app-bar-chart>
+              </div>
+              </ng-container>
+            </ng-container>
+            <!-- 704369 Ingrain_StageTest_R2.1 - Sprint 2 - When we do bulk upload, for all the records word cloud is getting generated in one single page
+                  Fix - Removed *ngFor="let predictions of testDataList" -->
+            <ng-container *ngIf="predictions.hasOwnProperty('WordCloud') && ( predictions.WordCloud['image'] != ''
+                    || predictions.WordCloud['message'] != '')">
+              <div class="card-header mt-2">
+                <div class="card-title">Word Cloud</div>
+              </div>
+              <div style="height: fit-content;">
+                <ng-container *ngIf="predictions.WordCloud['image'] != ''">
+                  <app-word-cloud-image [wordCloudImage]="predictions.WordCloud['image']">
+                  </app-word-cloud-image>
+                </ng-container>
+                <ng-container *ngIf="predictions.WordCloud['message'] != ''">
+                  <span style="color: red">{{predictions.WordCloud['message'] }}</span>
+                </ng-container>
+              </div>
+            </ng-container>
+            <!-- <p class="mt-auto fs-12 mb-0">Priority contributes the most in predicting the values for TATRESOLUTION for the given set of inputs. Lorem Ipsum Dolem em.</p> -->
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-3">
+        <div class="card ingrain-card highlight">
+          <div class="card-header">
+            <div class="card-title">Predictive Outcome</div>
+          </div>
+          <div class="card-body d-flex flex-column">
+            <ng-container *ngIf="(modelType === 'Classification' || modelType === 'Multi_Class')">
+              <ng-container *ngIf="prescriptiveAnalysis">
+                <div class="form-group" *ngIf="pASelected === true">
+                  <p class="fs-12 mb-0">Set the values and click on “Run Test” to get the prediction.</p>
+                  <p class="fs-12 mb-0">Click on “Save Test” to save the scenarios</p>
+                </div>
+                <div class="form-group">
+                  <label class="form-label predective-outcome-lbl">{{predictions.targetColumn}}</label>
+                  <div class="form-group">
+                    {{prescriptive_desired_value}}
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="predictions.ProblemType == 'regression'">
+              <ng-container *ngIf="prescriptiveAnalysis">
+                <div class="form-group">
+                  <label class="form-label predective-outcome-lbl">{{predictions.targetColumn}}</label>
+                  <div class="form-group">
+                    {{prescriptive_desired_value}}
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+</div>
+<!--Prescriptive Scenario-->
+
+<!--Timeseries Scenario-->
+<ng-container *ngIf="modelType == 'TimeSeries'">
+  <div class="form-row">
+    <!--Unsaved Scenario-->
+    <ng-container *ngIf="isSelectionChange">
+      <div class="col-12 col-lg-4">
+        <div class="card ingrain-card">
+          <div class="card-header flex-column">
+            <div class="d-flex align-items-center mb-2">
+              <div class="card-title flex-grow-1">Features and Values</div>
+              <!-- <a href="javascript:;"><img src="images/feature.svg" alt="" /></a> -->
+            </div>
+            <ng-container *ngIf="pASelected === false">
+              <p class="fs-12 mb-0">Set the values and click on “Run Test” to get the prediction.</p>
+              <p class="fs-12 mb-0">Click on “Save Test” to save the scenarios</p>
+            </ng-container>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <mat-form-field>
+                <mat-label>{{freequecnyType}}</mat-label>
+                <mat-select [(ngModel)]="stepsValue" (ngModelChange)="onSelectFreequencyChange(stepsValue)">
+                  <mat-option>None</mat-option>
+                  <mat-option *ngFor="let options of freequencyOptions" [value]="options.value">
+                    {{options.value}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!--Saved Scenario-->
+    <ng-container *ngIf="!isSelectionChange">
+      <div class="col-12 col-lg-4">
+        <div class="card ingrain-card">
+          <div class="card-header flex-column">
+            <div class="d-flex align-items-center mb-2">
+              <div class="card-title flex-grow-1">Features and Values</div>
+              <!-- <a href="javascript:;"><img src="assets/images/feature.svg" alt="" /></a> -->
+            </div>
+            <ng-container *ngIf="pASelected === false">
+              <p class="fs-12 mb-0">Set the values and click on “Run Test” to get the prediction.</p>
+              <p class="fs-12 mb-0">Click on “Save Test” to save the scenarios</p>
+            </ng-container>
+          </div>
+          <div class="card-body">
+            <div class="form-group features-d-flex">
+              <label class="form-label">{{freequecnyTypeonSelection}}</label>
+              <label class="form-label">{{stepsValueonSelection}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <div class="col-12 col-lg-8">
+      <div class="card ingrain-card card-auto">
+        <div class="card-header">
+          <div class="card-title">Test Data Forecast</div>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <ng-container *ngIf="lineChartDataCount > 0">
+            <div class="row ingrAI-box-container mr-0">
+              <div class="ingrAIn-forecast-chart">
+                <app-frequency-line-chart [isData]="isData" [screenWidth]="screenWidth"
+                  [lineChartDataCount]="lineChartDataCount" [selectedModelLineChart]="selectedModelLineChart"
+                  [frequencyType]="freequecnyTypeonSelection">
+                </app-frequency-line-chart>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<!--Timeseries Scenario-->
+
+<ng-template #confirmModal>
+  <div class="deploymodle-confirmpopup">
+    <div class="modal-header" style="border-bottom: none;">
+      <button type="button" class="close pull-right" style="cursor: pointer;" aria-label="Close"
+        (click)="modalRef.hide()">
+        <svg class="ingrAI-icon-svg ingrAI-icon-svg-md">
+          <use xlink:href="#ingrAI-icon-close"></use>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      Do you want to discard the previously saved value?
+      <div class="modal-footer" style="border-top: none;">
+        <button type="button" class="btn btn-secondary" style=" font-size: 1rem;" (click)="confirm()">Yes</button>
+        <button type="button" class="btn btn-primary" style=" font-size: 1rem;" (click)="decline()">No</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

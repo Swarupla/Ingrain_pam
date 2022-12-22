@@ -1,0 +1,60 @@
+<div class="modal-dialog-scrollable">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="ingrAI-enter-model-title">{{title}}</h5>
+            <button type="button" class="close" aria-label="Close" (click)='closePopUp()'></button>
+        </div>
+        <div class="modal-body">
+            <div class="row" style="align-items: center;">
+                <label style="padding:0px 10px;">
+                    Please select the Target Node which should be considered while fetching data.
+                </label>
+                <mat-form-field class="col-5 dropdown">
+                    <mat-select placeholder="Select Target Node"
+                      name="selectedNode"
+                      [(ngModel)]="selectedNode">
+                      <mat-option *ngFor="let Node of NodeList; let i=index" [value]="Node">
+                        {{Node}}
+                      </mat-option>
+                    </mat-select>
+                
+                </mat-form-field>
+                <div class="ml-auto" style="padding-right: 10px;">
+                    <button class="btn btn-primary" style="height: max-content;" (click)="enableNodeListView = true">View
+                        NodeList</button>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end myw-actions" style="margin-top: 2.0rem;">
+                <button type="button" class="btn btn-primary" [disabled]="!selectedNode" (click)='onEnter()'>Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="enableNodeListView" class="modal show" style="padding-right: 17px; display: block;" data-backdrop="static"
+    data-keyboard="false" tabindex="-1" aria-labelledby="Target node Json View" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Target NodeList View</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    (click)="enableNodeListView = false">
+                    <span aria-hidden="true">&nbsp;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <pre>{{ jsonTargetNode }}</pre>
+                    </div>
+
+                    <div class="d-flex justify-content-end myw-actions">
+                        <button class="btn btn-sm btn-secondary" data-dismiss="modal"
+                            (click)="enableNodeListView = false">Close</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

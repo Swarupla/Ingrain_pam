@@ -1,0 +1,16 @@
+
+<!-- <div class="dropdown"> -->
+  <select  class="form-control" #selectedColumnDropDown (change)="sendSelectedColumn(selectedColumnDropDown.value)"
+   aria-labelledby="operatortype2" [attr.disabled]='isDisabled'
+   [value]='value == undefined ? "" : value'>
+    <option class="dropdown-item" value="" selected disabled type="button">{{defaultOptionName}}</option>
+     <ng-container *ngIf='options'>
+    <option  class="dropdown-item" type="button" *ngFor="let option of options; trackBy: trackByOption"
+    [value]='option'>{{option}}</option>
+     </ng-container> 
+     <ng-container *ngIf='optionsListForValuePopUp'>
+    <option class="dropdown-item" type="button" *ngFor="let optionValue of optionsListForValuePopUp; trackBy: trackByOptionValue"
+    [value]='optionValue'>{{optionValue}}</option>
+     </ng-container>
+  </select>
+<!-- </div> -->

@@ -1,0 +1,536 @@
+ <div class="myw-section my-3 p-3">
+  <div class="row">
+    <!-- <div class="col justify-content-end text-right">
+        <input type="button" class="btn btn-primary" value="Previous" (click)="previous()">
+        <input type="button" class="btn btn-primary btn-next" value="Next" (click)="next()">
+      </div> -->
+    <div class="col-12 col-lg-10">
+      <div class="row">
+        <div class="col-6 col-lg-4">
+          <div class="form-group">
+            <label class="form-label mb-3">Model Name</label>
+            <div>{{modelName}}</div>
+          </div>
+        </div>
+        <!-- <div class="col-md-6 col-lg-3">
+            <div class="ingrAI-heading">Model Name</div>
+            <div class="ingrAI-col-container my-3">
+              <div class="form-group mb-3">{{modelName}}</div>
+            </div>
+          </div> -->
+        <div class="col-6 col-lg-4"  style="padding-right: 0rem;">
+          <div class="form-group">
+            <label class="form-label mb-4" style="color: #080808 !important;">Deploy Model as</label>
+            <div class="form-inline">
+              <label class="myw-checkbox mb-0">
+                <input #publicSelected type="radio"
+                  (click)="rodioSelectedIsPublic(publicSelected)"
+                  name="radio1">
+                <span>Public</span>
+              </label>
+              <label class="myw-checkbox mb-0">
+                <input #privateSelected type="radio"
+                  (click)="rodioSelectedIsPrivate(privateSelected)"
+                  name="radio1" checked>
+                <span>Private</span>
+              </label>
+              <label class="myw-checkbox mb-0">
+                <input #modelTemplate type="radio"
+                  (click)="rodioSelectedIsModelTemplate(modelTemplate)"
+                  [disabled]="isModelTemplateDisabled==true ||
+                  isCustomCascadeModel==true" name="radio1">
+                <span [ngStyle]="{'color': (isModelTemplateDisabled==true ||
+                  isCustomCascadeModel==true)? 'lightgrey': '#353D47'}">Model
+                  Template</span>
+              </label>
+              <!-- <div #applink class="dropdown-menu" style="min-width: 64%; margin-top: 20px;"
+                      [ngClass]="webserviceLinkshow? 'show': ''">
+                      <div class="ingrAI-drop-close" (click)="closeWebSerciveURLWindow()">
+                        <a href="javascript:;"><svg class="ingrAI-icon-svg">
+                            <use xlink:href="#ingrAI-icon-close"></use>
+                          </svg></a>
+                      </div>
+                      <div class="d-flex flex-column justify-content-center align-items-center">
+                        <div *ngIf = "!isEnvironment" class="ingrAI-list-item" style="border:none;">
+                          <label  class="checkcontainer" *ngFor="let template of templatesCategories">
+                            <input #istemplatechecked type="radio" name="radio2" 
+                              (click)="onSelectedTemplate(istemplatechecked,template.value)">
+                              <span>{{template.name | titlecase}}</span>  
+                            <span class="radiobtn"></span>
+                          </label>
+                      
+                        </div>
+                        <div *ngIf = "isEnvironment" class="ingrAI-list-item" style="border:none;">
+                        <label  class="checkcontainer" *ngFor="let template of templatesCategories">          
+                          <input #istemplatechecked type="radio" name="radio2" [disabled] = "(template.value != 'AIops')"                        
+                          [checked] = "template.value == 'AIops'"
+                            (click)="onSelectedTemplate(istemplatechecked,template.value)">
+                          <span>{{template.name | titlecase}}</span> 
+                          <span class="radiobtn"></span>
+                        </label>
+                        </div>
+                      </div>
+                    </div> -->
+            </div>
+          </div>
+          <div class="form-group">
+            <div *ngIf="webserviceLinkshow">
+              <label class="form-label myw-required">Select Delivery Type</label>
+              <!-- <div class="dropdown dropflat ingrain-dropdown">
+                <ng-container *ngIf="!isEnvironment">
+                  <select #selectedcategories class="form-control"
+                    (change)="selectedCategories(selectedcategories.value)">
+                    <option disabled [value]="undefined" selected>Select
+                      Delivery Type</option>
+                    <option *ngFor="let template of templatesCategories">{{template.name}}
+                    </option>
+                  </select>
+                </ng-container>
+                <ng-container *ngIf="isEnvironment">
+                  <select #selectedcategories class="form-control">
+                    <option>AIops</option>
+                  </select>
+                </ng-container>
+              </div> -->
+
+              <div class="dropdown dropflat ingrain-dropdown">
+                <ng-container *ngIf="!isEnvironment">
+                  <input matInput [value]="categoryText"
+                    disabled="true">
+                </ng-container>
+                <ng-container *ngIf="isEnvironment">
+                  <input matInput [value]="categoryText"
+                    disabled="true">
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <ng-container *ngIf='!ifSourceTypeIsFile'>
+            <div class="form-group" *ngIf='isPrivate == true || isPublicRadioSelected == true'>
+              <div *ngIf='isPrivate == true'>                         
+                <label class="myw-checkbox"> 
+                  <input #offlineRetrainingSelected type="checkbox"
+                    (change)="checkboxSelectedIsOffline(offlineRetrainingSelected)">
+                    <span style="margin-top: 1rem;">Carry out Retraining</span>
+                </label>
+              </div>
+              <div *ngIf='isPublicRadioSelected == true'>                         
+                <label class="myw-checkbox"> 
+                  <input #offlineRetrainingSelected type="checkbox"
+                    (change)="checkboxSelectedIsOffline(offlineRetrainingSelected)">
+                    <span style="margin-top: 1rem;">Carry out Retraining</span>
+                </label>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <mat-form-field style="width: 7.7rem;">
+                    <mat-select placeholder="Frequency" [disabled]='selectedOfflineRetrain==false'
+                      (selectionChange)="selectedRetrainingFrequency(selectedRFrequency)"                    
+                      [(ngModel)]="selectedRFrequency">                     
+                      <mat-option *ngFor="let rfrequency of
+                      reTrainingFrequency" [value]="rfrequency">
+                        {{rfrequency.name}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-6">
+                  <ng-container *ngIf='selectedOfflineRetrain==false && isTrainingFrequencyValueSelected == false'>
+                    <mat-form-field style="width: 7.7rem;">
+                      <mat-select placeholder="Frequency Value" [disabled]='selectedOfflineRetrain==false'>
+                        <mat-option *ngFor="let freqVal of
+                        reTrainingFrequencyValue"
+                          [value]="freqVal">
+                          {{freqVal}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngIf='selectedOfflineRetrain==true && isTrainingFrequencyValueSelected == false'>
+                      <mat-form-field style="width: 7.7rem;">
+                        <mat-select placeholder="Frequency Value" [disabled]='isTrainingFrequencyValueSelected==false'>
+                          <mat-option *ngFor="let freqVal of
+                          reTrainingFrequencyValue"
+                            [value]="freqVal">
+                            {{freqVal}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      </ng-container>
+                      <ng-container *ngIf='selectedOfflineRetrain==true && isTrainingFrequencyValueSelected == true'>
+                        <mat-form-field style="width: 7.7rem;">
+                          <mat-select placeholder="Frequency Value" 
+                            (selectionChange)="selectedRFeqValue(selectedRFeqValues)"                          
+                            [(ngModel)]="selectedRFeqValues">
+                            <mat-option *ngFor="let freqVal of
+                            reTrainingFrequencyValue"
+                              [value]="freqVal">
+                              {{freqVal}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        </ng-container>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+        </div>
+        <div class="col-6 col-lg-4" style="padding: 0%; padding-left: 3.6rem;">
+          <div class="form-group">
+            <label class="form-label">Choose APP to Deploy</label>
+            <!-- <mat-form-field class="form-control">
+                  <mat-select [disabled]="readOnly" [(ngModel)]="appname" (ngModelChange)="changeapp(appname)"
+                  placeholder="Select App To Deploy" single>
+                    <mat-option  *ngFor="let apps of appsData"
+                    [value]='apps.ApplicationName'>
+                      {{apps.ApplicationName}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field> -->
+            <select class="form-control" placeholder="Select App To Deploy"
+              [disabled]="readOnly" [(ngModel)]="appname"
+              (change)="changeapp(appname)">
+              <option *ngFor="let apps of appsData"
+                [value]='apps.ApplicationName'>
+                {{apps.ApplicationName}}
+              </option>
+            </select>
+            <ng-container *ngIf="!readOnly && this.openappwindow === 'edit'">
+              <app-add-newapp (saved)="fetchApp($event)"></app-add-newapp>
+            </ng-container>
+          </div>
+          <!-- <div class="form-group" style="margin-top:-48px;"> -->
+          <div class="form-group">
+            <div *ngIf="trainingDataVolume">
+              <label class="form-label myw-required">Provide Training Data
+                Volume</label>
+              <app-info-tooltip>
+                <div class="htmlDesignedTooltip">
+                  Provide Training Data Volume as:
+                  <div>
+                    <ul>
+                      <li>
+                        Model Templates can be utilized to create new
+                        Private/Public
+                        models either through user interface or custom API.
+                      </li>
+                      <li>
+                        The value specified over here puts a limit on the
+                        maximum
+                        number of records that can be fetched while new model
+                        creation.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </app-info-tooltip>
+              <input type="text" class="form-control"
+                value="provideTrainingDataVolume"
+                name="provideTrainingDataVolume"
+                [(ngModel)]="provideTrainingDataVolume"
+                maxlength="70"
+                (keyup)="isSpecialCharacter($event.target.value)">
+                <small class="form-text text-muted">You have {{70 - provideTrainingDataVolume?.length}} of 70 characters
+                  remaining.</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Archive Model After  <app-info-tooltip>
+              <div class="htmlDesignedTooltip">                        
+                <div style="margin-left: 0.7rem;">
+                 Time period after which model is to be archived. Archived Models will be available under My Models screen under Archived Models section
+                </div>
+              </div>
+            </app-info-tooltip></label>
+            <div>
+              <mat-form-field class="col-lg-12" style="padding: 0px;">
+                <mat-select placeholder="Select Archival Duration"
+                  (selectionChange)="selectArchivalDuration(selectedArchivalMonth)"
+                  name="selectedArchivalMonth"
+                  [(ngModel)]="selectedArchivalMonth">
+                  <mat-option *ngFor="let archivalMonths of archiveModelDuration; let i=index" [value]="archivalMonths.value">
+                    {{archivalMonths.viewValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-2 d-flex justify-content-end">
+      <div class="form-group d-flex flex-column ml-auto">
+        <label class="form-label">Publish</label>
+        <button class="btn btn-primary" (click)="deployModel()">Deploy Model</button>
+      </div>
+      <!-- <div class="ingrAI-heading">Publish</div>
+        <div class="ingrAI-col-container my-3">
+          <div class="ingrAI-model-file-uploader d-flex align-items-center justify-content-center ">
+            <a href="javascript:;" class="d-flex flex-column">
+              <span><svg class="ingrAI-icon-svg ingrAI-icon-svg-modal"><use xlink:href="#ingrAI-icon-deploy-model"></use></svg></span>
+              <input type="button" class="btn btn-primary mt-3" (click)="deployModel()" value="Deploy Model">
+            </a>
+          </div>
+        </div> -->
+    </div>
+  </div>
+
+
+  <div class="row" *ngIf='isModelTemplate'>
+    <div class="col-12 col-lg-6">
+      <div class="row">
+        <div class="col-6 col-lg-6">
+        </div>
+        <div class="col-6 col-lg-6" style="padding-left: 2rem;">
+          <div class="form-group">
+            <label class="form-label" style="color: #080808 !important;">How to carry out the training,
+              retraining & prediction?
+            </label>
+            <div>
+              <!-- <label class="myw-checkbox mb-0">
+                <input #offlineSelected type="radio"
+                  (click)="rodioSelectedIsOffline(offlineSelected)"
+                  name="modal-rd-m" >
+                <span>Offline</span>
+              </label>&nbsp; &nbsp; -->
+              <label class="myw-checkbox mb-0">
+                <input #onlineSelected type="radio"
+                  (click)="rodioSelectedIsOnline(onlineSelected)"
+                  name="modal-rd-m">
+                <span>Online</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-6">
+      <div *ngIf="isOfflineSelected" style="padding-left: 6.7rem;">
+        <div class="row">
+          <div class="col-2">
+            <label style="margin-top: 1rem;">Training</label>
+          </div>
+          <div class="col-3">
+            <mat-form-field style="width: 5.7rem;">
+              <mat-select placeholder="Frequency" (selectionChange)="selectedTrainingFrequency(selectedTFrequency)"                         
+                [(ngModel)]="selectedTFrequency"  matTooltip="{{tFrequency}}">
+                <mat-option *ngFor="let frequency of
+                  trainingFrequency" [value]="frequency">
+                  {{frequency.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field style="width: 5.7rem;">
+              <mat-select placeholder="Frequency Value"
+                (selectionChange)="selectedTFeqValue(selectedTFeqValues)"
+                matTooltip="{{selectedTFeqValues}}"
+                [(ngModel)]="selectedTFeqValues">
+                <mat-option *ngFor="let freqVal of
+                  trainingFrequencyValue"
+                  [value]="freqVal">
+                  {{freqVal}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field style="width: 5.7rem;">
+              <mat-select placeholder="Retry Attempt"
+                (selectionChange)="selectedTRetryAttempt(selectedTretryCount)"
+                matTooltip="{{selectedTretryCount}}"
+                [(ngModel)]="selectedTretryCount">
+                <mat-option *ngFor="let retryAtmpt of
+                  retryAttemptValue"
+                  [value]="retryAtmpt">
+                  {{retryAtmpt}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-2">
+            <label  style="margin-top: 1rem; margin-bottom: 0rem;">Prediction </label>
+          </div>
+          <div class="col-3">
+            <mat-form-field style="width: 5.7rem;">
+              <mat-select placeholder="Frequency"
+                (selectionChange)="selectedPredictionFrequency(selectedPFrequency)"
+                matTooltip="{{pFrequency}}"
+                [(ngModel)]="selectedPFrequency">
+                <mat-option *ngFor="let pfrequency of
+                  trainingFrequency" [value]="pfrequency">
+                  {{pfrequency.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field style="width: 5.7rem;">
+              <mat-select placeholder="Frequency Value"
+                (selectionChange)="selectedPFeqValue(selectedPFeqValues)"
+                matTooltip="{{selectedPFeqValues}}"
+                [(ngModel)]="selectedPFeqValues">
+                <mat-option *ngFor="let freqVal of
+                  trainingFrequencyValue"
+                  [value]="freqVal">
+                  {{freqVal}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field style="width: 5.7rem;">
+              <mat-select placeholder="Retry Attempt"
+                (selectionChange)="selectedPRetryAttempt(selectedPretryCount)"
+                matTooltip="{{selectedPretryCount}}"
+                [(ngModel)]="selectedPretryCount">
+                <mat-option *ngFor="let retryAtmpt of
+                  retryAttemptValue"
+                  [value]="retryAtmpt">
+                  {{retryAtmpt}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3">
+            <!-- <input #offlineRetrainingSelected type="checkbox"
+              (click)="checkboxSelectedIsOffline(offlineRetrainingSelected)"
+              name="modal-chk">
+            <label class="form-label" style="margin-top: 1rem;">Retraining </label> -->
+            
+            <label class="myw-checkbox">
+              <input #offlineRetrainingSelected type="checkbox"
+                (change)="checkboxSelectedIsOffline(offlineRetrainingSelected)">
+                <span style="margin-top: 1rem;">Retraining</span>
+            </label>
+          </div>
+          <div class="col-3" >
+            <mat-form-field style="width: 5.7rem;">
+              <mat-select placeholder="Frequency" [disabled]='selectedOfflineRetrain==false'
+                (selectionChange)="selectedRetrainingFrequency(selectedRFrequency)"
+                matTooltip="{{rFrequency}}"
+                [(ngModel)]="selectedRFrequency">
+                <mat-option *ngFor="let pfrequency of
+                reTrainingFrequency" [value]="pfrequency">
+                  {{pfrequency.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field style="width: 5.7rem;">
+              <mat-select placeholder="Frequency Value"  [disabled]='selectedOfflineRetrain==false'
+                (selectionChange)="selectedRFeqValue(selectedRFeqValues)"
+                matTooltip="{{selectedRFeqValues}}"
+                [(ngModel)]="selectedRFeqValues">
+                <mat-option *ngFor="let freqVal of
+                reTrainingFrequencyValue"
+                  [value]="freqVal">
+                  {{freqVal}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf='isOnlineSelected' style="padding-left: 6.7rem;">
+        <div class="row">
+          <div class="col-3" style="margin-top: 1rem;">
+
+            <label class="myw-checkbox">
+              <input #offlineRetrainingSelected type="checkbox"
+                (change)="checkboxSelectedIsOffline(offlineRetrainingSelected)">
+                <span>Retraining</span>
+            </label>
+
+          </div>
+          <div class="col-4">
+            <mat-form-field style="width: 7.7rem;">
+              <mat-select placeholder="Frequency" [disabled]='selectedOfflineRetrain==false'
+                (selectionChange)="selectedRetrainingFrequency(selectedRFrequency)"              
+                [(ngModel)]="selectedRFrequency">
+                <mat-option *ngFor="let rfrequency of
+                reTrainingFrequency" [value]="rfrequency">
+                  {{rfrequency.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <ng-container *ngIf='selectedOfflineRetrain==false && isTrainingFrequencyValueSelected == false'>
+            <mat-form-field style="width: 7.7rem;">
+              <mat-select placeholder="Frequency Value" [disabled]='selectedOfflineRetrain==false'>
+                <mat-option *ngFor="let freqVal of
+                reTrainingFrequencyValue"
+                  [value]="freqVal">
+                  {{freqVal}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            </ng-container>
+            <ng-container *ngIf='selectedOfflineRetrain==true && isTrainingFrequencyValueSelected == false'>
+              <mat-form-field style="width: 7.7rem;">
+                <mat-select placeholder="Frequency Value" [disabled]='isTrainingFrequencyValueSelected==false'>
+                  <mat-option *ngFor="let freqVal of
+                  reTrainingFrequencyValue"
+                    [value]="freqVal">
+                    {{freqVal}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              </ng-container>
+              <ng-container *ngIf='selectedOfflineRetrain==true && isTrainingFrequencyValueSelected == true'>
+                <mat-form-field style="width: 7.7rem;">
+                  <mat-select placeholder="Frequency Value" 
+                    (selectionChange)="selectedRFeqValue(selectedRFeqValues)"                          
+                    [(ngModel)]="selectedRFeqValues">
+                    <mat-option *ngFor="let freqVal of
+                    reTrainingFrequencyValue"
+                      [value]="freqVal">
+                      {{freqVal}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                </ng-container>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<div class="d-flex myw-actions justify-content-end">
+  <a class="btn btn-secondary btn-previous" (click)="previous()"><img
+      src="assets/images/back.svg" alt="Next"><span>Previous</span></a>
+  <a class="btn btn-primary btn-next ml-auto" (click)="next()"><span>Next</span><img
+      src="assets/images/back.svg" alt="Next"></a>
+</div>
+
+<div class="d-none">
+  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0">
+    <symbol viewBox="0 0 39 39" enable-background="new 0 0 39 39"
+      id="ingrAI-icon-deploy-model">
+      <g>
+        <circle style="fill:none; stroke:#15a7c9;" cx="19.5" cy="19.5" r="19" />
+          <path
+            d="M24.64,30.69H12.07a3.33,3.33,0,0,1-3.49-3.54v-9.9l3.14,2.12h.35c.35,0,.35,0,.7-.35A1.3,1.3,0,0,0,12.42,18L8.23,15.13h-.7L3.34,18A1.3,1.3,0,0,0,3,19a1.29,1.29,0,0,0,1,.35l3.14-2.12v9.9a4.81,4.81,0,0,0,4.89,5H24.64a.71.71,0,0,0,0-1.41Z"
+            />
+            <path
+              d="M36,20a1.26,1.26,0,0,0-1-.35l-3.07,2.12v-9.9A4.75,4.75,0,0,0,27.13,6.9H14.85a.71.71,0,0,0,0,1.41H27.13a3.29,3.29,0,0,1,3.42,3.54v9.9l-3.07-2.12a1.24,1.24,0,0,0-1,.35A1.32,1.32,0,0,0,26.79,21l4.1,2.83h.68L35.66,21A1.3,1.3,0,0,0,36,20Z"
+              />
+            </g>
+            <g>
+              <circle style="fill:none; stroke:#15a7c9;" cx="19.5" cy="19.5"
+                r="19" />
+              </g>
+            </symbol>
+          </svg>
+        </div>

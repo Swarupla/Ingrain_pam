@@ -1,0 +1,9 @@
+<div class="modal-content modal-dialog-scrollable">
+    <div class="modal-header">
+        <h5 class="modal-title" id="ingrAI-enter-model-title">{{title}}</h5>
+        <button type="button" class="close" aria-label="Close" (click)='onClose()'></button>
+    </div>
+    <div class="modal-body modal-body-height">
+        <app-ad-upload-data (uploadedData)="getUploadedData($event)"></app-ad-upload-data>
+    </div>
+</div>

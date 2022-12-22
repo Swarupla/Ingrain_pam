@@ -1,0 +1,49 @@
+<!-- <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" id="ingrAI-enter-model-title">&nbsp;</h5>
+        <button type="button" class="close" aria-label="Close" (click)='onClose()'>
+          <svg class="ingrAI-icon-svg ingrAI-icon-svg-md">
+            <use xlink:href="#ingrAI-icon-close"></use>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body py-0">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+          <form #form=ngForm>                       
+            <span>Are you sure you want delete the Model&nbsp;<b> {{modelName}}</b> </span> 
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary" (click)='onClose()'>No</button>
+        <button type="button" class="btn btn-primary" (click)='onConfirm()'>Yes</button>
+      </div>
+    </div>
+  </div> -->
+
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="ingrAI-enter-model-title">&nbsp;</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='onClose()'>
+        <span aria-hidden="true">&nbsp;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <ng-container *ngIf='!cascadeModel'>
+          <span>Are you sure you want to delete the Model&nbsp;<b> {{modelName}}</b> ?</span>
+        </ng-container>
+        <ng-container *ngIf='cascadeModel'>
+          <span>The deletion of&nbsp;<b> {{modelName}}</b> will result in the deletion of sub-models. Do you want to proceed?</span>
+        </ng-container>
+
+      </div>
+      <div class="d-flex justify-content-end myw-actions">
+        <button class="btn btn-secondary" (click)='onClose()'>No</button>
+        <button class="btn btn-primary" (click)='onConfirm()'>Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

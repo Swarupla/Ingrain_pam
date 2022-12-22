@@ -1,0 +1,745 @@
+<div id="ingrAI-connect-to-data-source" tabindex="-1" role="dialog" aria-labelledby="ingrAI-data-source-title"
+  aria-hidden="true" data-backdrop="static" class="ingrain-fullmodal">
+  <div class="modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content" [ngClass]="(agileFlag) ? 'cwidth' : ''" style="height: 550px;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="connectDSModalTitle">Connect to Data Source</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="cancelcreate"
+          (click)="onClose()">
+          <!-- <svg class="ingrAI-icon-svg ingrAI-icon-svg-md">
+            <use xlink:href="#ingrAI-icon-close"></use>
+          </svg> -->
+        </button>
+      </div>
+      <div class="modal-body myw-scrollbar" *ngIf='!agileFlag'>
+        <div class="d-flex">
+          <div><img src="assets/images/info-l.svg" alt="Info" /></div>
+          <div class="ml-5">
+            <ol type="number">
+              <li>Maximum number of 5 entities, metrics or files can be selected</li>
+              <table style="width: 100%;">
+                <tr style="width: 100%;">
+                  <td style="width: 70%;" *ngIf="language != 'spanish'">
+                    <li>Language selected for this client and Dc is {{language |
+                      titlecase}}, <b>please ensure file
+                        uploaded is also in the same language</b></li>
+                  </td>
+                  <td style="width: 70%;" *ngIf="language === 'spanish'">
+                    <li>The language selected for this client and Dc is <i>{{language
+                        | titlecase}}</i>, <b>please
+                        ensure file uploaded is also in the same language</b></li>
+                  </td>
+                  <!-- <td style="width: 30%;" align="right">
+                    <span style="white-space: nowrap;"><b>Language: {{language | titlecase}}</b></span>
+                  </td> -->
+                </tr>
+              </table>
+              <!-- <li>Possible combination of data sources
+                <ul style="margin-left: 2rem; list-style-type: disc;">
+                  <li>
+                    Individual (Entity/Metric/File)
+                  </li>
+                  <li>
+                    Data File upload and Entity
+                  </li>
+                  <li>
+                    Data File upload and Metric
+                  </li>
+                </ul>
+              </li> -->
+              <!-- <li>Date formats should be DD-MM-YYYY hh:mm:ss format for all applicable date-time columns</li> -->
+            </ol>
+          </div>
+        </div>
+
+        <div class="fs-16 myw-500 mb-2">How do you want to upload data? Below
+          are the possible combinations:</div>
+        <div class="form-group">
+          <div class="form-inline">
+            <label class="myw-checkbox mb-0"><input type="radio" id="cds_radio1" name="modal-rd"
+                (click)="typeOfDataToUpload('Single','File')" checked><span>Upload
+                File</span></label>
+            <label class="myw-checkbox mb-0"><input type="radio" id="cds_radio2" name="modal-rd"
+                (click)="showDataFabricOptions()"><span>Connect to myWizard Data
+                Fabric</span></label>
+            <!-- <label class="myw-checkbox mb-0"><input type="radio" id="cds_radio3" name="modal-rd" (click)="individualDataToUpload()"><span>Individual (Entity/Metric/File)</span></label> -->
+          </div>
+          <!-- <div class="fs-16 myw-500 mb-2" *ngIf="dataFabricOption">Connect to myWizard Data Fabric? Below are the possible combinations:</div> -->
+          <div class="form-inline mt-2" *ngIf="dataFabricOption">
+            <label class="myw-checkbox mb-0"><input type="radio" id="cds_radio3" name="modal-rd-data-fabric"
+                (click)="typeOfDataToUpload('Single', null, 'Entity')" checked><span>
+                Entity</span></label>
+                <ng-container *ngIf = "env != 'PAM'">
+            <label class="myw-checkbox mb-0"><input type="radio" id="cds_radio3" name="modal-rd-data-fabric"
+                (click)="typeOfDataToUpload('Single', null, 'Metric')"><span>
+                Metric</span></label>
+              </ng-container>
+              <ng-container *ngIf = "env == 'PAM'">
+                <label class="myw-checkbox mb-0"><input [disabled]='true' type="radio" id="cds_radio3" name="modal-rd-data-fabric"
+                    (click)="typeOfDataToUpload('Single', null, 'Metric')"><span>
+                    Metric</span></label>
+                  </ng-container>
+            <label class="myw-checkbox mb-0"><input type="radio" id="cds_radio2" name="modal-rd-data-fabric"
+                (click)="typeOfDataToUpload('Multiple', 'File', 'Entity')"><span>Data
+                File and Entity</span></label>
+            <label class="myw-checkbox mb-0"><input type="radio" id="cds_radio3" name="modal-rd-data-fabric"
+                (click)="typeOfDataToUpload('Multiple', 'File', 'Metric')"><span>
+                Data File and Metric</span></label>
+            <label class="myw-checkbox mb-0"><input type="radio" id="cds_radio3" name="modal-rd-data-fabric"
+                (click)="typeOfDataToUpload('Single', null, 'Dataset')"><span>
+                Dataset</span></label>
+            <label class="myw-checkbox mb-0" *ngIf="isAdminUser"><input type="radio" id="cds_radio3"
+                name="modal-rd-data-fabric" (click)="typeOfDataToUpload('Single', null, 'CustomData')"><span>
+                Custom Data</span></label>
+            <!-- <label class="myw-checkbox mb-0"><input type="radio" id="cds_radio3" name="modal-rd-data-fabric" (click)="typeOfDataToUpload('Single', null, 'API')"><span> API</span></label> -->
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-lg-6 ingrain-vsep" *ngIf="entityMetricView">
+            <div class="fs-16 myw-500 mb-2">Select from Data source</div>
+            <p class="info-msg" *ngIf="entityLoader == 'apiDone' &&
+              entityList.length==0">Entity data is not available
+            </p>
+            <p class="info-msg" *ngIf="metricsLoader == 'apiDone' && filteredMetricData.length==0
+              && env!='FDS' && requestType!='AM' && requestType!='IO'">
+              Metrics data is not available</p>
+            <!-- <div class="d-flex align-items-center">
+              <h5 class="modal-title" id="ingrAI-data-source-title">Select from Data source</h5>
+            </div> -->
+            <div class="ingrAI-datasource-container">
+              <div class="table-responsive mt-4 metricloader" *ngIf="typeOfDataForSource2 == 'Metric' && metricsLoader ==
+                'apiPending'">
+                <app-loader-display [className]='true'></app-loader-display>
+                <div class="IngrAI-python-progress-dialogbox">
+                  <p style="text-align: center;">Metrics loading please wait...</p>
+                </div>
+              </div>
+
+              <div class="table-responsive mt-4 entityloader" *ngIf="typeOfDataForSource2 == 'Entity' && entityLoader ==
+                'apiPending'">
+                <app-loader-display [className]='true'></app-loader-display>
+                <div class="IngrAI-python-progress-dialogbox">
+                  <p style="text-align: center;">Entity loading please wait...</p>
+                </div>
+              </div>
+
+              <div>
+                <form [formGroup]="apiRow" (ngSubmit)="onSubmit()">
+                  <!-- <div class="col-12 form-modal-title" *ngIf="true">Entity loading please wait... <app-loader-display [className]="'Entity'"></app-loader-display></div> -->
+                  <div class="myw-500" *ngIf="typeOfDataForSource2 == 'Entity'
+                    && entityLoader == 'apiDone'">Entity
+                  </div>
+                  <div *ngIf="typeOfDataForSource2 == 'Entity' && entityLoader
+                    == 'apiDone'">
+                    <div class="row mb-4">
+                      <div class="col-6">
+                        <div class="form-group">
+                          <mat-form-field class="w-100">
+                            <mat-label>Start Date</mat-label>
+                            <input matInput formControlName="startDateControl" [matDatepicker]="picker1"
+                              placeholder="DD MM YYYY" [max]="startDate">
+                            <mat-datepicker-toggle matSuffix [for]="picker1">
+                              <img src="assets/images/calendar.svg" alt="Calendar">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #picker1></mat-datepicker>
+                            <mat-error *ngIf="apiRow.get('startDateControl').invalid">Start
+                              Date
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <mat-form-field class="w-100">
+                            <mat-label>End Date</mat-label>
+                            <input #endDateInput formControlName="endDateControl" matInput [matDatepicker]="picker2"
+                              placeholder="DD MM YYYY" [min]="startDate" [max]="startDate">
+                            <mat-datepicker-toggle matSuffix [for]="picker2">
+                              <img src="assets/images/calendar.svg" alt="Calendar">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #picker2></mat-datepicker>
+                            <mat-error *ngIf="apiRow.get('endDateControl').invalid">End
+                              Date
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <mat-form-field class="w-100">
+                          <mat-label>Choose Data</mat-label>
+                          <ng-container *ngIf="env!='FDS' && env!='PAM' && requestType!='AM'
+                            && requestType!='IO'">
+                            <mat-select #entityInput formControlName="entityControl" [disabled]="apiRow.get('startDateControl').value==''
+                              || apiRow.get('endDateControl').value==''" multiple [(value)]="selectedEntity"
+                              (ngModelChange)="onChangeOFEntity()" disabled="entityList.length==0">
+                              <ng-container *ngIf="entityList.length>0">
+                                <mat-option *ngFor="let entity of entityList" matTooltip="{{entity.name}}"
+                                  [value]="entity.name">
+                                  {{entity.name}}
+                                </mat-option>
+                              </ng-container>
+                              <ng-container *ngIf="entityList.length==0">
+                                <mat-option value="">Select Data</mat-option>
+                              </ng-container>
+                            </mat-select>
+                          </ng-container>
+                          <ng-container *ngIf="(env=='FDS' || env == 'PAM') && (requestType=='AM'
+                            || requestType=='IO')">
+                            <mat-select #entityInput formControlName="entityControl" [disabled]="apiRow.get('startDateControl').value==''
+                              || apiRow.get('endDateControl').value==''" [(value)]="selectedEntity"
+                              (ngModelChange)="onChangeOFEntity()" disabled="entityList.length==0">
+                              <ng-container *ngIf="entityList.length>0">
+                                <mat-option *ngFor="let entity of entityList" matTooltip="{{entity.name}}"
+                                  [value]="entity.name">
+                                  {{entity.name}}
+                                </mat-option>
+                              </ng-container>
+                              <ng-container *ngIf="entityList.length==0">
+                                <mat-option value="">Select Data</mat-option>
+                              </ng-container>
+                            </mat-select>
+                          </ng-container>
+                          <mat-error *ngIf="apiRow.get('entityControl').invalid">Please
+                            Choose Entity Type
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+                <form [formGroup]="metricRow" (ngSubmit)="onSubmit()">
+                  <!-- <div class="col-12 form-modal-title" *ngIf="true">Metrics loading please wait... <app-loader-display [className]="'Metrics'"></app-loader-display></div> -->
+                  <div class="myw-500" *ngIf="typeOfDataForSource2 == 'Metric'
+                    && metricsLoader == 'apiDone'">Metrics
+                  </div>
+                  <div *ngIf="typeOfDataForSource2 == 'Metric' && metricsLoader
+                    == 'apiDone'">
+                    <div class="row mb-4">
+                      <div class="col-6">
+                        <div class="form-group">
+                          <mat-form-field class="w-100">
+                            <mat-label>Start Date</mat-label>
+                            <input matInput formControlName="metricStartDateControl" [max]="startDate"
+                              [matDatepicker]="picker3" placeholder="DD MM YYY">
+                            <mat-datepicker-toggle matSuffix [for]="picker3"><img src="assets/images/calendar.svg"
+                                alt="Calendar"></mat-datepicker-toggle>
+                            <mat-datepicker #picker3></mat-datepicker>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <mat-form-field class="w-100">
+                            <mat-label>End Date</mat-label>
+                            <input matInput formControlName="metricEndDateControl" [min]="startDate" [max]="startDate"
+                              [matDatepicker]="picker4" placeholder="DD MM YYY">
+                            <mat-datepicker-toggle matSuffix [for]="picker4">
+                              <img src="assets/images/calendar.svg" alt="Calendar">
+                              <!-- <svg
+                                class="ingrAI-icon-svg ingrAI-icon-svg-md">
+                                <use xlink:href="#ingrAI-icon-calender"></use>
+                              </svg> -->
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #picker4></mat-datepicker>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <!-- <div class="col form-group d-inline-flex">
+                                <mat-form-field>
+                                  <mat-label>Choose Interval</mat-label>
+                                  <mat-select (ngModelChange)="onChangeOfMetricIntervalOrIteration()" 
+                                  formControlName="metricsIntervalControl" required>
+                                  <ng-container *ngIf="metricsList.length>0">
+                                    <mat-option *ngFor="let interval of metricTimeInterval; index as i;" [value]="interval" selected="i==0">
+                                      {{interval}}
+                                    </mat-option>
+                                  </ng-container>
+                                  <ng-container *ngIf="metricsList.length==0">
+                                    <mat-option value="">Select Interval</mat-option>
+                                  </ng-container>
+                                  </mat-select>
+                                </mat-form-field>
+                              </div> -->
+                      <div class="col form-group d-inline-flex">
+                        <mat-form-field class="w-100">
+                          <mat-label>Choose Iteration</mat-label>
+                          <mat-select (ngModelChange)="onChangeOfMetricIntervalOrIteration()"
+                            formControlName="metricsIterationControl">
+                            <ng-container *ngIf="metricsList.length>0">
+                              <mat-option *ngFor="let iteration of
+                                metricIterationName; index as j;" [value]="iteration" selected="j==0">
+                                {{iteration}}
+                              </mat-option>
+                            </ng-container>
+                            <ng-container *ngIf="metricsList.length==0">
+                              <mat-option value="">Select Iteration</mat-option>
+                            </ng-container>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col form-group d-inline-flex">
+                        <mat-form-field class="w-100">
+                          <mat-label>Choose Data</mat-label>
+                          <mat-select (ngModelChange)="onChangeOFMetrics()" [disabled]="metricRow.get('metricStartDateControl').value==''
+                            || metricRow.get('metricEndDateControl').value==''" formControlName="metricsControl"
+                            multiple>
+                            <ng-container *ngIf="metricsList.length>0">
+                              <mat-option *ngFor="let metric of metricsList" matTooltip="{{metric.Name}}"
+                                [value]="metric.Code">
+                                {{metric.Name}}
+                              </mat-option>
+                            </ng-container>
+                            <ng-container *ngIf="metricsList.length==0">
+                              <mat-option value="">Select Data</mat-option>
+                            </ng-container>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+
+            </div>
+
+
+          </div>
+
+
+          <div class="col-12 col-lg-6 ingrain-vsep" *ngIf="datasetview">
+            <div class="ingrAI-datasource-container">
+              <div class="myw-500">My Data Source</div>
+              <table style="width: 100%;">
+                <tr>
+                  <td style="width: 50%;">
+                    <div>
+                      <table>
+                        <tr>
+                          <td>
+                            <mat-form-field class="w-100">
+                              <mat-label>Source</mat-label>
+                              <mat-select (selectionChange)="selectedchoosesource(selectedsource)" name="selectedsource"
+                                [(ngModel)]="selectedsource">
+                                <mat-option *ngFor="let type of choosesource" [value]="type.value">
+                                  {{type.name}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </td>&nbsp;&nbsp;
+                          <td>
+                            <mat-form-field class="w-100">
+                              <mat-label>Choose type</mat-label>
+                              <mat-select (selectionChange)="selectedchoosetype(selectedtype)" name="selectedtype"
+                                [(ngModel)]="selectedtype">
+                                <mat-option *ngFor="let type of choosetype" [value]="type.id">
+                                  {{type.name}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td> &nbsp;&nbsp;
+                </tr>
+              </table>
+            </div>
+          </div>
+
+
+          <div class="col-md-6" [ngClass]="{'col-lg-12': (this.typeOfUpload ==
+            'Single' && typeOfDataForSource1 === 'File'),
+            'col-12': !(this.typeOfUpload == 'Single' && typeOfDataForSource1
+            === 'File') }">
+
+            <div class="fs-14 myw-500 mb-2 d-flex" *ngIf="fileUploadView">Upload
+              File <div class="fs-14 myw-500 ml-auto"><b>Language: {{language |
+                  titlecase}}</b></div>
+            </div>
+            <div class="myw-file-upload" id="ingrAI-upload">
+              <div *ngIf="fileUploadView" class="myw-file-drag d-flex flex-column align-items-center
+                justify-content-center uploadFileView" style="min-height: 8.85rem"
+                [ngStyle]="{'height':sourceTotalLength>=1 ? '' : '100px' }" (dragover)='allowDrop($event)' (drop)='onDrop($event)'>
+                <!-- <span class="ingrAI-drag-text-small">Browse</span> -->
+                <!-- <div class="choose-file my-2"> -->
+                <label>
+                  <span>Drag &amp; Drop or <strong>Browse Files</strong></span>
+                  <input #fileInput type="file" id="ingrAI-upload"
+                    [ngStyle]="{'top':sourceTotalLength>=1 ? '15%' : '40%' }"
+                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv"
+                    (change)="getFileDetails($event)" (click)="$event.target.value = null" multiple />
+                </label>
+                <!-- </div> -->
+                <div class="fs-12">File type: Excel and CSV</div>
+                <div class="fs-12">Maximum uploaded file size should not exceed
+                  130 MB</div>
+                <div *ngIf="releaseSuccessPredictor == true"><input type="button" class="btn btn-primary"
+                    value="Download Template" (click)="downloadData()" /></div>
+                <div *ngIf="showDownloadOption == true">
+                  <!-- <input type="button" class="btn btn-primary" value="Download Template"
+                    (click)="downloadSampleTemplate()" /> -->
+                  <a style="cursor: pointer;" (click)="downlaodTemplate()" class="btn btn-primary">
+                    <!-- <img src="assets/images/doc-download-icon.svg" alt=""> -->
+                    <span>Download Template</span>
+                  </a>
+                </div>
+              </div>
+
+              <div *ngIf="sourceTotalLength>=1" class="myw-file-list">
+                <div *ngIf="this.files.length> 0">
+                  <div class="myw-file-item d-flex align-items-center"
+                    *ngFor="let file of this.files;let fileAtIndex= index">
+                    <div class="flex-fill d-flex align-items-center">
+                      <h6>{{file.name}}</h6>
+                      <div class="flex-fill">
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0"
+                            aria-valuemax="100" style="width: 100%;"></div>
+                        </div>
+                        <small>Uploaded</small>
+                      </div>
+                      <span>100%</span>
+                      <div *ngIf="sourceTotalLength>1">
+                        <span>Choose as parent</span>
+                        <input #selectedParentFile type="radio" name="radio" (change)="setParentFile(file.name,'file')">
+                      </div>
+                    </div>
+                    <a href="javascript:;" title="Remove" (click)="removeFile(fileAtIndex,file.name,fileInput)"
+                      aria-label="Remove"></a>
+                  </div>
+                </div>
+                <ng-container *ngIf="env!='FDS' && env!='PAM' && requestType!='AM' &&
+                  requestType!='IO'">
+                  <div class="myw-file-item d-flex align-items-center"
+                    *ngFor="let entity of entityArray;let entityAtIndex= index">
+                    <div class="flex-fill d-flex align-items-center">
+                      <h6>Entity - {{entity}}</h6>
+                      <div class="flex-fill">
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0"
+                            aria-valuemax="100" style="width: 100%;"></div>
+                        </div>
+                        <small>Uploaded</small>
+                      </div>
+                      <span>100%</span>
+                      <div *ngIf="sourceTotalLength>1">
+                        <span>Choose as parent</span>
+                        <input #selectedParentFile type="radio" name="radio" (change)="setParentFile(entity,'Entity')">
+                      </div>
+                    </div>
+                    <a href="javascript:;" title="Remove" aria-label="Remove"
+                      (click)="removeEntity(entityAtIndex,entity)"></a>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="(env=='FDS' || env=='PAM') && (requestType=='AM' || requestType=='IO')
+                  && this.entityArray.length> 0">
+                  <div class="myw-file-item d-flex align-items-center">
+                    <div class="flex-fill d-flex align-items-center">
+                      <h6>Entity - {{entityArray}}</h6>
+                      <div class="flex-fill">
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0"
+                            aria-valuemax="100" style="width: 100%;"></div>
+                        </div>
+                        <small>Uploaded</small>
+                      </div>
+                      <span>100%</span>
+                      <div *ngIf="sourceTotalLength>1">
+                        <span>Choose as parent</span>
+                        <input #selectedParentFile type="radio" name="radio"
+                          (change)="setParentFile(entityArray,'Entity')">
+                      </div>
+                    </div>
+                    <a href="javascript:;" title="Remove" (click)="removeEntity(entityAtIndex,entityArray)"
+                      aria-label="Remove"></a>
+                  </div>
+                </ng-container>
+                <div class="myw-file-item d-flex align-items-center" *ngIf="metricsArray.length>0">
+                  <div class="flex-fill d-flex align-items-center">
+                    <h6>Metric - {{metricsText}}</h6>
+                    <div class="flex-fill">
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0"
+                          aria-valuemax="100" style="width: 100%;"></div>
+                      </div>
+                      <small>Uploaded</small>
+                    </div>
+                    <span>100%</span>
+                    <div *ngIf="sourceTotalLength>1">
+                      <span>Choose as parent</span>
+                      <input #selectedParentFile type="radio" name="radio" (change)="setParentFile('Metric','Metric')">
+                    </div>
+                  </div>
+                  <a href="javascript:;" title="Remove" (click)="removeMetrics()" aria-label="Remove"></a>
+                </div>
+              </div>
+            </div>
+            <div class="form-group mt-3" *ngIf="this.files.length>0">
+              <label class="form-label">Does this file contain PII Data?</label>
+              <span class="ml-2">
+                <app-info-tooltip [labelTitle]="''" [description]="'pidatahelp'" [isImage]="true"
+                  [singleUpload]="typeOfUpload == 'Single'"></app-info-tooltip>
+              </span>
+              <div class="form-inline">
+                <label class="myw-checkbox"><input type="radio" name="PIConfirmRadio"
+                    (change)="onPIConfirmation(true)"><span>Yes</span></label>
+                <label class="myw-checkbox"><input type="radio" name="PIConfirmRadio"
+                    (change)="onPIConfirmation(false)"><span>No</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Data UI starts-->
+        <div *ngIf="customDataView">
+          <div class="form-group">
+            <div class="form-inline">
+              <label class="myw-checkbox mb-0"><input type="radio" id="option-1" name="customData_option"
+                  (click)="onOptionSelection('AddQuery')" checked><span>
+                  Add Query</span></label>
+              <label class="myw-checkbox mb-0"><input type="radio" id="option-2" name="customData_option"
+                  (click)="onOptionSelection('API')"><span>
+                  API</span></label>
+            </div>
+            <div class="custom-data-view-body">
+              <div *ngIf="addQueryView"> 
+                <app-custom-query-save [modalNameRequired]="false" [previousQuery]="previousQuery" (onSaveQuery)="saveQuery($event)" [serviceLevel]="serviceLevel"></app-custom-query-save>
+              </div>
+              <div *ngIf="APIView">
+                <app-custom-data-api [ApiConfig]="ApiConfig" (APIData)="saveAPI($event)"></app-custom-data-api>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <!-- Custom Data UI ends -->
+
+        <div class="d-flex myw-actions mt-3" style="justify-content: flex-end;" *ngIf="!customDataView">
+          <!-- <div *ngIf="this.files.length>0"
+            style="margin-right: 18.5em;font-size: 0.85rem;font-weight: 500;border-left: 5px solid #004dff;padding-left: 5px;">
+            <div>
+              <span style="margin-right: 5px;">Does this file contain PII Data?</span>
+              <span>
+                <app-info-tooltip [labelTitle]="''" [description]="'pidatahelp'" [isImage]="true"></app-info-tooltip>
+              </span>
+            </div>
+            <input type="radio" name="PIConfirmRadio" (change)="onPIConfirmation(true)"><span class="ml-2">Yes</span>
+            <input type="radio" name="PIConfirmRadio" class="ml-2" (change)="onPIConfirmation(false)"><span
+              class="ml-2">No</span>
+          </div> -->
+          <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onClose()">Cancel</button> -->
+          <button type="submit" class="btn btn-primary" data-dismiss="modal" data-toggle="modal"
+            (click)="onSubmit()">Save</button>
+        </div>
+      </div>
+
+      <div class="modal-body myw-scrollbar" *ngIf='agileFlag && fileUploadView'>
+        <div class="row">
+          <div class="col">
+            <table style="width: 100%;">
+              <tr>
+                <td style="width: 50%;">
+                  <div class="media ingrAI-info mb-3 mt-3">
+                    <div class="media-img"><img src="assets/images/info-l.svg" alt=""></div>
+                    <ul class="media-body">
+                      <b>The Data is aggregated at Sprint Level</b>
+                    </ul>
+                  </div>
+                </td>
+                <td style="width: 50%;" align="right">
+                  <table>
+                    <tr>
+                      <td style="padding: 4px;">
+                        <div class="onoffswitch">
+                          <label class="myw-switch ingr-switch">
+                            <input #switchtoggle (click)="ontoggleSwitchChanged(switchtoggle)" type="checkbox"
+                              name="onoffswitch" id="myonofftoggleswitch" [checked]="ToggleSwitch === 'True'">
+                            <span class="label-first">OFF</span>
+                            <span class="switch-toggle"></span>
+                            <span class="label-last">ON</span>
+                          </label>
+                        </div>
+
+                        <!-- <div class="onoffswitch" [formGroup]="agiletoggle">
+              <input #switchtoggle (click)="ontoggleSwitchChanged(switchtoggle)"
+              formControlName="toggle" type="checkbox" name="onoffswitch" 
+              class="onoffswitch-checkbox" id="myonofftoggleswitch"
+              [checked]="ToggleSwitch == true">
+              <label class="onoffswitch-label" for="myonofftoggleswitch">
+                <span class="onoffswitch-inner"></span>
+                <span class="onoffswitch-switch"></span>
+              </label>
+            </div> -->
+                      </td>
+                      <td>
+                        <ul class="media-body" style="margin-top: 13px;">
+                          <b>Upload Data File</b>
+                        </ul>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-6 col-lg-12 d-flex col-12">
+            <div [ngClass]="{'disable-pointer' : FileUploadFlag == true}">
+              <h5 class="modal-title" class="ingrAI-drag-text-large">Select from
+                Data source</h5>
+
+              <div class="ingrAI-datasource-container">
+
+                <div>
+                  <form [formGroup]="apiRow" (ngSubmit)="onSubmit()">
+                    <div>
+                      <div class="row mb-4">
+                        <div class="col-6">
+                          <div class="form-group">
+                            <mat-form-field class="w-100">
+                              <mat-label>Start Date</mat-label>
+                              <input matInput formControlName="startDateControl" [matDatepicker]="picker1"
+                                placeholder="DD MM YYYY" [max]="startDate">
+                              <mat-datepicker-toggle matSuffix [for]="picker1">
+                                <img src="assets/images/calendar.svg" alt="Calendar">
+                              </mat-datepicker-toggle>
+                              <mat-datepicker #picker1></mat-datepicker>
+                              <mat-error *ngIf="apiRow.get('startDateControl').invalid">Start
+                                Date
+                              </mat-error>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-group">
+                            <mat-form-field class="w-100">
+                              <mat-label>End Date</mat-label>
+                              <input formControlName="endDateControl" matInput [matDatepicker]="picker2"
+                                placeholder="DD MM YYYY" [min]="startDate" [max]="startDate">
+                              <mat-datepicker-toggle matSuffix [for]="picker2">
+                                <img src="assets/images/calendar.svg" alt="Calendar">
+                              </mat-datepicker-toggle>
+                              <mat-datepicker #picker2></mat-datepicker>
+                              <mat-error *ngIf="apiRow.get('endDateControl').invalid">End
+                                Date
+                              </mat-error>
+                            </mat-form-field>
+                          </div>
+                        </div>
+
+
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
+              </div>
+            </div>
+            <div *ngIf="fileUploadView" class="col-md-6 col-12
+              ingrAI-model-main-cont" [ngClass]="{'disable-pointer' : FileUploadFlag == false}">
+              <div class="ingrAI-model-file-uploader ingrAI-file-upload pt-3 pb-4
+                d-flex align-items-center flex-column justify-content-center" id="ingrAI-upload">
+                <!-- <span class="ingrAI-drag-text-large">Upload File</span>
+                        <span class="ingrAI-drag-text-small">Browse</span>
+                        <div class="choose-file my-2">
+                          <label for="choose-file" class="btn"><img src="assets/images/upload-file.svg" alt="" title=""/></label>	
+                          <input #fileInput type="file" id="ingrAI-upload" [ngStyle]="{'top':sourceTotalLength>=1 ? '15%' : '20%' }"
+                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv"
+                            (change)="getFileDetails($event)" single/>																							
+                        </div>
+                        <span class="filetype">File types: Excel and CSV</span>
+                        <span class="filetype">Maximum total uploaded size not to exceed 130 MB</span><br/><br/> -->
+                <span class="fs-14 myw-500 mb-2">Upload File</span>
+                <div class="myw-file-drag d-flex flex-column align-items-center
+                  justify-content-center">
+                  <!-- <span class="ingrAI-drag-text-small">Browse</span> -->
+                  <!-- <div class="choose-file my-2"> -->
+                  <label>
+                    <span>Drag &amp; Drop or <strong>Browse Files</strong></span>
+                    <input #fileInput type="file" id="ingrAI-upload"
+                      [ngStyle]="{'top':sourceTotalLength>=1 ? '15%' : '20%' }"
+                      accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv"
+                      (change)="getFileDetails($event)" (click)="$event.target.value = null" single />
+                  </label>
+                  <!-- </div> -->
+                  <span class="filetype">File types: Excel and CSV</span>
+                  <span class="filetype">Maximum total uploaded size not to
+                    exceed 130 MB</span>
+                </div>
+
+                <span style="place-self: flex-start;">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td style="padding: 10px;">
+                          <!-- <div title='Download Template' class="ingrAI-download-view" (click)='downloadData()'>
+                          <svg class="ingrAI-icon-svg" style="cursor: pointer;">
+                            <use _ngcontent-c17="" xlink:href="#ingrAI-icon-download-data"></use>
+                          </svg></div> -->
+                          <a (click)="downloadData()" class="myw-navbar-action" role="button" matTooltip="Export the password protected file, click on info icon to know the password hint"
+                            data-toggle="modal" data-target="#sampleModal" data-toggle-tooltip="tooltip"
+                            data-placement="bottom" data-trigger="hover"><img
+                              src="assets/images/Iconfeather-download.svg" alt="Export the password protected file, click on info icon to know the password hint" /><span>Download
+                              Data</span></a>
+                        </td>
+                        <td> <span class="filetype">Download Template</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </span>
+              </div>
+
+              <div class="ingrAI-uploadfiles-agilecontainer" *ngIf="this.files">
+                <div class="row" *ngFor="let file of this.files;let fileAtIndex=
+                  index">
+                  <div class="col-6 pt-3">
+                    <div class="upload-file-name">{{file.name}}</div>
+                    <!-- <div class="upload-file-name">File 0{{fileAtIndex+1}}</div> -->
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" style="width:
+                        100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="col-1 d-flex align-items-center" (click)="removeFile(fileAtIndex,file.name,fileInput)">
+                    <a href="javascript:;" title="Remove" aria-label="Remove"></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <div class="modal-footer border-0">
+          <div *ngIf="this.files.length>0" style="margin-right: 10em;font-size: 0.85rem;font-weight:
+            500;border-left: 5px solid #004dff;padding-left: 5px;">
+            <!-- <input type="checkbox" [checked]="PIConfirmCheckbox"> -->
+            <div>
+              <span style="margin-right: 5px;">Does this file contain PII Data?</span>
+              <span>
+                <app-info-tooltip [labelTitle]="''" [description]="'pidatahelp'" [isImage]="true"></app-info-tooltip>
+              </span>
+            </div>
+            <input type="radio" name="PIConfirmRadio" (change)="onPIConfirmation(true)"><span class="ml-2">Yes</span>
+            <input type="radio" name="PIConfirmRadio" class="ml-2" (change)="onPIConfirmation(false)"><span
+              class="ml-2">No</span>
+          </div>
+          <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onClose()">Cancel</button> -->
+          <button type="submit" class="btn btn-primary form-group" data-dismiss="modal" data-toggle="modal"
+            (click)="onSubmit()">Save</button>
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+</div>

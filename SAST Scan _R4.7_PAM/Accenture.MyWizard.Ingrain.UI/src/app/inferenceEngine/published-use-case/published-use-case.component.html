@@ -1,0 +1,151 @@
+<section>
+    <table class="table ingrAI-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Use Case Name</th>
+          <th>Use case Description</th>
+          <th>Application Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <tr *ngFor="let usecases of publishedUseCases; let i = index">
+            <td>
+              <input type="radio" name="usecase_name"
+                value="{{usecases.CorrelationId}}" (click)="radioButtonselected = i">
+                <!-- <div #applink class="dropdown-menu" style="min-width: 290px;" [id]="'dvShowWebLink'+i"
+                *ngIf="usecaseSampleInputshow? 'show': ''"
+                [ngClass]="{'show': selectedusecaseSampleInputIndex==i}">
+                <div class="ingrAI-drop-close" (click)="closeUsecaseSampleInputWindow(index)">
+                  <a><svg class="ingrAI-icon-svg" style="height: 16px; width: 16px;">
+                      <use xlink:href="#ingrAI-icon-close"></use>
+                    </svg></a>
+                </div>
+                <div class="dropdown-item inputSampleList myw-scrollbar" style="max-height: 156px;">
+                  <label style="font-weight: bold;"> Attributes :-</label>
+                  <table>
+                    <tr *ngFor="let attribute of useCaseAttributes">
+                      <td>
+                        {{attribute}}
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div> -->
+            </td>
+            <td>{{usecases.UseCaseName}}
+              <span [id]="'dvWebLink' +i " class="dropdown ingrAI-link-apps">
+                <a (click)="openUsecaseSampleInputWindow(i,usecases)" class="data-source"
+                  data-toggle="dropdown" data-target="#applink" aria-haspopup="true" aria-expanded="false">
+                  <span class="ingrAI-open-help tooltip-x">
+                    <svg class="ingrAI-icon-svg ingrAI-icon-svg-md" style="width: 1em;height: 1em;">
+                      <use xlink:href="#ingrAI-icon-info"></use>
+                    </svg>
+                  </span>
+                </a>
+
+                <div #applink class="dropdown-menu" style="min-width: 490px;" [id]="'dvShowWebLink'+i"
+                  [ngClass]="{'show': selectedusecaseSampleInputIndex==i}">
+                  <div class="ingrAI-drop-close" (click)="closeUsecaseSampleInputWindow(index)">
+                    <a><svg class="ingrAI-icon-svg" style="height: 16px; width: 16px;">
+                        <use xlink:href="#ingrAI-icon-close"></use>
+                      </svg></a>
+                  </div>
+                  
+                  <div style="max-height: 233px; overflow: auto;margin-top: 2em;">
+                  <div class="dropdown-item inputSampleList">
+                    <!-- <label style="font-weight: bold;"> Attributes :-</label> -->
+                    <table>
+                      <tr *ngFor="let item of usecases | keyvalue">
+                        <td *ngIf="item.key != 'InferenceConfigurationsDetails'">
+                          <span style="font-weight: 600;"> {{item.key}}:</span>{{item.value}}
+                        </td>
+                        <td *ngIf="item.key == 'InferenceConfigurationsDetails'">
+                          <span style="font-weight: 600;"> Config Details</span>
+                          <tr *ngFor="let inneritem of infoUseCase ">
+                            {{ ( inneritem | json ).replaceAll('{', '').replaceAll('}', '')}}
+                           </tr>
+                        </td>
+                      </tr>
+                    </table>
+                                               
+                  </div>
+                </div>
+
+
+                </div>
+              </span>
+            </td>
+            <td><span class="inputSampleList">{{usecases.UseCaseDescription}} </span> </td>
+            <td>{{usecases.ApplicationName}}</td>
+            <td>
+              <ng-container *ngIf="usecases.SourceName.toLowerCase() != 'file'">
+                <a  class="btn btn-primary" data-toggle="modal" data-target="#entityModal"
+                 [ngClass]="{ 'disabled': radioButtonselected != i }"
+                (click)="selectedUseCase(usecases)">Train Use case</a>
+              </ng-container>
+            </td>
+            <td style="text-align: center;">
+              <a style="cursor: pointer;" *ngIf="usecases.CreatedBy == userId" title="Delete usecase" (click)="deleteUseCaseModel(usecases)">
+                <img style="height: 20px;" alt="Delete" src="assets/images/delete.svg" />
+              </a>
+            </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+   <!-- Save Modal -->
+   <div class="modal" id="entityModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="entityModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="trainUsecase">  Train Use Case</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&nbsp;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label class="form-label" *ngIf="selectedEntity">Entity : {{ selectedEntity.Entity }}</label>
+                    </div>
+                    <div class="form-group d-flex" [formGroup]="dateControl">
+                      <mat-form-field class="w-100">
+                        <mat-label>Start Date</mat-label>
+                        <input matInput formControlName="startDateControl" [matDatepicker]="picker1" placeholder="DD MM YYYY"
+                          [max]="startDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker1">
+                          <img src="assets/images/calendar.svg" alt="Calendar">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                        <!-- <mat-error *ngIf="dateControl.get('startDateControl').invalid">Start Date
+                          </mat-error> -->
+                      </mat-form-field>
+              
+                      <mat-form-field class="w-100 ml-2">
+                        <mat-label>End Date</mat-label>
+                        <input matInput formControlName="endDateControl" [matDatepicker]="picker2" placeholder="DD MM YYYY"
+                          [min]="dateControl.get('startDateControl').value" [max]="startDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker2">
+                          <img src="assets/images/calendar.svg" alt="Calendar">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                        <!-- <mat-error *ngIf="dateControl.get('endDateControl').invalid">End Date
+                          </mat-error> -->
+                      </mat-form-field>
+                    
+                    </div>
+                    <div class="d-flex justify-content-end myw-actions">
+                        <a class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</a>
+                        <a class="btn btn-sm btn-primary" data-dismiss="modal" (click)="trainUseCase()">Train</a>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Save Modal -->

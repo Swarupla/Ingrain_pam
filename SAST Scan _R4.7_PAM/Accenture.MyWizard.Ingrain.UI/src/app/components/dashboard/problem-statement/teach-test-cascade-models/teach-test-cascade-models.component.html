@@ -1,0 +1,388 @@
+<!-- Sub Navbar -->
+<!-- <div class="ingrAI-subnavrbar ingrAI-subnav-col">
+  <div class="row">
+    <div class="col-2 d-flex flex-column ingrAI-subnav-col-name">
+      <div class="d-flex align-items-center">
+        <span class="mr-2">Usecase</span>
+      </div>
+      <div class="ingrAI-subnav-col-filename">
+        Cascading 1
+      </div>
+    </div>
+    <div class="col-7 d-flex align-items-center ingrAI-subnav-col-name">
+      <nav aria-label="breadcrumb" class="de-breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="javascript:;">Choose Model</a></li>
+          <li class="breadcrumb-item"><a href="javascript:;">Mapping</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Teach and Test</li>
+          <li class="breadcrumb-item"><a href="javascript:;">Deploy Model</a></li>
+        </ol>
+      </nav>
+    </div>
+    <div class="col-3 d-flex pr-0 justify-content-end">
+      <div class="ingrAI-search-container mr-3">
+        <button type="button" class="btn btn-primary"><svg class="ingrAI-icon-svg"><use xlink:href="#ingrAI-icon-search"></use></svg></button>
+        <input type="text" class="form-control" placeholder="search...">
+      </div>
+      <a href="javascript:;" class="d-flex align-items-center" alt="Help" title="Help"><svg class="ingrAI-icon-svg ingrAI-icon-svg-md"><use xlink:href="#ingrAI-icon-help"></use></svg></a>
+    </div>
+  </div>
+</div> -->
+<!-- /Sub Navbar -->
+
+<div id="main" class="ingrAI-content ingrAI-cust-wrap flex-fill">
+  <!-- Description -->
+  <div class="ingerAI-predescription-container d-none">
+    <div class="ingerAI-predescription-content-container">
+      <div class="ingrAI-list-item-container ingerAI-predescription-list-item-container">
+        <div class="ingrAI-list-item">
+          <label class="checkcontainer">
+            <span>Change values of one or combination of features and test the prediction outcome</span>
+            <input type="checkbox">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <div class="ingrAI-list-item">
+          <label class="checkcontainer">
+            <span>Update test data: To modify your data based on As-Is prediction, Would you like to modify your base data</span>
+            <input type="checkbox">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end py-2"><input type="button" class="btn btn-primary" value="Fix it"/></div>
+    </div>
+    <div class="ingerAI-predescription d-flex flex-column">
+      <div class="ml-1"><svg class="ingrAI-icon-svg ingrAI-icon-svg-md"><use xlink:href="#ingrAI-icon-circle-arrow"></use></svg></div>
+      <div class="ingerAI-predescription-text">Prescription</div>
+      <div class="ml-1"><svg class="ingrAI-icon-svg ingrAI-icon-svg-md"><use xlink:href="#ingrAI-icon-circle-arrow"></use></svg></div>
+    </div>
+  </div>
+  <!-- /Description -->
+  
+  <div class="ingrAI-body-content"> 
+    <!-- What if Analysis -->
+    <div class="row mt-3">
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="" class="col-sm-auto col-form-label">Xgboost classifier</label>
+          <div class="col-sm-7">
+            <div class="form-group">
+              <select class="form-control" id="">
+                <option>Run Test Scenerio</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col justify-content-end text-right">
+        <input type="button" class="btn btn-primary" value="Previous" (click)="previous()">
+        <input type="button" class="btn btn-primary btn-next" value="Next" (click)="next()">
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-auto">
+        <!-- Left Section-->
+        <div class="ingrAI-box-container ingrAI-box-leftcontainer" [ngClass]="{'open': openFeatureValues === true}">
+          <div class="ingrAIn-collapse">
+            <div class="ingrAI-heading">Features and Value</div>
+            <div class="ml-auto">
+              <a href="javascript:;" class="collapse-btn" (click)="collapseFeatureValues(false)">
+                <span class="sr-only">Click here to open prediction outcome</span>
+                <svg class="ingrAI-icon-svg ingrAI-icon-svg-md"><use xlink:href="#ingrAI-back-icon"></use></svg>
+              </a>
+            </div>
+          </div>
+          <div class="ingerAI-pre-text">Features and value</div>
+          <div class="ingrAIn-box-content">
+            <div class="fs-10">Set the values and click on run test to get the prediction</div>
+            <div class="d-flex align-items-center">
+              <div class="ingrAIn-search my-3">
+                <input type="text" class="form-control" maxlength="70" placeholder="Search">
+                <button type="button" class="btn"><img src="assets/images/search.svg" alt="Search" title="Search"></button>
+              </div>
+              <div class="dropdown d-flex ml-auto ingrAIn-filter">
+                <a href="javascript:;" class="dropdown-toggle" type="button" id="filterView" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/filter.svg" alt="Filter"/></a>
+                <div class="dropdown-menu" aria-labelledby="filterView" style="left:0px !important">
+                  <div class="dropdown-header">Filter</div>
+                  <form class="dropdown-body">
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="form-group mb-4">
+                          <label class="form-label">Model Type</label>
+                          <select class="form-control">
+                            <option>Select</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group mb-4">
+                          <label class="form-label">Index Type</label>
+                          <select class="form-control">
+                            <option>Select</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group mb-4">
+                          <label class="form-label">Model Type</label>
+                          <select class="form-control">
+                            <option>Select</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-3">
+                      <input type="button" class="btn btn-primary" value="Clear All"/>
+                      <input type="button" class="btn btn-primary ml-auto" value="Cancel"/>
+                      <input type="button" class="btn btn-primary btn-next" value="Apply"/>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="ingrAIn-feature-collapse d-flex align-items-center">
+              <span>Start</span>
+              <a class="dropdown-toggle ml-auto" data-toggle="collapse" href="#start" role="button" aria-expanded="false" aria-controls="start">&nbsp;</a>
+            </div>
+            <div class="collapse show" id="start">
+              <div class="card card-body border-0 p-0">
+                <div class="form-group mb-3">
+                  <label class="form-label">Ticket No.</label>
+                  <select class="form-control">
+                    <option>Closed</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Created</label>
+                  <select class="form-control">
+                    <option>1-5 Days</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Priority</label>
+                  <select class="form-control">
+                    <option>Silver</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Ticket Description</label>
+                  <select class="form-control">
+                    <option>P1</option>
+                    <option>P2</option>
+                    <option>P3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="ingrAIn-feature-collapse d-flex align-items-center">
+              <span>Intermediate 1</span>
+              <a class="dropdown-toggle ml-auto collapsed" data-toggle="collapse" href="#intermediate1" role="button" aria-expanded="false" aria-controls="intermediate1">&nbsp;</a>
+            </div>
+            <div class="collapse" id="intermediate1">
+              <div class="card card-body border-0 p-0">
+                <div class="form-group mb-3">
+                  <label class="form-label">Ticket No.</label>
+                  <select class="form-control">
+                    <option>Closed</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Created</label>
+                  <select class="form-control">
+                    <option>1-5 Days</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Priority</label>
+                  <select class="form-control">
+                    <option>Silver</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Ticket Description</label>
+                  <select class="form-control">
+                    <option>P1</option>
+                    <option>P2</option>
+                    <option>P3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="ingrAIn-feature-collapse d-flex align-items-center">
+              <span>Intermediate 2</span>
+              <a class="dropdown-toggle ml-auto collapsed" data-toggle="collapse" href="#intermediate2" role="button" aria-expanded="false" aria-controls="intermediate2">&nbsp;</a>
+            </div>
+            <div class="collapse" id="intermediate2">
+              <div class="card card-body border-0 p-0">
+                <div class="form-group mb-3">
+                  <label class="form-label">Ticket No.</label>
+                  <select class="form-control">
+                    <option>Closed</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Created</label>
+                  <select class="form-control">
+                    <option>1-5 Days</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Priority</label>
+                  <select class="form-control">
+                    <option>Silver</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Ticket Description</label>
+                  <select class="form-control">
+                    <option>P1</option>
+                    <option>P2</option>
+                    <option>P3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="ingrAIn-feature-collapse d-flex align-items-center">
+              <span>End</span>
+              <a class="dropdown-toggle ml-auto collapsed" data-toggle="collapse" href="#end" role="button" aria-expanded="false" aria-controls="end">&nbsp;</a>
+            </div>
+            <div class="collapse" id="end">
+              <div class="card card-body border-0 p-0">
+                <div class="form-group mb-3">
+                  <label class="form-label">Ticket No.</label>
+                  <select class="form-control">
+                    <option>Closed</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Created</label>
+                  <select class="form-control">
+                    <option>1-5 Days</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Priority</label>
+                  <select class="form-control">
+                    <option>Silver</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Ticket Description</label>
+                  <select class="form-control">
+                    <option>P1</option>
+                    <option>P2</option>
+                    <option>P3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- /Left Section-->
+      </div>
+      <div class="col">
+        <div class="row">
+          <div class="col">
+            <div class="ingrAI-box-container">
+              <div class="ingrAI-heading">Prediction Outcome</div>
+              <div class="ingrAIn-SLA-title text-uppercase mt-3 mb-2">SLA_Resolution</div>
+              <div class="form-group">
+                <select class="form-control w-25" id="">
+                  <option>Select</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col">
+            <div class="ingrAI-box-container">
+              <div class="ingrAI-heading">Prediction Outcome</div>
+              <div class="ingrAIn-prediction-chart mt-2">
+                Chart
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /What if Analysis -->
+      
+    
+    
+    
+    <div class="ingrAI-box-container mt-4 ingrAI-hyper-tuning d-none">
+      <div class="row">
+        <div class="col-md-3 col-lg-2">
+          <div class="ingrAI-heading">Accuracy</div>
+          <div class="ingrAI-chart">
+            Chart
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-7">
+          <div class="ingrAI-heading">Roc/Auc Curves</div>
+          <div class="ingrAI-chart">
+            Chart
+          </div>
+        </div>
+        <div class="col-md-3 col-lg-3">
+          <div class="ingrAI-heading">Feature Weights</div>
+          <div class="table-responsive ingr-filter-table">
+            <table class="table ingrAI-table ingrAI-data-table">
+              <thead>
+                <tr>
+                  <th scope="col" width="60%">Features</th>
+                  <th scope="col" width="40%">Weights</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Planned Hours</td>
+                  <td>-0.0123</td>
+                </tr>
+                <tr>
+                  <td>SAP basis App</td>
+                  <td>-0.0123</td>
+                </tr>
+                <tr>
+                  <td>Admin App</td>
+                  <td>-0.0123</td>
+                </tr>
+                <tr>
+                  <td>Planned Hours</td>
+                  <td>-0.0123</td>
+                </tr>
+                <tr>
+                  <td>Core App</td>
+                  <td>-0.0123</td>
+                </tr>
+                <tr>
+                  <td>Planned Hours</td>
+                  <td>-0.0123</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>	
+    </div>
+    
+    
+  </div>
+</div>
+<div class="d-none">
+  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0">
+    <symbol viewBox="0 0 129 129" enable-background="new 0 0 129 129" id="ingrAI-back-icon">
+      <g>
+        <path
+          d="m88.6,121.3c0.8,0.8 1.8,1.2 2.9,1.2s2.1-0.4 2.9-1.2c1.6-1.6 1.6-4.2 0-5.8l-51-51 51-51c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-54,53.9c-1.6,1.6-1.6,4.2 0,5.8l54,53.9z">
+        </path>
+      </g>
+    </symbol>
+  </svg>
+</div>

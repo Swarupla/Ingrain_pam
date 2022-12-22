@@ -1,0 +1,108 @@
+<div class="myw-section my-3 p-3">
+  <div class="ingrAI-body-content">
+    <div class="ingrAI-body-contentBG ingrAI-preprocess-tile">
+      <div class="table-responsive" style="height: 345px !important;">
+        <table class="table ingrAI-table ingrAI-visual-table">
+            <thead>
+              <tr>
+              <th scope="col" class="text-center">Model Name</th>
+              <th scope="col" class="text-center">Accuracy</th>
+              <th scope="col" class="text-center">Publish Date</th>
+              <th scope="col" class="text-center">Cascaded</th>
+              <!-- <th scope="col" class="text-center" width="10%">Visualization</th> -->
+              <th scope="col" class="text-center" width="10%">Web Services</th>
+              <th scope="col" class="text-center" *ngIf="vdsLink">App Link</th>
+              <th scope="col" class="text-center">Public/Private</th>
+              <th scope="col" class="text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="center"><a href="javascript:;">{{modelName}}</a></td>
+              <td align="center">{{deployedAccuracy}}%</td>
+              <td align="center">{{deployedDate}}</td>
+              <td align="center">
+                <label class="optioncontainer pl-0">
+                  <input type="checkbox" name="cascaded" checked disabled>
+                  <span class="op-radiobtn"></span>
+                </label>
+              </td>
+              <!-- <td align="center" style="width: 19%;">
+                <div class="d-flex align-items-center" (click)="closeWebSerciveURLWindow(false)" style="justify-content: flex-end; margin-left: 5rem;">
+                  <ng-container *ngIf="deployedModel">
+                    <app-my-visualization [model]="deployedModel.CascadeModel[0]" [parentComponent]="'deployedModel'">
+                    </app-my-visualization>
+                  </ng-container>
+                </div>
+              </td> -->
+              <td align="center">
+                <div class="dropdown ingrAI-link-apps">
+                  <a href="#" class="data-source" (click)="openWebServiceURLWIndow(true)" role="button" data-display="static"
+                      data-placement="bottom" style="cursor: pointer;" data-toggle="dropdown" data-target="#applink1" 
+                      aria-haspopup="true" aria-expanded="false">
+                      <img src="assets/images/web-services.svg" />
+                  </a>
+                  <div #applink1 class="dropdown-menu dropdown-xl info-dropdown" [id]="dvShowWebLink" *ngIf="webserviceLinkshow? 'show': ''"
+                    [ngClass]="{'show': selectedWebLinkIndex==true}" style="top: 70px;" aria-labelledby="infoPopup">
+                    <div class="d-flex align-items-center justify-content-between" style="padding: 0.3rem !important;">
+                      <span>&nbsp;</span>
+                      <a href="javascript:;" (click)="closeWebSerciveURLWindow(false)" class="deploymodel-closeicon" title="Close"><span
+                          class="sr-only">Close</span></a>
+                    </div>
+                    <div class="dropdown-item weserviceUrl" style="flex-wrap: wrap; white-space: pre-wrap;">
+                      {{modelURL}}
+                      <div>
+                        <label style="font-weight: bold;">InputData :-</label>
+                        <div style="white-space: pre-wrap;">{{inputSmapleForWebLink}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td align="center" *ngIf="vdsLink">
+                <div class="dropdown ingrAI-link-apps">
+                  <a [href]="openVdsLink(vdsLink,clientUId,deliveryConstructUId)" target="_blank"
+                    class="data-source" style="cursor: pointer;">
+                    {{vdsLink}}
+                  </a>
+                </div>
+              </td>
+              <td align="center">
+                <ng-container *ngIf="IsPrivate==true && IsModelTemplate==false">
+                  Private
+                </ng-container>
+                <ng-container *ngIf="IsPrivate==false && IsModelTemplate==false">
+                  Public
+                </ng-container>
+                <ng-container *ngIf="IsPrivate==false && IsModelTemplate==true">
+                  Model Template
+                </ng-container>
+              </td>
+              <td align="center">{{status}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="d-flex myw-actions justify-content-end">
+  <a class="btn btn-secondary btn-previous" (click)="previous()"><img src="assets/images/back.svg" alt="Next"><span>Previous</span></a>
+</div>
+
+<div class="d-none">
+  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0">
+    <symbol viewBox="0 0 20.4 21.2" enable-background="new 0 0 20.4 21.2" id="ingrAI-icon-close">
+      <g>
+        <path class="st1"
+          d="M18.5,2c0.5,0,1,0.2,1.4,0.6s0.6,0.8,0.6,1.4v14c0,0.5-0.2,1-0.6,1.4s-0.8,0.6-1.4,0.6H1.9
+                c-0.5,0-1-0.2-1.4-0.6S0,18.5,0,17.9v-14c0-0.5,0.2-1,0.6-1.4S1.4,2,1.9,2H18.5z M18.5,17.7V4.2c0-0.1,0-0.1-0.1-0.2
+                s-0.1-0.1-0.2-0.1H2.2C2.1,3.9,2,4,2,4S1.9,4.1,1.9,4.2v13.5c0,0.1,0,0.1,0.1,0.2s0.1,0.1,0.2,0.1h16.1c0.1,0,0.1,0,0.2-0.1
+                S18.5,17.8,18.5,17.7z M14.2,8.5c0.1-0.1,0.1-0.2,0.1-0.4s0-0.2-0.1-0.3l-0.9-0.9c-0.1-0.1-0.2-0.1-0.3-0.1c-0.1,0-0.3,0-0.4,0.1
+                l-2.4,2.5L7.8,6.9C7.7,6.8,7.5,6.8,7.4,6.8c-0.1,0-0.2,0-0.3,0.1L6.2,7.8C6.1,7.9,6.1,8,6.1,8.1s0.1,0.3,0.2,0.4l2.4,2.4
+                l-2.5,2.4c-0.1,0.1-0.1,0.2-0.1,0.4S6.1,14,6.2,14L7.1,15c0.1,0.1,0.2,0.1,0.3,0.1c0.1,0,0.3-0.1,0.4-0.2l2.4-2.4l2.4,2.5
+                c0.1,0.1,0.2,0.1,0.4,0.1c0.1,0,0.2-0.1,0.3-0.2l0.9-0.9c0.1-0.1,0.2-0.2,0.2-0.3s0-0.3-0.1-0.4l-2.5-2.4L14.2,8.5z" />
+      </g>
+    </symbol>
+  </svg>
+</div>

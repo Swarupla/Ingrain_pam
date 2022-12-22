@@ -1,0 +1,308 @@
+<!-- <div class="d-flex flex-column show-data-container">
+
+  <div class="d-flex justify-content-between align-items-center  show-data-pagination">
+
+    <div class="d-flex pt-10">
+      <pagination-controls id="showData_pagination" maxSize="10" directionLinks="true" (pageChange)="page = $event">
+      </pagination-controls>
+    </div>
+
+    <button type="button" class="close pr-10" aria-label="Close" (click)='onClose()'>
+      <svg class="ingrAI-icon-svg ingrAI-icon-svg-md">
+        <use xlink:href="#ingrAI-icon-close"></use>
+      </svg>
+    </button>
+
+  </div>
+
+  <div id="main" class="ingrAI-content ingrAI-cust-wrap flex-fill">
+
+    <div class="ingrAI-body-content">
+      <div class="ingrAI-body-contentBG">
+
+        <div #helppanelopen class="ingrAI-help-panel">
+          <div class="ingrAI-help-panel-container">
+            <div class="ingrAI-help-panel-header">
+              <div class="row">
+                <div class="col-7">
+                  <div class="ingrAI-search">
+                    <input type="text" class="form-control" placeholder="Search...">
+                    <button type="button" class="btn btn-primary" aria-label="Search Topic"><svg
+                        class="ingrAI-icon-svg">
+                        <use xlink:href="#ingrAI-icon-search"></use>
+                      </svg></button>
+                  </div>
+                </div>
+                <div class="col-5 d-flex justify-content-end">
+                  <a #helppanelclose href="javascript:;" (click)="closeHelper()" class="ingrAI-help-panel-close"><svg
+                      class="ingrAI-icon-svg ingrAI-icon-svg-md">
+                      <use xlink:href="#ingrAI-icon-close"></use>
+                    </svg></a>
+                </div>
+              </div>
+            </div>
+            <div class="ingrAI-help-panel-content d-flex flex-column flex-fill">
+              <div class="ingrAI-help-panel-body">
+                <div class="ingrAI-help-container">
+                  <div class="ingrAI-help-heading">Data modification</div>
+                  <div class="ingerAI-help-content">{{dataQualityInfo}}</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+       
+        <div class="table-responsive">
+          <table class="table ingrAI-table">
+            <thead>
+              <tr>
+                <th class="data-curation-heading" scope="col" id="truncate-data">Attribute Name
+                  <div class="data-curation-tooltip">Indicates the name of the attributes provided in the data set</div>
+                </th>
+                <th class="data-curation-heading text-center column-datatype" scope="col">Data Type
+                  <div class="data-curation-tooltip">Indicates the data type in the attribute content</div>
+                </th>
+                <th class="data-curation-heading" scope="col">Unique
+                  <div class="data-curation-tooltip">Indicates what % of unique value is associated with the attribute
+                    column</div>
+                </th>
+                <th class="data-curation-heading text-center" scope="col">Correlation
+                  <div class="data-curation-tooltip">A statistical technique that shows whether and how strongly pairs
+                    of
+                    variables are related</div>
+                </th>
+                <th class="data-curation-heading text-center column-scale" scope="col">Scale
+                  <div class="data-curation-tooltip">Indicates the scale of the attribute column if it's nominal/ordinal
+                  </div>
+                </th>
+                <th class="data-curation-heading" scope="col">Missing values
+                  <div class="data-curation-tooltip">Indicates the missing values in the attribute content column in %
+                  </div>
+                </th>
+                <th class="data-curation-heading" scope="col">Outlier
+                  <div class="data-curation-tooltip">Indicates the presence of an outlier/odd value in the attribute
+                    column in % </div>
+                </th>
+                <th class="data-curation-heading" scope="col">Balanced
+                  <div class="data-curation-tooltip">Refers to a situation where the number of observations is not the
+                    same for all the classes in a classification dataset </div>
+                </th>
+                <th class="data-curation-heading" scope="col">Skewness
+                  <div class="data-curation-tooltip">Indicates an imbalance and an asymmetry from the mean of a data
+                    distribution based on which it can be left/right skewed</div>
+                </th>
+                <th class="data-curation-heading" scope="col">Data Quality
+                  <div class="data-curation-end-tooltip">Data quality scores are computed based on quality dimensions
+                    for
+                    each individual column in the data set, and then a combined quality score is calculated.
+                    <p>100 - Missing - ImBalanced = Data Quality</p>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+
+            <ng-container *ngIf="isLoading; then displayLoader else displayTableData"></ng-container>
+            <ng-template #displayLoader>
+              <tbody>
+                <app-loader-display></app-loader-display>
+                <div *ngIf="pythonProgressStatus == 'P'" class="IngrAI-python-progress-dialogbox">
+                  <p>Data process in progress</p>
+                  <p> {{pythonProgress}}% Completed </p>
+                </div>
+              </tbody>
+            </ng-template>
+            <ng-template #displayTableData>
+              <tbody>
+                <tr *ngFor="let rowData of tableData | paginate: { id: 'showData_pagination',
+              itemsPerPage: 10,
+              currentPage: page
+             }; let i = index">
+                  <td>{{rowData['ATTRIBUTE NAME']}}</td>
+                  <td>
+                    {{rowData['Datatype']}}
+                  </td>
+                  <td>{{rowData['Unique']}}</td>
+                  <td align="center"><span>{{rowData['Correlation']}}</span>
+                  </td>
+                  <td>
+                    {{rowData['Scale']}}
+                  </td>
+                  <td align="center">{{rowData['Missing Values']}}</td>
+                  <td align="center">{{rowData['Outlier']}}</td>
+                  <td align="center">{{rowData['Balanced']}}</td>
+                  <td align="center">{{ rowData['Skewness'] }}</td>
+                  <td align="center">
+                    <div class="d-flex justify-content-center align-items-center ingrAI-data-quality-col">
+                      <div [ngClass]="getClassForDataQualityScore(rowData)"
+                        class="ingrAI-data-quality align-items-center">
+                        {{rowData['Data_Quality_Score']}}</div>
+                      <div class="ingrAI-open-help"><svg (click)="openHelper(rowData)"
+                          class="ingrAI-icon-svg ingrAI-icon-svg-md">
+                          <use xlink:href="#ingrAI-icon-info"></use>
+                        </svg></div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </ng-template>
+          </table>
+        </div>
+   
+      </div>
+    </div>
+  </div>
+
+</div> -->
+
+
+<div class="ingrain-fullmodal" id="sampledataModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="sampledataModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="sampledataModalTitle">View Data Quality</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='onClose()'>
+          <span aria-hidden="true">&nbsp;</span>
+        </button>
+      </div>
+      <div class="modal-body myw-scrollbar" style="max-height: 500px;">
+
+          <table class="table table-striped table-hover table-vmiddle myw-table">
+          <!-- <table class="table ingrAI-table"> -->
+            <thead>
+              <tr>
+                  <th class="data-curation-heading" scope="col" id="truncate-data">Attribute Name
+                      <div class="data-curation-tooltip">Indicates the name of the attributes provided in the dataset</div>
+                    </th>
+                    <th class="data-curation-heading text-center column-datatype" scope="col">Data Type
+                      <div class="data-curation-tooltip">Indicates the data type of the attribute (categorical/integer/text/float/datetime)</div>
+                    </th>
+                    <!-- <th></th> -->
+                    <th class="data-curation-heading" scope="col">Unique
+                      <div class="data-curation-tooltip">Indicates the (%) of unique values in the dataset for each attribute</div>
+                    </th>
+                    <th class="data-curation-heading text-center" scope="col">Correlation
+                      <div class="data-curation-tooltip">Indicates whether two sets of attributes are linearly related</div>
+                    </th>
+                    <th class="data-curation-heading text-center column-scale" scope="col">Scale
+                      <div class="data-curation-tooltip">Nature of information provided by each attribute. It is applicable only for text/categorical data (Nominal: separates the data into groups identified by name. Ordinal: separates the data into groups identified by some type of order)
+                      </div>
+                    </th>
+                    <th class="data-curation-heading" scope="col">Missing values
+                      <div class="data-curation-tooltip">Indicates the (%) of missing values in the dataset for each attribute                </div>
+                    </th>
+                    <th class="data-curation-heading" scope="col">Outlier
+                      <div class="data-curation-tooltip">Indicates the (%) of an outliers/odd value in the dataset for each attribute</div>
+                    </th>
+                    <th class="data-curation-heading" scope="col">Balanced
+                      <div class="data-curation-tooltip">Refers to a situation where the number of observations is the same for all the classes in a categorical dataset  </div>
+                    </th>
+                    <th class="data-curation-heading" scope="col">Skewness
+                      <div class="data-curation-tooltip">Refers to a situation where there is an imbalance or an asymmetry from the mean of a numerical data distribution, based on which majority of the data can be left/right skewed</div>
+                    </th>
+                    <th class="data-curation-heading" scope="col">Data Quality
+                      <div class="data-curation-end-tooltip">Data quality scores are computed based on quality dimensions for each individual attribute in the data set, and then a combined quality score is calculated
+                        <p>100 - Missing – Imbalanced-skewness-outlier = Data Quality</p>
+                      </div>
+                    </th>
+              </tr>
+            </thead>
+
+            <ng-container *ngIf="isLoading; then displayLoader else displayTableData"></ng-container>
+            <ng-template #displayLoader>
+              <tbody>
+                <app-loader-display></app-loader-display>
+                <div *ngIf="pythonProgressStatus == 'P'" class="IngrAI-python-progress-dialogbox">
+                  <p>Data process in progress</p>
+                  <p> {{pythonProgress}}% Completed </p>
+                </div>
+              </tbody>
+            </ng-template>
+            <ng-template #displayTableData>
+              <tbody>
+                <tr *ngFor="let rowData of tableData | paginate: { id: 'showData_pagination',
+                        itemsPerPage: 10,
+                        currentPage: page
+                       }; let i = index">
+                  <td>{{rowData['ATTRIBUTE NAME']}}</td>
+                  <td>
+                    {{rowData['Datatype']}}
+                  </td>
+                  <td>{{rowData['Unique']}}</td>
+                  <td align="center"><span>{{rowData['Correlation']}}</span>
+                  </td>
+                  <td align="center">
+                    {{rowData['Scale']}}
+                  </td>
+                  <td align="center">{{rowData['Missing Values']}}</td>
+                  <td align="center">{{rowData['Outlier']}}</td>
+                  <td align="center">{{rowData['Balanced']}}</td>
+                  <td align="center">{{ rowData['Skewness'] }}</td>
+                  <!-- <td align="center">
+                    <div class="d-flex justify-content-center align-items-center ingrAI-data-quality-col">
+                      <div [ngClass]="getClassForDataQualityScore(rowData)"
+                        class="ingrAI-data-quality align-items-center">
+                        {{rowData['Data_Quality_Score']}}</div>
+                      <div class="ingrAI-open-help"><svg (click)="openHelper(rowData)"
+                          class="ingrAI-icon-svg ingrAI-icon-svg-md">
+                          <use xlink:href="#ingrAI-icon-info"></use>
+                        </svg></div>
+                    </div>
+                  </td> -->
+
+                  <td align="center">
+                      <div class="d-flex myw-table-actions"> 
+                        <span [ngClass]="getClassForDataQualityScore(rowData)"
+                          class="ingrain-dq" style="width: 4em;">
+                          {{  rowData['Data_Quality_Score'] > 0 ? rowData['Data_Quality_Score']: 'NA'}}</span>
+                          <div (mouseover)="openHelper(rowData)">
+                              <app-info-tooltip  [className]="'toggleRight'" [dynamicDescription]="'Data Modification : '+dataQualityInfo">
+                                </app-info-tooltip>
+                          </div>
+                      </div>
+                    </td>
+                </tr>
+              </tbody>
+            </ng-template>
+          </table>
+        <!-- </div> -->
+
+        <div class="d-flex align-items-center justify-content-end myw-pagination">
+
+          <!-- <ul class="nav nav-tabs ingrAI-body-tab" id="myTab" role="tablist">
+            <li (click)='onTabClick(i,tabName)' class="nav-item" *ngFor='let tabName of tabOptions;let i = index'>
+              <a [ngClass]="setMyClasses(i)" id="'show-data-tab'+i">
+                {{tabName}}
+              </a>
+            </li>
+          </ul> -->
+          <div class="d-flex pt-10">
+              <pagination-controls id="showData_pagination" maxSize="10" directionLinks="true" (pageChange)="page = $event">
+                </pagination-controls>
+          </div>
+          <!-- <nav>
+                          <ul class="pagination">
+                              <li class="page-item disabled"><a href="javascript:;" class="page-link" aria-label="First" tabindex="-1" aria-disabled="true"><span aria-hidden="true">&lt;&lt;</span></a></li>
+                              <li class="page-item disabled"><a href="javascript:;" class="page-link" aria-label="Previous" tabindex="-1" aria-disabled="true"><span aria-hidden="true">&lt;</span></a></li>
+                              <li class="page-item active" aria-current="page"><a href="javascript:;" class="page-link">1 <span class="sr-only">(current)</span></a></li>
+                              <li class="page-item"><a href="javascript:;" class="page-link">2</a></li>
+                              <li class="page-item"><a href="javascript:;" class="page-link">3</a></li>
+                              <li class="page-item"><a href="javascript:;" class="page-link">4</a></li>
+                              <li class="page-item"><a href="javascript:;" class="page-link">5</a></li>
+                              <li class="page-item"><span class="page-link">...</span></li>
+                              <li class="page-item"><a href="javascript:;" class="page-link">30</a></li>
+                              <li class="page-item"><a href="javascript:;" class="page-link" aria-label="Next"><span aria-hidden="true">&gt;</span></a></li>
+                              <li class="page-item"><a href="javascript:;" class="page-link" aria-label="Last"><span aria-hidden="true">&gt;&gt;</span></a></li>
+                          </ul>
+                      </nav>
+                      <div class="position-relative">
+                          <label class="sr-only">Page Selection</label>
+                          <select><option>10/Page</option></select>
+                      </div> -->
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

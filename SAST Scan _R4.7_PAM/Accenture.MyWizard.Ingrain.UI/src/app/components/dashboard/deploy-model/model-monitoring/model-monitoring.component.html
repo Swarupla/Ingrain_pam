@@ -1,0 +1,182 @@
+<div id="main" class="ingrAI-content ingrAI-cust-wrap flex-fill" >
+  <div class="ingrAI-body-content">
+      <div class="d-flex">
+        <div class="myw-back">
+          <a href="javascript:;" class="mr-2 text-decoration-none">
+              <img src="assets/images/back.svg" alt="Back" (click)="navigateTodeployModel()">
+          </a>
+          <span class="myw-500 fs-18">Model Monitoring</span>
+         </div>  
+          <div class="ingrAIn-status d-inline-flex ml-auto">
+             <div class="myw-back my-3">
+              <span class="mr-2 ml-2">Model Status:</span>
+              <span *ngIf="ModelHealth == 'Healthy'" class="spandot" style="background-color: #21ba41;"></span>
+              <span *ngIf="ModelHealth != 'Healthy'" class="spandot" style="background-color: #d32f2f;"></span>
+              <span style="vertical-align: middle;" > {{ ModelHealth}}</span>
+             </div>
+  
+          </div>
+          <div class="ml-auto">
+              <input type="button" class="btn btn-secondary mr-1" value="Trained model history" data-toggle="modal" data-target="#exampleModal"
+              (click)="TrainingModelHistoryData()">
+              <input type="button" class="btn btn-secondary" value="My Models"
+              (click)="navigateToMyModels()">
+              <!-- <input type="button" class="btn btn-primary" value="Retrain"> -->
+          </div>
+      </div>
+      <div class="row ingrAIn-monitoring">
+          <div class="col-12 col-lg-6">
+              <div class="ingrAI-box-container">
+                  <div class="d-flex align-items-center">
+                      <div class="ingrAI-heading">
+                        <app-info-tooltip [labelTitle]="'Accuracy'" [description]="'Accuracy'">
+                        </app-info-tooltip>
+                      </div>
+                      <div class="ingrAIn-legends" 
+                      [ngClass]="(accuracyCurrentValue > accuracyCurrentValueThershold)? 'success': 'unhealthy'">{{accuracyCurrentValue}} %</div>
+      
+                  </div>
+                  <div class="ingrAIn-visual-monitoring-chart mt-2" *ngIf="accuracyChartData">
+                    <app-line-chart-monitoring [lineChartData]="accuracyChartData"
+                    [monitoring]='true' [entityName]="'accuracy'" [thersholdValue]='accuracyCurrentValueThershold'
+                    [lineChartHeight]=200 [lineChartWidth]="450">
+                  </app-line-chart-monitoring>
+
+                  <span class="spandot" style="background-color: #60607F;margin-left: 8rem;"></span>
+                  <span style="vertical-align: middle;" > Previous Accuracy </span>
+                  <span class="spandot" style="background-color: #9657D5"></span>
+                  <span style="vertical-align: middle;" > Predictive Accuracy </span>
+                  </div>
+              </div>
+          </div>
+          <div class="col-12 col-lg-6">
+              <div class="ingrAI-box-container">
+                  <div class="d-flex align-items-center">
+                    <div class="ingrAI-heading">
+                      <app-info-tooltip [labelTitle]="'Input Drift'" [description]="'inputdrift'">
+                      </app-info-tooltip>
+                    </div>
+                      <div class="ingrAIn-legends"
+                      [ngClass]="(inputDriftCurrentValue < inputDriftCurrentValueThershold)? 'success': 'unhealthy'"
+                      >{{inputDriftCurrentValue}} %</div>
+                  </div>
+                  <div class="ingrAIn-visual-monitoring-chart mt-2" *ngIf="inputDriftChartData">
+                    <app-line-chart-monitoring [lineChartData]="inputDriftChartData"
+                    [monitoring]='true' [entityName]="'inputdrift'" [thersholdValue]='inputDriftCurrentValueThershold'
+                    [lineChartHeight]=200 [lineChartWidth]="450">
+                  </app-line-chart-monitoring>
+
+                  
+                  <span class="spandot" style="background-color: #60607F;margin-left: 8rem;"></span>
+                  <span style="vertical-align: middle;" > Threshold </span>
+                  <span class="spandot" style="background-color: #EDB0E6;"></span>
+                  <span style="vertical-align: middle;" > Ip Drift (mean of top 3 features) </span>
+                  </div>
+              </div>
+          </div>
+          <div class="col-12 col-lg-6">
+              <div class="ingrAI-box-container">
+                  <div class="d-flex align-items-center">
+              
+                      <div class="ingrAI-heading">
+                        <app-info-tooltip [labelTitle]="'Target Variance'" [description]="'targetvariance'">
+                        </app-info-tooltip>
+                      </div>
+                      <div class="ingrAIn-legends"
+                      [ngClass]="(targetVarianceCurrentValue < targetVarianceCurrentValueThershold)? 'success': 'unhealthy'"
+                      >{{targetVarianceCurrentValue}} %</div>
+            
+                  </div>
+                  <div class="ingrAIn-visual-monitoring-chart mt-2"  *ngIf="targetVarianceChartData">
+                    <app-line-chart-monitoring [lineChartData]="targetVarianceChartData"
+                    [monitoring]='true' [entityName]="'targetvariance'" [thersholdValue]='targetVarianceCurrentValueThershold'
+                    [lineChartHeight]=200 [lineChartWidth]="450">
+                  </app-line-chart-monitoring>
+
+                  
+                  <span class="spandot" style="background-color: #60607F;margin-left: 8rem;"></span>
+                  <span style="vertical-align: middle;" > Threshold </span>
+                  <span class="spandot" style="background-color: #6D6ACC;"></span>
+                  <span style="vertical-align: middle;" > Target Variance </span>
+                  </div>
+              </div>
+          </div>
+          <div class="col-12 col-lg-6">
+              <div class="ingrAI-box-container">
+                  <div class="ingrAI-heading"></div>
+                  <div class="d-flex align-items-center">
+                      <div class="ingrAI-heading">
+                        <app-info-tooltip [labelTitle]="'Data Quality'" [description]="'dataquality'">
+                        </app-info-tooltip>
+                      </div>
+                      <div class="ingrAIn-legends"
+                      [ngClass]="(dataQualityCurrentValue > dataQualityCurrentValueThershold)? 'success': 'unhealthy'"
+                      >{{dataQualityCurrentValue}} %</div>
+                  
+                  </div>
+                  <div class="ingrAIn-visual-monitoring-chart mt-2"  *ngIf="dataQualityChartData">
+                    <app-line-chart-monitoring [lineChartData]="dataQualityChartData"
+                    [monitoring]='true' [entityName]="'dataquality'" [thersholdValue]='dataQualityCurrentValueThershold'
+                    [lineChartHeight]=200 [lineChartWidth]="450">
+                  </app-line-chart-monitoring>
+
+                  
+                  <span class="spandot" style="background-color: #60607F;margin-left: 8rem;"></span>
+                  <span style="vertical-align: middle;" > Threshold </span>
+                  <span class="spandot" style="background-color: #87C6E2;"></span>
+                  <span style="vertical-align: middle;" > Data Quality</span>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="col-12 d-flex justify-content-end">
+        <input type="button" class="btn btn-secondary my-3" aria-label="Close"
+          (click)="navigateTodeployModel()"
+          value="Close" />
+      </div>
+  </div>
+</div>
+
+	<!-- Trained  History Modal -->
+  <div class="modal fade ingrAIn-train-modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Trained Model History</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive" *ngIf="trainedModelHistory && trainedModelHistory.length > 0">
+            <table class="table ingrAI-table ingrAI-visual-table mb-4 mt-0">
+              <thead>
+                <tr>
+                  <th scope="col" class="text-center" width="9%">S. No</th>
+                  <th scope="col" width="10%">Details</th>
+                  <th scope="col" width="10%">Date &amp; Time</th>
+                  <th scope="col" width="15%">Accuracy</th>
+                  <th scope="col" width="15%">Data Drift</th>
+                  <th scope="col" width="15%">Target Variance</th>
+                  <th scope="col" width="10%">Overall Data Quality</th>
+                  <th scope="col" width="10%">Triggered</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let m of trainedModelHistory; let i = index">
+                  <td align="center">{{i+1}}</td>
+                  <td>Unhealthy</td>
+                  <td >{{m.Date.split(" ")[0]}}</td>
+                  <td  [ngClass]="(m.Accuracy.CurrentValue > m.Accuracy.ThresholdValue)? 'entity-success': 'entity-unhealthy'">{{m.Accuracy.CurrentValue}}</td>
+                  <td  [ngClass]="(m.InputDrift.CurrentValue < m.InputDrift.ThresholdValue)? 'entity-success': 'entity-unhealthy'">{{m.InputDrift.CurrentValue}}</td>
+                  <td  [ngClass]="(m.TargetVariance.CurrentValue < m.TargetVariance.ThresholdValue)? 'entity-success': 'entity-unhealthy'">{{m.TargetVariance.CurrentValue}}</td>
+                  <td  [ngClass]="(m.DataQuality.CurrentValue > m.DataQuality.ThresholdValue)? 'entity-success': 'entity-unhealthy'">{{m.DataQuality.CurrentValue}}</td>
+                  <td>Auto Trigged</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Trained  History Modal -->

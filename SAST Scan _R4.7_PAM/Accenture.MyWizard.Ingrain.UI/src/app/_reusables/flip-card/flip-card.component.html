@@ -1,0 +1,12 @@
+<!-- <div class="flip-card">
+  <div class="flip-card-inner" [ngClass]="{ 'showBlock': changeMode , 'hideBlock': !changeMode }">
+      {{changeMode}} -->
+    <div class="flip-card-front">
+      <ng-content select=".frontFace"> </ng-content>
+    </div>
+
+    <div class="flip-card-back">
+      <ng-content select=".backface"> </ng-content>
+    </div>
+  <!-- </div>
+</div> -->

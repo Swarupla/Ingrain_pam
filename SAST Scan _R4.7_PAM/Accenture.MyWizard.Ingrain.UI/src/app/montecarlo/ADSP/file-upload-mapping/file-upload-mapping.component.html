@@ -1,0 +1,100 @@
+
+    <!-- content -->
+
+        <!-- <div class="vds-upload-page-container mb-5"> -->
+          <ng-container *ngIf="template == 'FileUpload'">
+          <app-upload (template)='setTemplate($event)'
+          (fileData)="setFileData($event)"
+           [flow]="'notgeneric'" [initiator]="'Landing'"></app-upload>
+         </ng-container>
+
+          <!-- Selecting Phases -->
+          <ng-container *ngIf="template == 'MappingPhases'">
+          <div class="vds-continue-btn my-3 open">
+            <a href="javascript:;" class="btn btn-sm btn-primary vds-risk-continue"
+            (click)="navigateToInput()"
+            *ngIf="selectedPhasesCount >= 3">Continue</a>
+          </div>
+          <div class="vds-upload-file-container vds-excel-file mb-5">
+            <div class="d-flex align-items-center mb-3">
+              <div class="vds-upload-title">Select Phases</div>
+            </div>
+            <!-- <div class="vds-upload-title">Select Column</div>
+            <div class="row my-3">
+              <div class="col-3">
+                <div class="vds-excel-container">
+                  <div class="vds-excel-head">Effort</div>
+                  <div class="vds-excel-body" >
+                    <div class="form-check pl-0" *ngFor='let phase of phases'>
+                      <div class="vds-checkbox"><label><input #inputRef type="checkbox"
+                            (change)="checkedPhase(phase, inputRef)"
+                            [checked]="selectedPhases[phase]"
+                            name="vds-excel-effort"><span>{{phase}}</span></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="vds-excel-container">
+                  <div class="vds-excel-head">Team Size</div>
+                  <div class="vds-excel-body">
+                    <div class="form-check pl-0" *ngFor='let phase of phases'>
+                      <div class="vds-checkbox"><label><input  #inputRef type="checkbox"
+                        (change)="checkedPhase(phase, inputRef)"
+                        [checked]="selectedPhases[phase]"
+                            name="vds-excel-effort"><span>{{phase}}</span></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="vds-excel-container">
+                  <div class="vds-excel-head">Schedule</div>
+                  <div class="vds-excel-body">
+                    <div class="form-check pl-0" *ngFor='let phase of phases'>
+                      <div class="vds-checkbox"><label><input  #inputRef type="checkbox"
+                        (change)="checkedPhase(phase, inputRef)"
+                        [checked]="selectedPhases[phase]"
+                            name="vds-excel-effort"><span>{{phase}}</span></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="vds-excel-container">
+                  <div class="vds-excel-head">Defect</div>
+                  <div class="vds-excel-body">
+                    <div class="form-check pl-0" *ngFor='let phase of phases'>
+                      <div class="vds-checkbox"><label><input  #inputRef type="checkbox"
+                        (change)="checkedPhase(phase, inputRef)"
+                        [checked]="selectedPhases[phase]"
+                            name="vds-excel-effort"><span>{{phase}}</span></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+            <form class="dropdown-body px-3 pb-3">
+              <div class="d-flex flex-wrap vds-columns" >
+                <label *ngFor='let phase of phases'><input #inputRef type="checkbox" name="risk-columns" (change)="checkedPhase(phase, inputRef)"
+                  [attr.checked]="selectedPhases[phase]"
+                  ><span  [ngClass]="{'checkedPhase' : selectedPhases[phase] , 
+                  'uncheckedPhase' : !selectedPhases[phase]}">{{phase}}</span></label>
+               
+               </div>
+              <div class="vds-actions d-flex justify-content-end align-items-center mt-3">
+                <button type="reset" class="btn btn-secondary" (click)="clearAllPhases()">Clear All</button>
+                <button type="reset" class="btn btn-secondary" (click)="selectAllPhases()">Select All</button>
+                <!-- <button type="button" class="btn btn-primary">Apply</button> -->
+            </div>
+           
+              
+          </form>
+          </div>
+        </ng-container>
+    <!-- </div> -->
+    <!-- /content -->

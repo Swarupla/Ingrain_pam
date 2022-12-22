@@ -1,0 +1,24 @@
+<div class="ingrAI-open-help tooltip-x">
+  <label *ngIf="labelTitle" class="label-mr"> {{labelTitle}} <span *ngIf="isRequired" class="ingrAI-required-field">*</span> </label>
+  <!-- <svg (mouseover)="openHelper()" class="ingrAI-icon-svg ingrAI-icon-svg-md" 
+  style="width: 1em;height: 1em;">
+    <use xlink:href="#ingrAI-icon-info"></use>
+  </svg> -->
+  <img (mouseover)="openHelper()" (mouseout)="closePopover()" src="assets/images/info.svg" style="cursor: pointer;" title="" alt="help"/>
+  <!-- [style.top]=" getStylesforTooltip()" -->
+  <div *ngIf="!isImage && !isImage1" #showpopover class="tooltiptext" [ngClass] = "(className) ? className : ''"  style="padding: 0.5rem; "
+  (mouseover)="openHelper()" (mouseout)="closePopover()" (click)="closePopover()">
+    <!-- <p class="mb-1">Data Modification</p> -->
+    <span *ngIf="!dynamicDescription"> {{staticDescriptions[description]}} </span>
+    <span *ngIf="dynamicDescription"> {{dynamicDescription}} </span>
+    <ng-content select=".htmlDesignedTooltip"> </ng-content>
+  </div>
+
+  <div *ngIf="isImage" #showpopover class="tooltiptext image" [ngClass]="{'imageleftvalue': !singleUpload, 'imageleftzero' : singleUpload}" (click)="closePopover()">
+    <img src="assets/images/pi-data-help-icon.PNG" title="help" alt="help"/>
+  </div>
+  <div *ngIf="isImage1" #showpopover class="tooltiptext image" [ngClass]="{'imageleftvalue': !singleUpload, 'imageleftzero' : singleUpload}" (click)="closePopover()">
+    <img src="assets/images/pi-data-help-icon.PNG" style="margin-left: 208px;" title="help" alt="help"/>
+  </div>
+
+</div>

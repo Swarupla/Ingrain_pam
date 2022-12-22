@@ -1,0 +1,420 @@
+
+<fieldset [disabled]="readOnly">
+
+  <!-- UI Revamp Starts -->
+  <div class="myw-container pb-4 ingrain-cmp-container">
+    <div class="row">
+      <div [ngClass]="{'col': (addTileCount === 0 || addTileCount === 1), 'col-4': addTileCount === 2, 'box': (addTileCount === 1 || addTileCount === 2)}" *ngIf="testDataListCount > 0  && modelType !='TimeSeries'">
+        <div class="ingrain-cmp-col">
+          <div class="d-flex align-items-center my-3">
+            <div class="fs-16 myw-500">{{selectedModelName}}</div>
+            <input type="button" [disabled]="disableTestSecenarioBtn" (click)="addTestCaseScnerio()"
+            *ngIf="!(testDataListCount1 > 0)"
+                          class="ml-auto btn btn-secondary" value="Add Test Scenario" />
+          </div>
+          <div class="form-row">
+            <div class="col-6 col-lg-auto">
+              <div class="card ingrain-card">
+                <div class="card-header">
+                  <div class="card-title">{{selectedModelName}}</div>
+                </div>
+                <div class="card-body">
+                  <div class="ingrain-chart-donut">
+                    <app-d3-donut-chart [donutInnerRadius]=40 [pageInfoForDonutChart]="'CompareTest'"
+                                      [pythonProgressVal]="selectedModelAccuracy">
+                                    </app-d3-donut-chart>
+                    <div>Run Time: {{selectedModelRunTime}}s</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-auto">
+              <div class="card ingrain-card">
+                <div class="card-header">
+                  <div class="card-title">Test Scenario Name</div>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <select class="form-control"
+                      (change)="onTestScenarioChange($event.target.value,0)">
+                      <option *ngFor="let options of testCaseScenarioOptions0" [value]="options.scenarioName">
+                        {{options.scenarioName}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div [ngClass]="{'col-8': (addTileCount === 0), 'col-12': (addTileCount === 1 || addTileCount === 2), 'px-4': (addTileCount === 1 || addTileCount === 2)}">
+            <div *ngFor="let predictions of testDataList | paginate:
+                                    { id: 'listing_pagination',  itemsPerPage: 1,
+                                      currentPage: page, totalItems: testDataListCount };let listIndex = index">
+              <div class="card ingrain-card">
+                <div class="table-responsive" class="no-Border">
+                  <table class="table table-striped table-hover table-vmiddle myw-table ingrain-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Features</th>
+                        <th scope="col">Values</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let teachtestdata of predictions.Data | keyvalue;let indx = index">
+                        <td>{{teachtestdata.key}}</td>
+                        <td>{{teachtestdata.value}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+            <div class="col-12 col-lg" *ngFor="let predictions of testDataList | paginate:
+                                    { id: 'listing_pagination',  itemsPerPage: 1,
+                                      currentPage: page, totalItems: testDataListCount };let listIndex = index">
+            
+              <div class="col-12" *ngIf="modelType == 'Classification' || modelType == 'classification'">
+                <div class="card ingrain-card">
+                  <div class="card-header">
+                    <div class="card-title">Prediction Outcome</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="ingrAIn-prediction-chart-sm mt-2 myw-scrollbar">
+                      <app-horizontal-chart [horizontalBarchartHeight]="PredictionOutcomeChart.height"
+                        [horizontalBarchartWidth]="PredictionOutcomeChart.width" [data]="predictions['OutcomePrediction']">
+                      </app-horizontal-chart>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+              <div class="col-12" *ngIf="isClusteringFlag">
+                <div class="card ingrain-card">
+                  <div class="card-header">
+                    <div class="card-title">Feature Weights</div>
+                    <app-info-tooltip [className]="'toggleRight'" >
+                      <div class="htmlDesignedTooltip">
+                        Influencing attributes in the trained model arranged in decreasing order of their weights. Weights give a measure of
+                        how much influence the particular attribute has on the output
+                      </div>
+                    </app-info-tooltip>
+                  </div>
+                  <div class="card-body">
+                    <div class="ingrAI-test-bar-chart myw-scrollbar">
+                      <app-bar-chart [barchartHeight]=280 [barchartWidth]=400 [data]="predictions.FeatureWeights">
+            
+                      </app-bar-chart>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+              <div class="col-12" *ngIf="isClusteringFlag">
+                <div class="card ingrain-card" *ngIf="predictions.hasOwnProperty('WordCloud') && ( predictions.WordCloud['image'] != ''
+                                                    || predictions.WordCloud['message'] != '')">
+                  <div class="card-header">
+                    <div class="card-title">Word Cloud</div>
+                  </div>
+                  <div class="card-body myw-scrollbar">
+                    <ng-container *ngIf="predictions.WordCloud['image'] != ''">
+                      <app-word-cloud-image [wordCloudImage]="predictions.WordCloud['image']">
+                      </app-word-cloud-image>
+                    </ng-container>
+            
+                    <ng-container *ngIf="predictions.WordCloud['message'] != ''">
+                      <span style="color: red">{{predictions.WordCloud['message'] }}</span>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Pagination Control Test-->
+        <div *ngIf="testDataListCount > 1" class="row" style="flex-direction: row-reverse;">
+          <div class="d-flex pr-0">
+            <pagination-controls id="listing_pagination" maxSize="5" directionLinks="true"
+              (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+        <!-- Pagination Control Test-->
+      </div>
+      <div [ngClass]="{'col': (addTileCount === 0 || addTileCount === 1), 'col-4': addTileCount === 2, 'box': (addTileCount === 1 || addTileCount === 2)}" *ngIf="testDataListCount1 > 0 && modelType !='TimeSeries'">
+        <div class="ingrain-cmp-col">
+          <div class="d-flex align-items-center my-3">
+            <div class="fs-16 myw-500">{{selectedModelName}}</div>
+            <input type="button" [disabled]="disableTestSecenarioBtn" (click)="addTestCaseScnerio()"
+            *ngIf="!(testDataListCount2 > 0)"
+                          class="ml-auto btn btn-secondary" value="Add Test Scenario" />
+          </div>
+          <div class="form-row">
+            <div class="col-6 col-lg-auto">
+              <div class="card ingrain-card">
+                <div class="card-header">
+                  <div class="card-title">{{selectedModelName}}</div>
+                </div>
+                <div class="card-body">
+                  <div class="ingrain-chart-donut">
+                    <app-d3-donut-chart [donutInnerRadius]=40 [pageInfoForDonutChart]="'CompareTest'"
+                                      [pythonProgressVal]="selectedModelAccuracy">
+                                    </app-d3-donut-chart>
+                    <div>Run Time: {{selectedModelRunTime}}s</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-auto">
+              <div class="card ingrain-card">
+                <div class="card-header">
+                  <div class="card-title">Test Scenario Name</div>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <select class="form-control"
+                      (change)="onTestScenarioChange($event.target.value,1)">
+                      <option *ngFor="let options of testCaseScenarioOptions1" [value]="options.scenarioName">
+                        {{options.scenarioName}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div [ngClass]="{'col-8': (addTileCount === 0), 'col-12': (addTileCount === 1 || addTileCount === 2), 'px-4': (addTileCount === 1 || addTileCount === 2)}" *ngFor="let predictions of testDataList1 | paginate:
+            { id: 'listing_paginationOne',  itemsPerPage: 1,
+              currentPage: page, totalItems: testDataListCount1 };let listIndex = index">
+              <div class="card ingrain-card">
+                <div class="table-responsive" class="no-Border">
+                  <table class="table table-striped table-hover table-vmiddle myw-table ingrain-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Features</th>
+                        <th scope="col">Values</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let teachtestdata of predictions.Data | keyvalue;let indx = index">
+                        <td>{{teachtestdata.key}}</td>
+                        <td>{{teachtestdata.value}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg" *ngFor="let predictions of testDataList1 | paginate:
+                        { id: 'listing_paginationOne',  itemsPerPage: 1,
+                          currentPage: page, totalItems: testDataListCount1 };let listIndex = index">
+              <div class="col-12">
+                <div class="card ingrain-card" *ngIf="modelType == 'Classification' || modelType == 'classification'">
+                  <div class="card-header">
+                    <div class="card-title">Prediction Outcome</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="ingrAIn-prediction-chart-sm mt-2 myw-scrollbar">
+                      <app-horizontal-chart [horizontalBarchartHeight]="PredictionOutcomeChart.height"
+                        [horizontalBarchartWidth]="PredictionOutcomeChart.width" [data]="predictions['OutcomePrediction']">
+                      </app-horizontal-chart>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="card ingrain-card" *ngIf="isClusteringFlag">
+                  <div class="card-header">
+                    <div class="card-title">Feature Weights</div>
+                    <app-info-tooltip [className]="'toggleRight'">
+                      <div class="htmlDesignedTooltip">
+                        Influencing attributes in the trained model arranged in decreasing order of their weights. Weights give a measure of
+                        how much influence the particular attribute has on the output
+                      </div>
+                    </app-info-tooltip>
+                  </div>
+                  <div class="card-body">
+                    <div class="ingrAI-test-bar-chart myw-scrollbar">
+                      <app-bar-chart [barchartHeight]=280 [barchartWidth]=400 [data]="predictions.FeatureWeights">
+            
+                      </app-bar-chart>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12" *ngIf="isClusteringFlag">
+                <div class="card ingrain-card" *ngIf="predictions.hasOwnProperty('WordCloud') && ( predictions.WordCloud['image'] != ''
+                  || predictions.WordCloud['message'] != '')">
+                  <div class="card-header">
+                    <div class="card-title">Word Cloud</div>
+                  </div>
+                  <div class="card-body myw-scrollbar">
+                    <ng-container *ngIf="predictions.WordCloud['image'] != ''">
+                      <app-word-cloud-image [wordCloudImage]="predictions.WordCloud['image']">
+                      </app-word-cloud-image>
+                    </ng-container>
+            
+                    <ng-container *ngIf="predictions.WordCloud['message'] != ''">
+                      <span style="color: red">{{predictions.WordCloud['message'] }}</span>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 d-flex justify-content-end">
+              <input type="button" class="btn btn-secondary my-3" aria-label="Close" (click)='onClose(1)'
+                value="Remove this test" />
+            </div>
+          </div>
+        </div>
+        <!-- Pagination Control Test1-->
+        <div *ngIf="testDataListCount1 > 1" class="row" style="flex-direction: row-reverse;">
+          <div class="d-flex pr-0">
+            <pagination-controls id="listing_paginationOne" maxSize="5" directionLinks="true"
+              (pageChange)="pageChanged1($event)"></pagination-controls>
+          </div>
+        </div>
+         <!-- Pagination Control Test1-->
+      </div>
+      <div [ngClass]="{'col': (addTileCount === 0 || addTileCount === 1), 'col-4': addTileCount === 2, 'box': (addTileCount === 1 || addTileCount === 2)}" *ngIf="testDataListCount2 > 0 && modelType !='TimeSeries'">
+        <div class="ingrain-cmp-col">
+          <div class="d-flex align-items-center my-3">
+            <div class="fs-16 myw-500">{{selectedModelName}}</div>
+            <input type="button" [disabled]="disableTestSecenarioBtn" (click)="addTestCaseScnerio()"
+                          class="ml-auto btn btn-secondary" value="Add Test Scenario" />
+          </div>
+          <div class="form-row">
+            <div class="col-6 col-lg-auto">
+              <div class="card ingrain-card">
+                <div class="card-header">
+                  <div class="card-title">{{selectedModelName}}</div>
+                </div>
+                <div class="card-body">
+                  <div class="ingrain-chart-donut">
+                    <app-d3-donut-chart [donutInnerRadius]=40 [pageInfoForDonutChart]="'CompareTest'"
+                                      [pythonProgressVal]="selectedModelAccuracy">
+                                    </app-d3-donut-chart>
+                    <div>Run Time: {{selectedModelRunTime}}s</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-auto">
+              <div class="card ingrain-card">
+                <div class="card-header">
+                  <div class="card-title">Test Scenario Name</div>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <select class="form-control"
+                      (change)="onTestScenarioChange($event.target.value,2)">
+                      <option *ngFor="let options of testCaseScenarioOptions2" [value]="options.scenarioName">
+                        {{options.scenarioName}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div [ngClass]="{'col-8': (addTileCount === 0), 'col-12': (addTileCount === 1 || addTileCount === 2), 'px-4': (addTileCount === 1 || addTileCount === 2)}" *ngFor="let predictions of testDataList2 | paginate:
+            { id: 'listing_pagination2',  itemsPerPage: 1,
+              currentPage: page, totalItems: testDataListCount2 };let listIndex = index">
+              <div class="card ingrain-card">
+                <div class="table-responsive" class="no-Border">
+                  <table class="table table-striped table-hover table-vmiddle myw-table ingrain-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Features</th>
+                        <th scope="col">Values</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let teachtestdata of predictions.Data | keyvalue;let indx = index">
+                        <td>{{teachtestdata.key}}</td>
+                        <td>{{teachtestdata.value}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg" *ngFor="let predictions of testDataList2 | paginate:
+            { id: 'listing_pagination2',  itemsPerPage: 1,
+              currentPage: page, totalItems: testDataListCount2 };let listIndex = index">
+              <div class="col-12">
+                <div class="card ingrain-card" *ngIf="modelType == 'Classification' || modelType == 'classification'">
+                  <div class="card-header">
+                    <div class="card-title">Prediction Outcome</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="ingrAIn-prediction-chart-sm mt-2 myw-scrollbar">        
+                      <app-horizontal-chart [horizontalBarchartHeight]="PredictionOutcomeChart.height"
+                        [horizontalBarchartWidth]="PredictionOutcomeChart.width" [data]="predictions['OutcomePrediction']">
+                      </app-horizontal-chart>
+                    </div>
+                  </div>
+                </div>
+              </div>
+      
+              <div class="col-12">
+                <div class="card ingrain-card" *ngIf = "isClusteringFlag">
+                  <div class="card-header">
+                    <div class="card-title">Feature Weights</div>
+                    <app-info-tooltip [className]="'toggleRight'" >
+                      <div class="htmlDesignedTooltip">
+                        Influencing attributes in the trained model arranged in decreasing order of their weights. Weights give a measure of
+                        how much influence the particular attribute has on the output
+                      </div>
+                    </app-info-tooltip>
+                  </div>
+                  <div class="card-body">
+                    <div class="ingrAI-test-bar-chart myw-scrollbar">
+                      <app-bar-chart [barchartHeight]=280 [barchartWidth]=400 [data]="predictions.FeatureWeights">
+      
+                      </app-bar-chart>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12" *ngIf="isClusteringFlag">
+                <div class="card ingrain-card" *ngIf="predictions.hasOwnProperty('WordCloud') && ( predictions.WordCloud['image'] != ''
+                  || predictions.WordCloud['message'] != '')">
+                  <div class="card-header">
+                    <div class="card-title">Word Cloud</div>
+                  </div>
+                  <div class="card-body myw-scrollbar">
+                    <ng-container *ngIf="predictions.WordCloud['image'] != ''">
+                      <app-word-cloud-image [wordCloudImage]="predictions.WordCloud['image']">
+                      </app-word-cloud-image>
+                    </ng-container>
+            
+                    <ng-container *ngIf="predictions.WordCloud['message'] != ''">
+                      <span style="color: red">{{predictions.WordCloud['message'] }}</span>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 d-flex justify-content-end">
+              <input type="button" class="btn btn-secondary my-3" aria-label="Close" (click)='onClose(2)'
+                value="Remove this test" />
+            </div>
+          </div>
+        </div>
+        <!-- Pagination Control Test2-->
+        <div *ngIf="testDataListCount2 > 1" class="row" style="flex-direction: row-reverse;">
+          <div class="d-flex pr-0">
+            <pagination-controls id="listing_pagination2" maxSize="5" directionLinks="true"
+              (pageChange)="pageChanged2($event)"></pagination-controls>
+          </div>
+        </div>
+         <!-- Pagination Control Test2-->
+      </div>
+    </div>
+    <div *ngIf="modelType =='TimeSeries' && testScenarioAllList" class="">
+      <div class="" *ngFor="let divId of [0,1,2]; let indx = index">
+        <app-draw-line-chart [divId]="divId" [testCaseScenarioOptions]="allTestScenario[divId]"
+          (selectedValues)='setFilterTestScenarios($event)' [testScenarioAllList]=testScenarioAllList
+          [stepsData]=steps>
+        </app-draw-line-chart>
+      </div>
+    </div>
+  </div>
+  <!-- UI Revamp Ends -->
+
+</fieldset>

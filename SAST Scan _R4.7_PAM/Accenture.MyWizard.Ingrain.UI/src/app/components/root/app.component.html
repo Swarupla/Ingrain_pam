@@ -1,0 +1,98 @@
+<div class="myw-wrapper container-fluid">
+  <ng-container *ngIf="this.authprovider === 'WindowsAuthProvider'.toLowerCase()">
+    <div class="ingrAI-wrap d-flex flex-column flex-fill">
+
+      <div id="main" class="flex-fill">
+        <div class="header" style="width: 100%;z-index: 999;">
+          <app-header [accountID]="accountID"></app-header>
+        </div>
+        <div *ngIf="spinnerVisible" class="loading-indicator">
+          <mat-progress-spinner mode="indeterminate" color="blue"></mat-progress-spinner>
+        </div>
+
+        <div>
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="this.authprovider !== 'WindowsAuthProvider'.toLowerCase()">
+    <!-- <div *ngIf="authToken" class="ingrAI-wrap d-flex flex-column flex-fill"> -->
+    <div id="main" class="flex-fill">
+      <div *ngIf="spinnerVisible" class="loading-indicator">
+        <mat-progress-spinner mode="indeterminate" color="blue"></mat-progress-spinner>
+      </div>
+      <div *ngIf="this.authprovider !== 'Local'.toLowerCase()" class="header" style="width: 100%;z-index: 999;">
+        <app-header [accountID]="accountID" [fullName]="fullName"></app-header>
+      </div>
+      <div *ngIf="this.authprovider === 'Local'.toLowerCase()" class="header" style="width: 100%;z-index: 999;">
+        <app-header [accountID]="accountID" [fullName]="fullName"></app-header>
+      </div>
+      <div>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+    <!-- </div> -->
+  </ng-container>
+
+</div>
+
+<!-- <footer class="ingrAI-footer">&copy; 2020 Accenture. All Rights Reserved. Accenture Confidential. For Internal Use Only.
+</footer> -->
+<ng-container *ngIf="this.authprovider === 'WindowsAuthProvider'.toLowerCase()">
+  <app-footer (privacyAccepted)="privacyAccepted($event)"></app-footer>
+</ng-container>
+
+<ng-container *ngIf="this.authprovider !== 'WindowsAuthProvider'.toLowerCase()">
+  <app-footer (privacyAccepted)="privacyAccepted($event)"></app-footer>
+</ng-container>
+<!-- </ng-container> -->
+
+<div *ngIf="isSessionPopupOpen"
+  [ngClass]="(isSessionPopupOpen) ? 'modal-backdrop show top-layer-session-popup' : 'modal-backdrop show hidden_grayed'">
+</div>
+<div class="modal top-layer-session-popup" id="sessionModal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
+  data-backdrop="false">
+  <!-- modal-dialog -->
+  <div class="modal-dialog phx-session-popup">
+    <div class="modal-content phx-popup-width">
+      <div class="modal-header phx-session-header">
+        <h5 class="modal-title" translate="" ng-reflect-translate="" style="font-size: 1.125rem;
+        font-weight: 600;">Session Timeout</h5>
+      </div>
+      <div class="modal-body phx-padding-bottom-1">
+        <p *ngIf="isSessionContinue" disabled="disabled" class="phx-margin-bottom">
+          <b translate="" ng-reflect-translate="">{{popupMessage}}</b>
+          <br>
+          <span translate="" ng-reflect-translate="">
+            {{popupButtonMessage}}
+          </span>
+          <br>
+          <br>
+        </p>
+        <p *ngIf="!isSessionContinue" disabled="disabled" class="phx-margin-bottom">
+          <b translate="" ng-reflect-translate="">{{popupMessage}}</b>
+          <br>
+          <br>
+          <span translate="" ng-reflect-translate="">
+            {{popupButtonMessage}}
+          </span>
+          <br>
+        </p>
+      </div>
+      <div class="phx-text-align-right phx-session-footer">
+        <ng-container *ngIf="isSessionContinue">
+          <button class="btn btn-primary" translate="" ng-reflect-translate=""
+            (click)="RefreshSession()">{{htmlConstantCountinue}}</button> &nbsp; &nbsp;
+          <button class="btn btn-primary" translate="" ng-reflect-translate="" (click)="endsession()">End
+            Session</button>
+        </ng-container>
+        <ng-container *ngIf="!isSessionContinue">
+          <button class="btn btn-primary" translate="" ng-reflect-translate="" (click)="closeModalDialog()">Sign
+            In</button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

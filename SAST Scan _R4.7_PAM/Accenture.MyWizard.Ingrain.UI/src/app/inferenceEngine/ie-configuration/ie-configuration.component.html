@@ -1,0 +1,477 @@
+<div id="main" class="myw-content d-flex flex-column flex-fill">
+    <!-- navbar -->
+    <div class="myw-navbar" style="z-index: 800 !important; top: 0rem
+        !important;"
+        [ngClass]="isnavBarToggle == true ? 'collapsed': ''">
+        <div class="myw-container d-flex flex-wrap">
+            <div class="d-flex flex-nowrap align-items-center myw-navbar-wrap">
+                <div class="myw-navbar-inner d-flex align-items-center">
+                    <a class="text-reset text-decoration-none mr-2" title="Back"
+                        aria-label="Back">
+                        <img src="assets/images/back.svg" alt="Back"
+                            class="myw-icon" (click)=previous()></a>
+                    <h6 class="m-0">Ready to Use AI Services: Inference Engine</h6>
+                </div>
+            </div>
+            <div class="d-flex flex-nowrap justify-content-end
+                myw-navbar-actions"
+                [ngClass]="isNavBarLabelsToggle == true ? 'myw-navbar-active':
+                ''">
+
+                <a (click)="showData()" class="myw-navbar-action" role="button"
+                    matTooltip="View Sample Data"
+                    data-toggle="modal" data-target="#sampledataModal"
+                    data-toggle-tooltip="tooltip"
+                    data-placement="bottom" data-trigger="hover"><img
+                        src="assets/images/summary.svg"
+                        alt="View Sample Data" /><span>View Sample Data</span></a>
+                <!-- <a class="myw-navbar-toggle" title="Toggle Labels" data-toggle="tooltip" data-placement="left"
+                    data-trigger="hover"><img src="assets/images/caret.svg" alt="" /><span class="sr-only">Toggle
+                        Labels</span></a> -->
+                <a (click)="toggleNavBarLabels()" class="myw-navbar-toggle"
+                    title="Toggle Labels" data-toggle="tooltip"
+                    data-placement="left" data-trigger="hover"><img
+                        src="assets/images/caret.svg" alt="" /><span
+                        class="sr-only">Toggle Labels</span></a>
+            </div>
+        </div>
+        <a class="myw-navbar-pin" title="Toggle Navbar" (click)="toggleNavBar()"
+            data-toggle="tooltip"
+            data-placement="left" data-trigger="hover"><img
+                src="assets/images/pin.svg" alt="" /><span
+                class="sr-only">Toggle Navbar</span></a>
+    </div>
+
+    <div class="myw-container py-4">
+        <!-- Data Inflow Analysis -->
+
+        <div class="myw-section py-4" *ngIf="ieParams && ieParams.analysis ==
+            'multiple'">
+            <div class="px-3">
+
+                <div class="d-flex">
+                    <div class="mb-2"> <h6 class="myw-600 mb-3">Inputs for Data
+                            Inflow
+                            Analysis</h6></div>
+                    <a class="btn btn-primary btn-sm mr-3 ml-auto"
+                        (click)="viewSampleConfig()"> View Sample Configuration</a>
+                </div>
+
+                <div class="ingrain-sec">
+                    <div class="myw-600 mb-3">Fill in the Details for Each
+                        Category</div>
+                    <div class="row">
+                        <div class="col-4 col-lg-3">
+                            <div class="form-group mb-0">
+                                <label class="form-label myw-required mr-2">Date
+                                    Attribute for Analysis</label><a
+                                    data-toggle="popover"
+                                    triggers="mouseenter:mouseleave"
+                                    [popover]="dateTypeIconInfo['DateColumnList']"><img
+                                        src="assets/images/info.svg"
+                                        alt="" class="myw-icon myw-12"></a>
+                                <!-- ; MetricConfigInput['DateColumn'] = s.value -->
+                                <select #s class="form-control w-75"
+                                    (change)="VolumetricConfigInput['DateColumn']=
+                                    s.value"
+                                    [value]="VolumetricConfigInput['DateColumn']">
+                                    <option value="">Select Date</option>
+                                    <ng-container
+                                        *ngIf="viewConfigDetails.DateColumnList">
+                                        <option *ngFor="let columnName of
+                                            viewConfigDetails.DateColumnList"
+                                            [value]='columnName'
+                                            [selected]="columnName ===
+                                            VolumetricConfigInput['DateColumn']">
+                                            {{columnName}}</option>
+                                    </ng-container>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-4 col-lg-3">
+                            <div class="form-group mb-0">
+                                <label class="form-label myw-required mr-2">Do
+                                    you Require Trend Forecast?</label>
+                                <a data-toggle="popover"
+                                    triggers="mouseenter:mouseleave"
+                                    [popover]="dateTypeIconInfo['TrendForeCast']">
+                                    <img src="assets/images/info.svg"
+                                        alt="" class="myw-icon myw-12"></a>
+                                <select #s2 class="form-control w-75"
+                                    (change)="VolumetricConfigInput['TrendForecast']=
+                                    s2.value;
+                                    this.VolumetricConfigInput.Frequency= [];"
+                                    [value]="VolumetricConfigInput['TrendForecast']">
+                                    <option value="">Select Option</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-4 col-lg-4" style="border-bottom: 1px
+                            solid black;">
+                            <div class="form-group mb-0">
+                                <label class="form-label mr-2"
+                                    [ngClass]="{'myw-required' : !(
+                                    VolumetricConfigInput['TrendForecast'] == ''
+                                    || VolumetricConfigInput['TrendForecast'] ==
+                                    'no')}">
+                                    If Yes, Please Provide Frequency</label>
+                                <!-- ['daily','monthly','quarterly','weekly'] -->
+                                <a data-toggle="popover"
+                                    triggers="mouseenter:mouseleave"
+                                    [popover]="dateTypeIconInfo['Frequency']"><img
+                                        src="assets/images/info.svg" alt=""
+                                        class="myw-icon myw-12"></a>
+                                <!-- <select class="form-control w-75" #s3 [disabled]="(VolumetricConfigInput['TrendForecast'] == '' || VolumetricConfigInput['TrendForecast'] == 'no')"
+                                (change)="VolumetricConfigInput['Frequency'] = s3.value" [value]="VolumetricConfigInput['Frequency']">
+                                    <option value="">Select Data </option>
+                                    <option value="quarterly">Quarterly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="daily">Daily</option>
+                                </select> -->
+                                <app-multi-select-drop-down id=""
+                                    *ngIf="(VolumetricConfigInput['TrendForecast']
+                                    == 'yes')" class="ingrAI-list-item"
+                                    [defaultValues]="VolumetricConfigInput['Frequency']"
+                                    [disableDropdown]="'false'"
+                                    displayCount=4
+                                    (outputData)="VolumetricConfigInput['Frequency']=
+                                    $event"
+                                    [columnData]="frequencylist"
+                                    [moduleName]="'InferenceEngine'">
+                                </app-multi-select-drop-down>
+                                <app-multi-select-drop-down id=""
+                                    *ngIf="(VolumetricConfigInput['TrendForecast']
+                                    == '' ||
+                                    VolumetricConfigInput['TrendForecast'] ==
+                                    'no')"
+                                    class="ingrAI-list-item"
+                                    [defaultValues]="[]"
+                                    [disableDropdown]="'true'"
+                                    displayCount=4
+                                    (outputData)="VolumetricConfigInput['Frequency']=
+                                    $event"
+                                    [columnData]="frequencylist"
+                                    [moduleName]="'InferenceEngine'">
+                                </app-multi-select-drop-down>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ingrain-section d-flex flex-column mt-3">
+                    <div class="d-flex">
+                        <div class="myw-500 myw-required mb-2"><span>Selected
+                                attributes will be utilized to generate
+                                inferences on data volume
+                            </span> <span class="myw-chips ingrain-chips"> {{
+                                VolumetricConfigInput.Dimensions.size}} /
+                                {{viewConfigDetails.DimensionsList.length}}</span></div>
+                        <a data-toggle="popover"
+                            triggers="mouseenter:mouseleave"
+                            [popover]="dateTypeIconInfo['AttributeList']"
+                            class="ml-auto"><img
+                                src="assets/images/info.svg" alt=""></a>
+                    </div>
+                    <div class="ingrain-sec-bdy">
+                        <div class="d-flex flex-wrap myw-columns">
+                            <label>
+                                <input type="checkbox" name="select-columns"
+                                    (click)="performAction()" checked="">
+                                <span> {{ (VolumetricConfigInput.Dimensions.size
+                                    ==
+                                    viewConfigDetails.DimensionsList.length) ?
+                                    'Deselect All' : 'Select All' }} </span>
+                            </label>
+                            <label *ngFor="let dimension of
+                                viewConfigDetails.DimensionsList; let i= index"><input
+                                    type="checkbox" name="select-columns"
+                                    (click)="onSelectedAttributeDateMeasure(dimension,
+                                    $event)"
+                                    [checked]="VolumetricConfigInput.Dimensions.has(dimension)"><span>{{dimension}}</span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Data Inflow Analysis -->
+        <!-- Measure Analysis -->
+        <div class="myw-section py-4 mt-4">
+            <div class="px-3">
+                <div class="d-flex">
+                    <div class="mb-2"> <h6 class="myw-600 mb-3">Inputs for
+                            Measure
+                            Analysis</h6></div>
+                    <a *ngIf="ieParams && ieParams.analysis !== 'multiple'"
+                        class="btn btn-primary btn-sm mr-3 ml-auto"
+                        (click)="viewSampleConfig()">
+                        View Sample Configuration</a>
+                </div>
+                <div class="ingrain-sec">
+                    <div class="myw-600 mb-3">Please fill in the details and
+                        click on Apply to generate important
+                        correlated attributes & correlated attribute
+                        combinations</div>
+                    <div class="row">
+                        <!-- <div class="col-4 col-lg-3">
+                            <div class="form-group mb-0 form-disabled">
+                                <label class="form-label myw-required mr-2">Selected Data</label><a   ><img src="assets/images/info.svg" alt="" class="myw-icon myw-12"></a>
+                                <select class="form-control w-75" disabled>
+                                    <option>Incidents</option>
+                                </select>
+                            </div>
+                        </div> -->
+                        <div class="col-2 col-lg-2">
+                            <div class="form-group mb-0">
+                                <label class="form-label myw-required mr-2">Measure
+                                    to be analyzed</label>
+                                <a data-toggle="popover"
+                                    triggers="mouseenter:mouseleave"
+                                    [popover]="measureIconInfo['MetricColumnList']"><img
+                                        src="assets/images/info.svg"
+                                        alt="" class="myw-icon myw-12"></a>
+                                <select #s4 class="form-control w-100"
+                                    (change)="changeMeasure(s4)"
+                                    [value]="MetricConfigInput['MetricColumn']">
+                                    <option value="">Select Measure</option>
+                                    <ng-container *ngFor="let columnName of
+                                        viewConfigDetails.MetricColumnList">
+                                        <option [value]="columnName"
+                                            [selected]="columnName ===
+                                            MetricConfigInput['MetricColumn']">{{columnName}}
+                                        </option>
+                                    </ng-container>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-2 col-lg-2">
+                            <div class="form-group mb-0">
+                                <label class="form-label mr-2">Date Attribute
+                                    for Analysis</label><a
+                                    data-toggle="popover"
+                                    triggers="mouseenter:mouseleave"
+                                    [popover]="measureIconInfo['DateColumnList']"><img
+                                        src="assets/images/info.svg"
+                                        alt="" class="myw-icon myw-12"></a>
+                                <select #s5 class="form-control w-100"
+                                    (change)="changeDateMeasure(s5)"
+                                    [value]="MetricConfigInput['DateColumn']">
+                                    <option value="">Select Date</option>
+                                    <ng-container *ngFor="let columnName of
+                                        viewConfigDetails.DateColumnList">
+                                        <option [value]="columnName"
+                                            [selected]="columnName ===
+                                            MetricConfigInput['DateColumn']">{{columnName}}
+                                        </option>
+                                    </ng-container>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-7 col-lg-7 mt-auto filters"
+                            *ngIf="nameOfFilterType.length">
+                            <label class="form-label mr-2">Filters</label><a
+                                data-toggle="popover"
+                                triggers="mouseenter:mouseleave"
+                                [popover]="measureIconInfo['Filters']"><img
+                                    src="assets/images/info.svg" alt=""
+                                    class="myw-icon myw-12"></a>
+                            <!-- <div class="form-group mb-0"> -->
+                            <app-nested-multi-select-drop-down
+                                [parentColumnData]='nameOfFilterType'
+                                [displayCount]='3'
+                                [childColumnData]='valuesOfFilterType'
+                                [columnData]='filterValues'
+                                (outputParentData)='setnameOfFilter($event)'
+                                (outputChildData)='setValueOfFilter($event)'
+                                (remainingDataPostRemove)="remainingDataAttribute($event)"
+                                (removeData)="removeDataAttribute($event)">
+                            </app-nested-multi-select-drop-down>
+                            <!-- <app-nested-multi-select-drop-down [parentColumnData]='nameOfFilterType'
+                                 [childColumnData]='valuesOfFilterType' [columnData]='filterValues' (outputParentData)='SetFilterAttributes($event)'
+                                 (outputChildData)='onChange("Filters", $event)' (removeData)="removeDataAttribute($event)">
+                                 </app-nested-multi-select-drop-down> -->
+                            <!-- </div> -->
+
+                        </div>
+
+                        <div class="col-1 col-lg-1 mt-3 p-0">
+                            <div class="form-group mb-0">
+                                <button class="btn btn-sm btn-primary"
+                                    style="padding: 1em 2.5em;"
+                                    (click)="getAttributes()"
+                                    [disabled]="!(MetricConfigInput['MetricColumn'])
+                                    || isApplyDisabled">Apply</button>
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+                <!-- <ng-container> -->
+                <div class="ingrain-section d-flex flex-column mt-3"
+                    *ngIf="viewConfigDetails && viewConfigDetails.FeaturesList
+                    && viewConfigDetails.FeaturesList.length> 0">
+                    <div class="d-flex">
+                        <div class="myw-500 myw-required mb-2"><span>Selected
+                                attributes will be utilized to
+                                generate inferences on the Measure
+                            </span>
+                            <span class="myw-chips ingrain-chips">
+                                {{
+                                this.MetricConfigInput.Features.size}}/
+                                {{viewConfigDetails.FeaturesList.length}}</span>
+                        </div>
+                        <a class="ml-auto" data-toggle="popover"
+                            triggers="mouseenter:mouseleave"
+                            [popover]="measureIconInfo['AttributeList']"><img
+                                src="assets/images/info.svg" alt=""></a>
+                    </div>
+                    <div class="ingrain-sec-bdy">
+                        <div class="d-flex flex-wrap myw-columns">
+                            <label><input type="checkbox" name="select-columns"
+                                    (click)="performAction1()" checked="">
+                                <span> {{ (MetricConfigInput.Features.size ==
+                                    viewConfigDetails.FeaturesList.length) ?
+                                    'Deselect All' : 'Select All' }} </span>
+                            </label>
+                            <label *ngFor="let dimension of
+                                viewConfigDetails.FeaturesList; let i= index"><input
+                                    type="checkbox" name="select-columns"
+                                    (click)="onSelectedAttributeMeasureFeature(dimension,
+                                    $event)"
+                                    [checked]="MetricConfigInput.Features.has(dimension)"><span>{{dimension}}</span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="ingrain-section d-flex flex-column mt-3"
+                    *ngIf="viewConfigDetails &&
+                    viewConfigDetails.FeaturesCombinationList &&
+                    viewConfigDetails.FeaturesCombinationList.length> 0">
+                    <div class="d-flex">
+                        <div class="myw-500 mb-2"><span>Selected combination of
+                                attributes which are correlated
+                                to each other will be used to generate
+                                inferences on the Measure
+                            </span>
+                            <span class="myw-chips ingrain-chips">
+                                {{
+                                deselectedMetricConfigCount }} / {{
+                                viewConfigDetails.FeaturesCombinationList.length}}</span>
+                        </div>
+                        <a data-toggle="popover"
+                            triggers="mouseenter:mouseleave"
+                            [popover]="measureIconInfo['AttributeCombinationList']"
+                            class="ml-auto"><img
+                                src="assets/images/info.svg" alt=""></a>
+                    </div>
+                    <div class="ingrain-sec-bdy">
+                        <div class="d-flex flex-wrap myw-columns">
+                            <label><input type="checkbox" name="select-columns"
+                                    (click)="performAction2()" checked="">
+                                <span id='spnAllCombi'> {{
+                                    (MetricConfigInput.FeatureCombinations.length
+                                    ==
+                                    viewConfigDetails.FeaturesCombinationList.length)
+                                    ?
+                                    'Deselect All' : 'Select All' }} </span>
+                            </label>
+                            <label
+                                *ngFor="let dimension of
+                                viewConfigDetails.FeaturesCombinationList; let i=
+                                index"><input
+                                    type="checkbox" name="select-columns"
+                                    (click)="onSelectedAttributeMeasureFeatureCombinations(dimension,
+                                    $event)"
+                                    [checked]="checkFC(dimension) >= 0"><span>{{dimension.ConnectedFeatures}}</span></label>
+                        </div>
+                    </div>
+                </div>
+                <!-- </ng-container> -->
+            </div>
+        </div>
+        <!-- /Measure Analysis -->
+        <div class="d-flex justify-content-end mt-4">
+            <a class="btn btn-secondary btn-sm mr-3" (click)="gotoModelList()">
+                Cancel</a>
+            <a class="btn btn-primary btn-sm mr-3"
+                (click)="showSaveConfigNameModalFunction()">Save
+                Configuration</a>
+
+        </div>
+    </div>
+
+    <!-- Save Configuration Modal -->
+    <ng-container *ngIf="showSaveCongfigModal">
+        <div class="modal show" id="saveConfModal" style="padding-right: 17px;
+            display: block;" data-backdrop="static"
+            data-keyboard="false" tabindex="-1"
+            aria-labelledby="saveConfModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered
+                modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="saveConfModalTitle">Save
+                            Configuration</h5>
+                        <button type="button" class="close"
+                            (click)="showSaveCongfigModal= false"
+                            aria-label="Close">
+                            <span aria-hidden="true">&nbsp;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <input type="text" #cn class="form-control"
+                            maxlength="70" placeholder="Enter configuration Name" />
+                            <small class="form-text text-muted">You have {{70 - cn.value.length}} of 70 characters
+                                remaining.</small>
+                        </div>
+                        <!-- <div class="form-group">
+                            <input type="text" #cd class="form-control" placeholder="Description"/>
+                        </div> -->
+                        <div class="d-flex justify-content-end myw-actions">
+                            <button class="btn btn-sm btn-primary"
+                                (click)="showSaveCongfigModal=
+                                false;createConfig(cn.value)">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- /Save Configuration Modal -->
+
+
+
+    <!--Sample Config-->
+    <ng-container *ngIf="sampleConfig">
+        <div class="modal show" id="saveConfModal" style="padding-right: 17px;
+            display: block;" data-backdrop="static"
+            data-keyboard="false" tabindex="-1"
+            aria-labelledby="saveConfModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered
+                modal-dialog-scrollable">
+                <div class="modal-content" style="width: 83em;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="saveConfModalTitle">Save
+                            Configuration</h5>
+                        <button type="button" class="close"
+                            (click)="sampleConfig= false" aria-label="Close">
+                            <span aria-hidden="true">&nbsp;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <app-sample-inference
+                            [autoSampleGeneratedIE]="ieConfigService.autoSampleGeneratedIE"
+                            [showAddButton]="false"></app-sample-inference>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>

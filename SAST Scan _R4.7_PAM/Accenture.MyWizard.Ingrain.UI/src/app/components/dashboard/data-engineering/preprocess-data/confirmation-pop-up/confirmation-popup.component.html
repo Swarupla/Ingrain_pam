@@ -1,0 +1,23 @@
+<div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-content">
+    <div class="modal-header border-0">
+      <h5 class="modal-title" id="ingrAI-enter-model-title">&nbsp;</h5>
+      <button type="button" class="close" aria-label="Close" (click)='onClose()'>
+        <svg class="ingrAI-icon-svg ingrAI-icon-svg-md">
+          <use xlink:href="#ingrAI-icon-close"></use>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body py-0">
+      <div class="d-flex flex-column justify-content-center align-items-center">
+        <form #form=ngForm style="max-width:470px;">                       
+          <span style="max-width:470px;">Are you sure you want to Download Data</span> 
+        </form>
+      </div>
+    </div>
+    <div class="modal-footer border-0" style="justify-content: center;">
+      <button type="button" class="btn btn-secondary" (click)='onClose()'>Cancel</button>
+      <button type="button" class="btn btn-primary" (click)='onConfirm()'>Ok</button>
+    </div>
+  </div>
+</div>

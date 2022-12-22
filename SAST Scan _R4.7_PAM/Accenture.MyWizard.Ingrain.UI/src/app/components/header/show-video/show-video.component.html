@@ -1,0 +1,27 @@
+ <!-- top bar ends -->
+ <div class="c-container">
+  <!-- video content starts -->
+  <div class="c-section-video">
+      <div class="c-section-videotitle">ingrAIn Overview</div>
+      <div class="c-section-videowrap">
+          <div class="c-section-videoleft">
+              <div class="c-section-videocontainer">
+                  <!-- <video width="400" height="300" ></video> -->
+                  <video width="400" height="300" controls controlslist="nodownload" *ngIf="videoresponse" muted autoplay>
+                    <source [src]="videoresponse" type="video/mp4">
+                  </video>
+              </div>
+          </div>
+          <div class="c-section-videoright d-none">
+              <div class="c-section-videorelatedtitle">Related Media</div>
+              <div class="c-section-videorelated ">
+                  No media found
+  
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- video content ends -->
+</div>
+
+

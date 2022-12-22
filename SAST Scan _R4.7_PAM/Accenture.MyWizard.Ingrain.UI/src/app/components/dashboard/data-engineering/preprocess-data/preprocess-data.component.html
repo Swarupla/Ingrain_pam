@@ -1,0 +1,371 @@
+<ng-container *ngIf="isLoading; then displayLoader else displayTableData"></ng-container>
+<ng-template #displayLoader>
+  <div id="main" class="ingrAI-content ingrAI-cust-wrap flex-fill" style="height: 55vh;">
+    <app-loader-display></app-loader-display>
+    <div *ngIf="pythonProgressStatus == 'P'" class="IngrAI-python-progress-dialogbox">
+      <p>Data process in progress</p>
+      <p> {{pythonProgress}}% Completed </p>
+    </div>
+  </div>
+</ng-template>
+<ng-template #displayTableData>
+  <div id="main" class="ingrAI-content ingrAI-cust-wrap flex-fill">
+
+    <!-- Prescription -->
+    <div class="ingrain-flyout-container prescription" *ngIf='!isLoading' [ngClass]="status ?'': 'open'">
+      <div class="ingrain-flyout">
+        <div class="ingrain-flyout-content myw-scrollbar" style="max-height: 22rem;">
+          <fieldset [disabled]="readOnly">
+            <div class="ingrAI-list-item-container ingerAI-predescription-list-item-container">
+
+              <ng-container *ngIf='!isLoading && !errorOccured'>
+                <div
+                  *ngIf="priscriptioncheckBoxValues && priscriptioncheckBoxValues?.length>0 && priscriptionText?.length>0"
+                  class="ingrAI-list-item">
+
+                  <span>{{priscriptionText}}</span>
+                  <div>
+                    <label class="checkcontainer">
+                      <span>{{priscriptioncheckBoxValues}}</span>
+
+                      <input #select [value]='priscriptioncheckBoxValues' (click)="onPrescriptionChange(select)"
+                        [checked]='disableFix' type="checkbox">
+                      <span class="checkmark"></span>
+
+                    </label>
+                  </div>
+                </div>
+              </ng-container>
+
+              <div class="ingrAI-list-item">
+                <!-- <p class="mb-0"> Outliers , Balanced and Skewness would be handled in Data Modification</p> -->
+                <p class="mb-0"> Please review the sections before proceeding to Next step</p>
+              </div>
+              <!-- <div class="ingrAI-list-item" *ngIf='displayMessage'>
+              <p class="mb-0">  
+                  Categorical attributes are Label Encoded by default. Please review before proceeding further.</p>
+            </div> -->
+
+
+              <!-- Smote Starts -->
+              <ng-container class="ingrAI-list-item" *ngIf="isSmoteVisible === true && multiclassFlag === false">
+                <label class="checkcontainer">
+                  <span>Smote Flag</span>
+                  <input #smoteFlag (click)="onSmoteChecked(smoteFlag)" [value]='smote' [checked]='smoteFlag'
+                    type="checkbox">
+                  <span class="checkmark"></span>
+                </label>
+              </ng-container>
+              <!-- Smote Ends -->
+
+
+              <!-- For Smote Flag-->
+
+              <ng-container class="ingrAI-list-item" *ngIf="multiclassFlag === true">
+                <label class="checkcontainer">
+                  <input #selectedsmote (click)="onCheckedSmote(selectedsmote)" [checked]='ismulticlasssmote'
+                    type="checkbox" />
+                  <span class="checkmark"></span>&nbsp;&nbsp;
+                  <span>Do you wish to allow Ingrain to check for class imbalance and rectify it if found?</span>
+
+                </label>
+              </ng-container>
+
+              <!--End -->
+
+
+
+            </div>
+            <div *ngIf="priscriptioncheckBoxValues && priscriptioncheckBoxValues?.length>0 && priscriptionText?.length>0"
+              class="d-flex justify-content-end py-2 ml-auto">
+              <input type="button" [disabled]='dataTobeFixed?.length === 0 || disableFix' (click)="onFixIt()"
+                class="btn btn-sm btn-secondary" value="Fix it" />
+              <input type="button" (click)="prescriptionOpen()" class="btn btn-sm btn-secondary" value="Ignore" />
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="ingrain-fly-header" (click)="prescriptionOpen()">
+          <div class="ingrain-flytext">Prescription</div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- /Prescription-->
+    <!-- /Description -->
+    <div class="ingrAI-body-content">
+
+      <div class="myw-section my-1 p-3" *ngIf="!isLoading">
+        <a href="javascript:;" class="d-flex justify-content-end mb-3 ingrain-acc-action text-decoration-none"
+          *ngIf="accordian.expandAll" (click)="expandAll()">Expand All</a>
+        <a href="javascript:;" class="d-flex justify-content-end mb-3 ingrain-acc-action text-decoration-none"
+          *ngIf="!accordian.expandAll" (click)="collapseAll()">Collapse All</a>
+
+        <div class="myw-accordion-wrap">
+          <div class="myw-accordion mb-1 accordain-MissingValue">
+            <div class="myw-accordion-header">
+              <div class="myw-accordion-title" (click)="accordian.acc01 = !accordian.acc01">
+                <h6>Missing Values</h6>
+              </div>
+              <app-info-tooltip [className]="'toggleRight'">
+                <div class="htmlDesignedTooltip">
+                  <p>
+                    The section provides options to the user to fill up the missing values for categorical and numerical
+                    datatype in the dataset. The records will get deleted if the user selects “None” as an option
+                  </p>
+                </div>
+              </app-info-tooltip>
+              <a class="myw-accordion-toggle" role="button" [ngClass]="{'collapsed': accordian.acc01}"
+                (click)="accordian.acc01 = !accordian.acc01" aria-expanded="accordian.acc01" aria-controls="acc01"></a>
+            </div>
+            <div class="myw-accordion-content" id="acc01" [ngClass]="{ 'collapse ': accordian.acc01}">
+              <div class="p-3" *ngIf="missingValues">
+                <fieldset [disabled]="readOnly">
+                  <app-missing-values [applyFlag]='applyFlag' [missingValues]='missingValues'
+                    [FeatureDataTypes]='featureDataTypes' [TextTypeColumnList]='TextTypeColumnList'
+                    (setDatatoserverOnChange)="setDatatoserverForMissingValuesOnChange($event)"
+                    (setDatatoserverMissingValue)="setDatatoserverForMissingValueObject($event)" [readOnly]="readOnly">
+                  </app-missing-values>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+          <div class="myw-accordion mb-1 accordain-Filters">
+            <div class="myw-accordion-header">
+              <div class="myw-accordion-title" (click)="accordian.acc02 = !accordian.acc02">
+                <h6>Filters</h6>
+              </div>
+              <app-info-tooltip [className]="'toggleRight'">
+                <div class="htmlDesignedTooltip">
+                  <p>
+                    The section is applicable for categorical data where the user can select specific categories. The
+                    filtered data would be considered for training purpose
+                  </p>
+                </div>
+              </app-info-tooltip>
+              <a class="myw-accordion-toggle" role="button" [ngClass]="{'collapsed': accordian.acc02}"
+                (click)="accordian.acc02 = !accordian.acc02" aria-expanded="accordian.acc03" aria-controls="acc02"></a>
+            </div>
+            <div class="myw-accordion-content" id="acc02" [ngClass]="{ 'collapse ': accordian.acc02}">
+              <div class="p-3">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group mb-0">
+                      <label class="form-label">Select the attributes that require filters</label>
+                      <app-filters-data [filters]='filters' [showDataIcon]='showDataIcon'
+                        [problemTypeFlag]='problemTypeFlag' [isLoading]='isLoading' [modelType]='modelType'
+                        [correlationId]='correlationId'
+                        (setDatatoserverFilterValuesOnChange)="setDatatoserverFilterValuesOnChange($event)"
+                        [readOnly]="readOnly" (setDatatoserverFilterValue)="setDatatoserverFilterValueObject($event)"
+                        (setDefaultFilterOptions)="setDefaultFilterOptions($event)"></app-filters-data>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="myw-accordion mb-1 accordain-TextPreprocessing" *ngIf="TextTypeColumnList?.length">
+            <div class="myw-accordion-header">
+              <div class="myw-accordion-title" (click)="accordian.acc03 = !accordian.acc03">
+                <h6>Text Data Pre-processing</h6>
+              </div>
+              <app-info-tooltip [className]="'toggleRightWidthIncrement'">
+                <div class="htmlDesignedTooltip">
+                  <div class="myw-scrollbar" style="max-height: 45vh">
+                    This section allows users to do text pre-processing by cleaning and preparing the data for analysis
+
+                    <div>
+                      <b>Stop words </b>: Stop words are very common words like “we”, “the”, “are”, etc. which probably
+                      do not help in NLP tasks. Hence,
+                      we can remove stop words as it's presence does not add any context to the text data.
+                    </div>
+
+                    <div>
+                      <b> Text-Normalization </b> : Text normalization is the process of transforming a text into a
+                      standard form
+                      and below are the steps
+                      <ul>
+                        <li> <b> Lemmatization </b> : Lemmatization is the process of converting a word to its base
+                          form, by
+                          taking into consideration its semantic context e.g., “computation” to “compute”, densely to
+                          “dense” </li>
+                        <li> <b> Stemming </b> : Stemming is a process to remove inflectional endings only and to return
+                          the
+                          base or dictionary form of a word. Eg: computing or computation can be converted to “compute”
+                          or “comput”, densely to “dens”</li>
+                        <li> <b> Part of Speech (POS) </b> : Part of Speech tagging is a process of converting the words
+                          in a
+                          sentence to the part-of-speech tag, which signifies whether the word is a noun, adjective,
+                          verb, and so on. </li>
+                      </ul>
+                    </div>
+
+
+                    <div>
+                      <b>N-Gram Selector </b>: N-gram is simply a sequence of N words. For instance, “Artificial
+                      Intelligence”
+                      is a bigram or a 2-gram. By selecting the N-Gram, the user is specifying the number of words to be
+                      taken in a sequence while analyzing the data for model creation.
+                    </div>
+
+                    <div>
+                      <b> Feature Generation</b>: Feature generation is the process of creating new features from one or
+                      multiple existing features, potentially for using in statistical analysis.
+                      <ul>
+                        <li> <b> Count Vectorization </b>: The technique is used to numerically represent the words in a
+                          given
+                          text when the amount of text data is small in size. This method does not provide any semantic
+                          information.</li>
+                        <li> <b> Term frequency- Inverse Document Frequency (TFIDF) </b>: The technique is used in case
+                          of
+                          comparatively large text data. The words that occur frequently in the entire document are
+                          given little weightage and the words which appears very rarely are weighted as such as these
+                          might be important words. This method also does not provide any semantic information </li>
+                        <li> <b> Word2Vec </b>: Word2Vec is a word-embedding technique which is trained to reconstruct
+                          semantic
+                          contexts of words by relying on local context </li>
+                        <li> <b> GloVe </b>: GloVe is also a word-embedding technique similar to Word2vec but GloVe
+                          incorporates
+                          global context (word co-occurrence) to obtain word vectors. It provides better accuracy than
+                          Word2Vec. </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </app-info-tooltip>
+              <a class="myw-accordion-toggle" role="button" [ngClass]="{'collapsed': accordian.acc03}"
+                (click)="accordian.acc03 = !accordian.acc03" aria-expanded="accordian.acc03" aria-controls="acc03"></a>
+            </div>
+            <div class="myw-accordion-content" id="acc03" [ngClass]="{ 'collapse ': accordian.acc03}">
+              <div class="p-3">
+                <fieldset [disabled]="readOnly">
+                  <app-txt-preprocess [columnList]="TextTypeColumnList" [silhouette_graph]="silhouette_graph"
+                    [savedColumnsAttributesData]="TextTypeColumnListAttributesData" [readOnly]="readOnly">
+                  </app-txt-preprocess>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+          <div class="myw-accordion mb-1 accordain-DataModification">
+            <div class="myw-accordion-header">
+              <div class="myw-accordion-title" (click)="accordian.acc04 = !accordian.acc04">
+                <h6>Data Modification</h6>
+              </div>
+              <app-info-tooltip [className]="'toggleRight'">
+                <div class="htmlDesignedTooltip">
+                  <div class="myw-scrollbar" style="max-height: 45vh">
+                    The section recommends techniques for users to modify the attributes which are identified as
+                    imbalanced, skewed or outliers on the Data curation pages
+                  </div>
+                </div>
+              </app-info-tooltip>
+              <a class="myw-accordion-toggle" role="button" [ngClass]="{'collapsed': accordian.acc04}"
+                (click)="accordian.acc04 = !accordian.acc04" aria-expanded="accordian.acc04" aria-controls="acc04"></a>
+            </div>
+            <div class="myw-accordion-content" id="acc04" [ngClass]="{ 'collapse ': accordian.acc04}">
+              <div class="p-3 ingrain-dmodification" *ngIf="dataModification">
+                <app-data-modification [dataModification]='dataModification' [problemTypeFlag]='problemTypeFlag'
+                  [modelType]='modelType' [AutoBinningDisable]='prepopulateAutoBinningColumns'
+                  [NumericalAutoBinning]='categoricalcolumns' [SmoteMultiFlag]='multiclassFlag'
+                  (setDatatoserverDataModification)='setDatatoserverDataModification($event)'
+                  (setDatatoserverDataModificationOnChange)='setDatatoserverDataModificationOnChange($event)'
+                  (setautobinningcolums)='setDatatoserverforbinning($event)' [readOnly]="readOnly">
+                </app-data-modification>
+              </div>
+            </div>
+          </div>
+          <div class="myw-accordion mb-1 accordain-DataEncoding">
+            <div class="myw-accordion-header">
+              <div class="myw-accordion-title" (click)="accordian.acc05 = !accordian.acc05">
+                <h6>Data Encoding</h6>
+              </div>
+              <app-info-tooltip [className]="'toggleRight'">
+                <div class="htmlDesignedTooltip">
+                  <div>Data encoding is the process of converting categorical data to numerical form as various
+                    Machine Learning Algorithms cannot operate on categorical data directly and requires all input and
+                    output variables to be numeric. The two encoding processes which can be used are:</div>
+
+                  <div> <b> Label Encoding </b>: This encoding process assigns an integer value to each unique category.
+                    It
+                    works best for ordinal variables having naturally ordered relationship.</div>
+                  <div>For example, “High” is 1, “Medium” is 2, and “Low” is 3</div>
+                  <div> <b> One-Hot Encoding </b>: For categorical variables where no such ordinal relationship exists,
+                    one-hot
+                    encoding can be applied to the integer representation. It creates a binary column for each
+                    category
+                  </div>
+                </div>
+              </app-info-tooltip>
+              <a class="myw-accordion-toggle" role="button" [ngClass]="{'collapsed': accordian.acc05}"
+                (click)="accordian.acc05 = !accordian.acc05" aria-expanded="accordian.acc05" aria-controls="acc05"></a>
+            </div>
+            <div class="myw-accordion-content" id="acc05" [ngClass]="{ 'collapse ': accordian.acc05}">
+              <div class="table-responsive">
+                <fieldset [disabled]="readOnly">
+                  <app-data-encoding [dataEncodingAttributes]='dataEncodingAttributes' [dataEncoding]='dataEncoding'
+                    [targetColumn]='targetColumn' [autobinningDisableColumns]='prepopulateAutoBinningColumns'
+                    [categoricalColumns]='categoricalcolumns'
+                    (setDatatoserverDataEncodingOnChange)='setDatatoserverDataEncodingOnChange($event)'
+                    [readOnly]="readOnly"></app-data-encoding>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manual/Automated modal -->
+      <ng-template #addFeatureSelectionPopUP>
+        <div class="modal-md ">
+          <div class="modal-header" style="border-bottom: none;">
+            <button type="button" class="close" style="cursor: pointer;" aria-label="Close"
+              (click)="modalRefForType.hide()">
+              <svg class="ingrAI-icon-svg ingrAI-icon-svg-md">
+                <use xlink:href="#ingrAI-icon-close"></use>
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body" style="margin: 0rem 3rem 3rem 3rem;">
+            <div class="ingrAI-list-item-container d-flex">
+              <div class="ingrAI-list-item border-0 d-flex">
+                <label class="checkcontainer" style="margin-right: 10rem;" *ngFor="let type of addFeatureTypeSelection">
+                  <span>{{type}}</span>
+                  <input #selectedAddFeatureType (change)="onChecked(selectedAddFeatureType, addFeatureManualModal)"
+                    [value]="type" type="radio" name="radio">
+                  <span class="radiobtn"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <!-- /Manual/Automated modal -->
+
+    </div>
+
+  </div>
+</ng-template>
+
+<ng-template #confirmChangesOnDataTransformation>
+  <div class="deploymodle-confirmpopup">
+    <div class="modal-header" style="border-bottom: none;">
+      <h5 class="modal-title" id="saveViewModalTitle">&nbsp;</h5>
+      <button type="button" class="close pull-right" style="cursor: pointer;" aria-label="Close"
+        (click)="modalRef.hide()">
+        <svg class="ingrAI-icon-svg ingrAI-icon-svg-md">
+          <use xlink:href="#ingrAI-icon-close"></use>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      You have made some changes to the trained model. By saving these changes, the model will have to be retrained
+      in the Recommended AI section. Click Yes if you wish to Proceed or No to Return.
+      <div class="modal-footer" style="border-top: none;">
+        <button type="button" class="btn btn-secondary" style=" font-size: 1rem;" (click)="decline()">No</button>
+        <button type="button" class="btn btn-primary" style=" font-size: 1rem;" (click)="confirm()">Yes</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

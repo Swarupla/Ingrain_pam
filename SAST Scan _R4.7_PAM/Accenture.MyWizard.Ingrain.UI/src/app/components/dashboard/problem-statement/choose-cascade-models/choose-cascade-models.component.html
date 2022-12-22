@@ -1,0 +1,205 @@
+    <div class="row no-gutters flex-fill mt-3">
+                  <div class="col-auto models-container">
+                      <div class="ingrAIn-siderbar-menu myw-scrollbar">
+                        <h6 class="mb-3 text-right">List of available models</h6>
+                          <div class="ingrAIn-roles-container text-right">
+                              <div class=" model-name" *ngFor="let model of modelNames; let indx = index">
+                                    <div *ngIf="!isCustomModel" tabindex="{{indx}}"  (dragstart)="onDrag($event,model)" draggable="true"
+                                    (keyup.enter)="moveToTarget(model)" class="ingrAIn-roles-items model-name" style="text-align: left;">
+                                        <a><img src="assets/images/drag.svg" alt="Drag"></a>
+                                        <a data-id="model.CorrelationId" class="text-reset text-decoration-none">{{model.ModelName}}</a>
+                                    </div>  
+                                    <div *ngIf="isCustomModel" tabindex="{{indx}}" class="ingrAIn-roles-items model-name" style="text-align: left;">
+                                        <a><img src="assets/images/drag.svg" alt="Drag"></a>
+                                        <a data-id="model.CorrelationId" class="text-reset text-decoration-none">{{model.ModelName}}</a>
+                                    </div>  
+                                      <span class="tooltiptext">
+                                          <div>Model Type : {{model.ProblemType}}</div>
+                                          <div>Algorithm name: {{model.ModelType}}</div>
+                                          <div>Accuracy : {{model.Accuracy}}</div>
+                                          <div>Target Column : {{model.TargetColumn}}</div>
+                                      </span>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col">
+                      <div class="ingrAIn-mainsection">
+                        <h6>Select the models for the Cascade Process</h6>
+                        <div class="fs-12 mb-3">Drag and drop minimum 2 - maximum 5 models in the tabs. Click on + icon to add tabs.</div>
+                        <div class="form-group mr-4" *ngIf="((env != 'PAM' || env != 'FDS') && requestType != 'AM' && requestType != 'IO')">
+                            <label class="form-label">Select Delivery Type</label>
+                            <select #selectedDeliveryType [ngModel]="deliveryType" [disabled]="isCustomModel" class="form-control" (change)="onDeliveryChange(selectedDeliveryType.value)">
+                                <option value="AD">System Integration</option>
+                                <option value="Agile">Agile</option>
+                                <option value="Devops">Devops</option>
+                                <!-- <option value="AIops">AIops</option> -->
+                                <option value="Others">Others</option>
+                                <option value="PPM">PPM</option>
+                            </select>
+                        </div>
+                        <div class="form-group mr-4" *ngIf="((env == 'PAM' || env == 'FDS') && (requestType == 'AM' || requestType == 'IO'))">
+                            <label class="form-label">Select Delivery Type</label>
+                            <select #selectedDeliveryType [ngModel]="deliveryType" [disabled]="isCustomModel" class="form-control" (change)="onDeliveryChange(selectedDeliveryType.value)">
+                                <option value="AIops">AIops</option>
+                            </select>
+                        </div>                          
+                          <ng-container *ngFor="let key of objectKeys(modelList); let i = index">
+                              <div class="form-row align-items-center my-3">
+                                  <div class="col-auto">
+                                      <div class="ingrain-cas-label" *ngIf="i==0">Start</div>
+                                      <div class="ingrain-cas-label" *ngIf="i>0 && i<(totalModels-1)">Intermediate {{i}}</div>
+                                      <div class="ingrain-cas-label" *ngIf="i==(totalModels-1)">End</div>
+                                  </div>
+                                  <div class="col" *ngIf="i>=0 && i<totalModels">
+                                      <div class="ingrain-cas-col" (dragover)="allowDrop($event)"
+                                      (drop)="onDrop($event,(i+1))">
+                                          <div *ngIf="modelList[key].ModelName" class="ingrain-modal-list model-name">
+                                              <!-- <a href="javascript:;" data-toggle="tooltip" data-trigger="hover" data-placement="bottom" popover-append-to-body='true' data-html="true" title="&lt;div&gt;Model Type: {{modelList[key].ProblemType}}&lt;/div&gt; &lt;div&gt;Algorithm name: {{modelList[key].ModelType}}&lt;/div&gt; &lt;div&gt;Accuracy: {{modelList[key].Accuracy}}&lt;/div&gt;"><img src="assets/images/drag.svg" alt=""/> <span>SLA Model</span></a> -->
+                                              <a data-id="modelList[key].CorrelationId"><img src="assets/images/drag.svg" alt=""/> <span>{{modelList[key].ModelName}}</span> <img class="close" *ngIf="!isCustomModel" src="assets/images/close-b.svg" (click)="removeColumn(modelList[key].CorrelationId, (i+1))"></a>
+                                              <span class="model-tooltiptext">
+                                                  <div>Model Type : {{modelList[key].ProblemType}}</div>
+                                                  <div>Algorithm name: {{modelList[key].ModelType}}</div>
+                                                  <div>Accuracy : {{modelList[key].Accuracy}}</div>
+                                                  <div>Target Column : {{modelList[key].TargetColumn}}</div>
+                                              </span>
+                                          </div>
+                                          <div class="ml-auto" *ngIf="!isCustomModel">
+                                              <a *ngIf="i>0 && i<(totalModels-1)" (click)="removeIntermediateModel(modelList[key].CorrelationId,(i+1))" class="ml-auto" title="Delete Model"><img src="assets/images/delete.svg" alt="Delete"></a>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="col-auto" *ngIf="!isCustomModel">
+                                    <a *ngIf="i>=0 && i!=(totalModels-1)" (click)="addIntermediateModel()" data-toggle="tooltip" data-trigger="hover" data-placement="bottom" title="Add Model Below"><img src="assets/images/add.svg" alt="Add" class="ingrAIn-del"></a>
+                                  </div>
+                                  <div class="col-auto" *ngIf="!isCustomModel" style="visibility: hidden;">
+                                    <a *ngIf="i==(totalModels-1)"><img src="assets/images/add.svg" alt="Add" class="ingrAIn-del"></a>
+                                  </div>
+                              </div>
+                          </ng-container>
+                      </div>
+                  </div>
+              </div>
+              <div class="d-flex justify-content-end mt-4">
+                <a class="btn btn-primary btn-next" (click)="next(modelNamePopup, modelChangesConfirmation)"><span>Next</span><img src="assets/images/back.svg" alt="Next"></a>
+              </div>
+  <!-- </div> -->
+
+
+
+  <!-- <div class="row no-gutters flex-fill mt-3">
+    <div class="col-auto models-container">
+        <div class="ingrain-siderbar-menu">
+            <h6 class="mb-3 text-right">List of available models</h6>
+            <div class="ingrain-roles-container text-right">
+
+                <div class="model-name" *ngFor="let model of modelNames; let indx = index"
+                style="width: fit-content;margin-bottom: 0.625rem;">
+                    <div tabindex="{{indx}}"  (dragstart)="onDrag($event,model)" draggable="true"
+                    (keyup.enter)="moveToTarget(model)" class="ingrAIn-roles-items model-name" style="text-align: left;">
+                        <a href="javascript:;" ><img src="assets/images/drag.svg" alt="Drag"></a>
+                        <a href="javascript:;" data-id="model.CorrelationId" class="text-reset text-decoration-none">{{model.ModelName}}</a>
+                    </div>   
+                    <span class="tooltiptext">
+                        <div>Model Type : {{model.ProblemType}}</div>
+                        <div>Algorithm name: {{model.ModelType}}</div>
+                        <div>Accuracy : {{model.Accuracy}}</div>
+                    </span>               
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="ingrain-mainsection">
+            <h6>Select the models for the Cascade Process</h6>
+            <div class="fs-12 mb-3">Drag and drop minimum 2 - maximum 5 models in the tabs. Click on + icon to add tabs.</div>
+            <div class="form-group mr-4">
+                <label class="form-label">Select Delivery Type</label>
+                <select #selectedDeliveryType [ngModel]="deliveryType" class="form-control" (change)="onDeliveryChange(selectedDeliveryType.value)">
+                    <option value="AD">System Integration</option>
+                    <option value="Agile">Agile</option>
+                    <option value="Devops">Devops</option>
+                    <option value="AIops">AIops</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+            <div class="form-row align-items-center my-3">
+                <div class="col-auto ingrain-cas-label">Start</div>
+                <div class="col">
+                    <div class="ingrain-cas-col"></div>
+                </div>
+                <div class="col-auto">
+                    <a href="javascript:;"><img src="images/add.svg" alt="Add"/></a>
+                </div>
+            </div>
+            <div class="form-row align-items-center my-3">
+                <div class="col-auto ingrain-cas-label">Intermediate 1</div>
+                <div class="col">
+                    <div class="ingrain-cas-col">
+                       <a href="javascript:;" class="ml-auto"><img src="images/delete.svg" alt="Delete"/></a>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <a href="javascript:;"><img src="images/add.svg" alt="Add"/></a>
+                </div>
+            </div>
+            <div class="form-row align-items-center my-3">
+                <div class="col-auto ingrain-cas-label">Start</div>
+                <div class="col">
+                    <div class="ingrain-cas-col"></div>
+                </div>
+                <div class="col-auto">
+                    <a href="javascript:;"><img src="images/add.svg" alt="Add"/></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  -->
+  
+  <ng-template #modelNamePopup>
+          <div class="modal-header">
+            <!-- <h5 class="modal-title" id="ingrAI-enter-model-title">&nbsp;</h5> -->
+            <h5 class="modal-title" id="ingrAI-enter-model-title">Save Cascading</h5>
+            <button type="button" class="close" aria-label="Close" (click)='onClose()'>
+              <svg class="ingrAI-icon-svg ingrAI-icon-svg-md">
+                <use xlink:href="#ingrAI-icon-close" style="color: white;"></use>
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="d-flex flex-column justify-content-center align-items-center">
+              <form #form=ngForm  style="width: 100%;margin-top: 15px;">
+                  <!-- <label>Enter Model Name</label> -->
+                  <input #modalNameInput=ngModel type="text" class="form-control" name='modalName' maxlength="70" required [(ngModel)]='modelName' placeholder="Enter Model Name">
+                  <label class="form-label">You have {{ 70 - modelName?.length}} of 70 characters remaining.</label>
+              </form>
+            </div>
+          </div>
+          <div class="modal-footer" style="border-radius: 0 0 1.125rem 1.125rem;">
+            <button type="button" class="btn btn-secondary" (click)='onClose()'>Cancel</button>
+            <button type="button" class="btn btn-primary" (click)='onEnter(modalNameInput)'>Enter</button>
+          </div>
+    </ng-template>
+  
+  
+    <ng-template #modelChangesConfirmation>
+      <div class="modal-header border-0">
+        <h5 class="modal-title" id="ingrAI-enter-model-title">&nbsp;</h5>
+        <button type="button" class="close" aria-label="Close" (click)='modalRef.hide()'>
+          <svg class="ingrAI-icon-svg ingrAI-icon-svg-md">
+            <use xlink:href="#ingrAI-icon-close"></use>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body py-0">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+          <div style="width: 100%;margin-top: 15px;">
+              <label>In case of change in sequence all the progress so far will be lost. Do you want to proceed?</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary" (click)='modalRef.hide()'>Cancel</button>
+        <button type="button" class="btn btn-primary" (click)='onConfirm()'>OK</button>
+      </div>
+  </ng-template>
